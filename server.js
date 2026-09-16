@@ -4,18 +4,25 @@ const fs = require("fs");
 const crypto = require("crypto");
 
 const app = express();
-const PORT = process.env.PORT || 3000;
-
-app.use(express.json({ limit: "1mb" }));
-app.use(express.urlencoded({ extended: true }));
-
-/* =========================
-   DATABASE
-========================= */
-
+const PORT = process.env.PORT || 10000;
 const DB_FILE = path.join(__dirname, "database.json");
 
-function emptyDB() {
+// ===============================
+// SETTINGS
+// ===============================
+
+const MAX_PHOTO_BYTES = 5 * 1024 * 1024;
+
+// Frontend inatuma picha kama Base64,
+// hivyo body limit lazima iwe kubwa kuliko 1MB.
+app.use(express.json({ limit: "10mb" }));
+app.use(express.urlencoded({ extended: true, limit: "10mb" }));
+
+// ===============================
+// DATABASE
+// ===============================
+
+function defaultDB() {
   return {
     users: [],
     likes: [],
@@ -25,129 +32,212 @@ function emptyDB() {
 }
 
 function loadDB() {
-  if (!fs.existsSync(DB_FILE)) {
-    const db = emptyDB();
-
-    fs.writeFileSync(
-      DB_FILE,
-      JSON.stringify(db, null, 2)
-    );
-
-    return db;
-  }
-
   try {
-    const data = JSON.parse(
-      fs.readFileSync(DB_FILE, "utf8")
-    );
+    if (!fs.existsSync(DB_FILE)) {
+      const fresh = defaultDB();
+      fs.writeFileSync(DB_FILE, JSON.stringify(fresh, null, 2));
+      return fresh;
+    }
+
+    const raw = fs.readFileSync(DB_FILE, "utf8");
+
+    if (!raw.trim()) {
+      return defaultDB();
+    }
+
+    const data = JSON.parse(raw);
 
     return {
-      users: Array.isArray(data.users)
-        ? data.users
-        : [],
-
-      likes: Array.isArray(data.likes)
-        ? data.likes
-        : [],
-
-      messages: Array.isArray(data.messages)
-        ? data.messages
-        : [],
-
-      reports: Array.isArray(data.reports)
-        ? data.reports
-        : []
+      users: Array.isArray(data.users) ? data.users : [],
+      likes: Array.isArray(data.likes) ? data.likes : [],
+      messages: Array.isArray(data.messages) ? data.messages : [],
+      reports: Array.isArray(data.reports) ? data.reports : []
     };
-  } catch (error) {
-    console.error("Database error:", error);
-    return emptyDB();
+  } catch (err) {
+    console.error("Database load error:", err);
+    return defaultDB();
   }
 }
 
 let db = loadDB();
 
+// ===============================
+// SAVE DATABASE
+// ===============================
+
 function saveDB() {
-  const temp = DB_FILE + ".tmp";
+  const tempFile = DB_FILE + ".tmp";
 
   fs.writeFileSync(
-    temp,
-    JSON.stringify(db, null, 2)
+    tempFile,
+    JSON.stringify(db, null, 2),
+    "utf8"
   );
 
-  fs.renameSync(temp, DB_FILE);
+  fs.renameSync(tempFile, DB_FILE);
 }
 
-/* =========================
-   PASSWORDS
-========================= */
+// ===============================
+// HELPERS
+// ===============================
+
+function makeId() {
+  return crypto.randomBytes(12).toString("hex");
+}
+
+function normalizeEmail(email) {
+  return String(email || "").trim().toLowerCase();
+}
 
 function hashPassword(password) {
-  const salt = crypto
-    .randomBytes(16)
-    .toString("hex");
+  const salt = crypto.randomBytes(16).toString("hex");
 
-  const hash = crypto
-    .scryptSync(password, salt, 64)
-    .toString("hex");
+  const hash = crypto.scryptSync(
+    String(password),
+    salt,
+    64
+  ).toString("hex");
 
   return `scrypt:${salt}:${hash}`;
 }
 
 function verifyPassword(password, stored) {
+  if (!stored) return false;
 
-  // Support old plaintext passwords
-  // so existing accounts don't break.
-  if (!String(stored).startsWith("scrypt:")) {
-    return stored === password;
+  // New secure password format
+  if (stored.startsWith("scrypt:")) {
+    const parts = stored.split(":");
+
+    if (parts.length !== 3) {
+      return false;
+    }
+
+    const salt = parts[1];
+    const originalHash = parts[2];
+
+    const newHash = crypto.scryptSync(
+      String(password),
+      salt,
+      64
+    ).toString("hex");
+
+    try {
+      return crypto.timingSafeEqual(
+        Buffer.from(originalHash, "hex"),
+        Buffer.from(newHash, "hex")
+      );
+    } catch {
+      return false;
+    }
   }
 
-  const parts = String(stored).split(":");
-
-  if (parts.length !== 3) {
-    return false;
-  }
-
-  const salt = parts[1];
-  const storedHash = parts[2];
-
-  try {
-    const hash = crypto
-      .scryptSync(password, salt, 64)
-      .toString("hex");
-
-    return crypto.timingSafeEqual(
-      Buffer.from(hash, "hex"),
-      Buffer.from(storedHash, "hex")
-    );
-
-  } catch {
-    return false;
-  }
+  // Backward compatibility for old plaintext passwords
+  return String(password) === String(stored);
 }
 
-/* =========================
-   SESSIONS
-========================= */
+// ===============================
+// PHOTO VALIDATION
+// ===============================
+
+function validatePhoto(photo) {
+  if (!photo) {
+    return {
+      ok: true,
+      value: ""
+    };
+  }
+
+  if (typeof photo !== "string") {
+    return {
+      ok: false,
+      error: "Picha sio sahihi."
+    };
+  }
+
+  // Only allow Base64 image Data URLs
+  const match = photo.match(
+    /^data:(image\/jpeg|image\/png|image\/webp);base64,([A-Za-z0-9+/=\s]+)$/
+  );
+
+  if (!match) {
+    return {
+      ok: false,
+      error: "Picha lazima iwe JPG, PNG au WEBP."
+    };
+  }
+
+  const mime = match[1];
+  const base64 = match[2].replace(/\s/g, "");
+
+  let buffer;
+
+  try {
+    buffer = Buffer.from(base64, "base64");
+  } catch {
+    return {
+      ok: false,
+      error: "Picha haijasomeka."
+    };
+  }
+
+  if (!buffer.length) {
+    return {
+      ok: false,
+      error: "Picha haina data."
+    };
+  }
+
+  if (buffer.length > MAX_PHOTO_BYTES) {
+    return {
+      ok: false,
+      error: "Picha ni kubwa sana. Maximum ni 5MB."
+    };
+  }
+
+  return {
+    ok: true,
+    value: `data:${mime};base64,${base64}`
+  };
+}
+
+// ===============================
+// PUBLIC USER
+// ===============================
+
+function publicUser(user) {
+  if (!user) return null;
+
+  return {
+    id: user.id,
+    name: user.name,
+    email: user.email,
+    age: user.age,
+    gender: user.gender,
+    city: user.city,
+    bio: user.bio || "",
+    photo: user.photo || "",
+    createdAt: user.createdAt
+  };
+}
+
+// ===============================
+// SESSIONS
+// ===============================
 
 const sessions = new Map();
 
-function createSession(userId, admin = false) {
-
-  const token = crypto
-    .randomBytes(32)
-    .toString("hex");
+function createSession(userId) {
+  const token = crypto.randomBytes(32).toString("hex");
 
   sessions.set(token, {
     userId,
-    admin,
     createdAt: Date.now()
   });
 
   return token;
 }
 
-function getSession(req) {
-
+function getSessionUser(req) {
   const cookie = req.headers.cookie || "";
 
   const match = cookie.match(
@@ -158,71 +248,106 @@ function getSession(req) {
     return null;
   }
 
-  return sessions.get(match[1]) || null;
-}
+  const token = decodeURIComponent(match[1]);
 
-function setSession(res, token) {
+  const session = sessions.get(token);
 
-  res.setHeader(
-    "Set-Cookie",
-    `session=${token}; Path=/; HttpOnly; SameSite=Lax`
+  if (!session) {
+    return null;
+  }
+
+  const user = db.users.find(
+    u => String(u.id) === String(session.userId)
   );
+
+  return user || null;
 }
 
-/* =========================
-   AUTH MIDDLEWARE
-========================= */
+function requireAuth(req, res, next) {
+  const user = getSessionUser(req);
 
-function requireLogin(req, res, next) {
-
-  const session = getSession(req);
-
-  if (
-    !session ||
-    !session.userId ||
-    session.admin
-  ) {
+  if (!user) {
     return res.status(401).json({
       error: "Tafadhali ingia kwanza."
     });
   }
 
-  req.userId = Number(session.userId);
-
+  req.user = user;
   next();
 }
 
+function setSessionCookie(res, token) {
+  res.setHeader(
+    "Set-Cookie",
+    `session=${encodeURIComponent(token)}; HttpOnly; Path=/; SameSite=Lax`
+  );
+}
+
+function clearSessionCookie(res) {
+  res.setHeader(
+    "Set-Cookie",
+    "session=; HttpOnly; Path=/; SameSite=Lax; Max-Age=0"
+  );
+}
+
+// ===============================
+// ADMIN
+// ===============================
+
 function requireAdmin(req, res, next) {
+  const email = normalizeEmail(
+    process.env.ADMIN_EMAIL
+  );
 
-  const session = getSession(req);
+  const password = String(
+    process.env.ADMIN_PASSWORD || ""
+  );
 
-  if (
-    !session ||
-    !session.admin
-  ) {
+  if (!email || !password) {
+    return res.status(503).json({
+      error: "Admin bado haja-configurewa kwenye environment variables."
+    });
+  }
+
+  const cookie = req.headers.cookie || "";
+
+  const match = cookie.match(
+    /(?:^|;\s*)adminSession=([^;]+)/
+  );
+
+  if (!match) {
     return res.status(401).json({
-      error: "Admin login required."
+      error: "Admin login inahitajika."
+    });
+  }
+
+  const token = decodeURIComponent(match[1]);
+
+  const session = sessions.get("admin:" + token);
+
+  if (!session || session.role !== "admin") {
+    return res.status(401).json({
+      error: "Admin session ime-expire."
     });
   }
 
   next();
 }
 
-/* =========================
-   PUBLIC FRONTEND
-========================= */
+// ===============================
+// STATIC FILE SECURITY
+// ===============================
 
 app.use((req, res, next) => {
-
   const blocked = [
     "/database.json",
     "/server.js",
     "/package.json",
-    "/package-lock.json"
+    "/.env"
   ];
 
   if (blocked.includes(req.path)) {
-    return res.status(404).end();
+    return res.status(403).send("Forbidden");
   }
 
   next();
@@ -230,518 +355,481 @@ app.use((req, res, next) => {
 
 app.use(express.static(__dirname));
 
-app.get("/", (req, res) => {
+// ===============================
+// HOME
+// ===============================
 
+app.get("/", (req, res) => {
   res.sendFile(
     path.join(__dirname, "index.html")
   );
-
 });
 
-/* =========================
-   REGISTER
-========================= */
+// ===============================
+// REGISTER
+// ===============================
 
 app.post("/api/register", (req, res) => {
+  try {
+    const name = String(req.body.name || "").trim();
+    const email = normalizeEmail(req.body.email);
+    const password = String(req.body.password || "");
+    const age = Number(req.body.age);
+    const gender = String(req.body.gender || "").trim();
+    const city = String(req.body.city || "").trim();
+    const bio = String(req.body.bio || "").trim();
+    const photo = req.body.photo || "";
 
-  const {
-    name,
-    email,
-    password,
-    age,
-    gender,
-    city,
-    bio,
-    photo
-  } = req.body;
+    if (!name) {
+      return res.status(400).json({
+        error: "Jina linahitajika."
+      });
+    }
 
-  const cleanName =
-    String(name || "").trim();
+    if (name.length > 80) {
+      return res.status(400).json({
+        error: "Jina ni refu sana."
+      });
+    }
 
-  const cleanEmail =
-    String(email || "")
-      .trim()
-      .toLowerCase();
+    if (!email || !email.includes("@")) {
+      return res.status(400).json({
+        error: "Email sio sahihi."
+      });
+    }
 
-  const cleanPassword =
-    String(password || "");
+    if (password.length < 6) {
+      return res.status(400).json({
+        error: "Password lazima iwe na characters 6 au zaidi."
+      });
+    }
 
-  const cleanAge =
-    Number(age);
+    if (!Number.isInteger(age) || age < 18 || age > 100) {
+      return res.status(400).json({
+        error: "Umri lazima uwe kati ya 18 na 100."
+      });
+    }
 
-  const cleanGender =
-    String(gender || "").trim();
+    if (!gender) {
+      return res.status(400).json({
+        error: "Chagua jinsia."
+      });
+    }
 
-  const cleanCity =
-    String(city || "").trim();
+    if (!city) {
+      return res.status(400).json({
+        error: "Mji unahitajika."
+      });
+    }
 
-  const cleanBio =
-    String(bio || "").trim();
+    if (city.length > 80) {
+      return res.status(400).json({
+        error: "Jina la mji ni refu sana."
+      });
+    }
 
-  const cleanPhoto =
-    String(photo || "").trim();
+    if (bio.length > 500) {
+      return res.status(400).json({
+        error: "Bio ni refu sana."
+      });
+    }
 
-  if (
-    !cleanName ||
-    !cleanEmail ||
-    !cleanPassword ||
-    !cleanAge ||
-    !cleanGender ||
-    !cleanCity
-  ) {
-    return res.status(400).json({
-      error:
-        "Jaza taarifa zote zinazohitajika."
-    });
-  }
-
-  if (
-    cleanAge < 18 ||
-    cleanAge > 100
-  ) {
-    return res.status(400).json({
-      error:
-        "Umri lazima uwe kati ya miaka 18 na 100."
-    });
-  }
-
-  if (cleanPassword.length < 6) {
-    return res.status(400).json({
-      error:
-        "Password iwe na angalau characters 6."
-    });
-  }
-
-  if (
-    !/^[^\s@]+@[^\s@]+\.[^\s@]+$/
-      .test(cleanEmail)
-  ) {
-    return res.status(400).json({
-      error: "Weka email sahihi."
-    });
-  }
-
-  const existing = db.users.find(
-    u =>
-      String(u.email).toLowerCase() ===
-      cleanEmail
-  );
-
-  if (existing) {
-    return res.status(400).json({
-      error:
-        "Email hii tayari imesajiliwa."
-    });
-  }
-
-  const user = {
-
-    id: Date.now(),
-
-    name: cleanName,
-
-    email: cleanEmail,
-
-    password:
-      hashPassword(cleanPassword),
-
-    age: cleanAge,
-
-    gender: cleanGender,
-
-    city: cleanCity,
-
-    bio: cleanBio,
-
-    photo: cleanPhoto,
-
-    createdAt:
-      new Date().toISOString()
-  };
-
-  db.users.push(user);
-
-  saveDB();
-
-  const token =
-    createSession(user.id);
-
-  setSession(res, token);
-
-  res.json({
-    ok: true,
-    user: publicUser(user)
-  });
-});
-
-/* =========================
-   LOGIN
-========================= */
-
-app.post("/api/login", (req, res) => {
-
-  const cleanEmail =
-    String(req.body.email || "")
-      .trim()
-      .toLowerCase();
-
-  const cleanPassword =
-    String(req.body.password || "");
-
-  const user = db.users.find(
-    u =>
-      String(u.email).toLowerCase() ===
-      cleanEmail
-  );
-
-  if (
-    !user ||
-    !verifyPassword(
-      cleanPassword,
-      user.password
-    )
-  ) {
-    return res.status(401).json({
-      error:
-        "Email au password si sahihi."
-    });
-  }
-
-  // Upgrade old plaintext password
-  // after successful login.
-  if (
-    !String(user.password)
-      .startsWith("scrypt:")
-  ) {
-
-    user.password =
-      hashPassword(cleanPassword);
-
-    saveDB();
-  }
-
-  const token =
-    createSession(user.id);
-
-  setSession(res, token);
-
-  res.json({
-    ok: true,
-    user: publicUser(user)
-  });
-});
-
-/* =========================
-   LOGOUT
-========================= */
-
-app.post("/api/logout", (req, res) => {
-
-  const session =
-    getSession(req);
-
-  if (session) {
-
-    const cookie =
-      req.headers.cookie || "";
-
-    const match = cookie.match(
-      /(?:^|;\s*)session=([^;]+)/
+    const existing = db.users.find(
+      u => normalizeEmail(u.email) === email
     );
 
-    if (match) {
-      sessions.delete(match[1]);
+    if (existing) {
+      return res.status(409).json({
+        error: "Email hii tayari imesajiliwa."
+      });
     }
+
+    const photoResult = validatePhoto(photo);
+
+    if (!photoResult.ok) {
+      return res.status(400).json({
+        error: photoResult.error
+      });
+    }
+
+    const user = {
+      id: makeId(),
+      name,
+      email,
+      password: hashPassword(password),
+      age,
+      gender,
+      city,
+      bio,
+      photo: photoResult.value,
+      createdAt: new Date().toISOString()
+    };
+
+    db.users.push(user);
+    saveDB();
+
+    const token = createSession(user.id);
+    setSessionCookie(res, token);
+
+    return res.json({
+      ok: true,
+      user: publicUser(user)
+    });
+
+  } catch (err) {
+    console.error("Register error:", err);
+
+    return res.status(500).json({
+      error: "Imeshindikana kusajili account."
+    });
+  }
+});
+
+// ===============================
+// LOGIN
+// ===============================
+
+app.post("/api/login", (req, res) => {
+  try {
+    const email = normalizeEmail(req.body.email);
+    const password = String(req.body.password || "");
+
+    if (!email || !password) {
+      return res.status(400).json({
+        error: "Weka email na password."
+      });
+    }
+
+    const user = db.users.find(
+      u => normalizeEmail(u.email) === email
+    );
+
+    if (!user) {
+      return res.status(401).json({
+        error: "Email au password sio sahihi."
+      });
+    }
+
+    const valid = verifyPassword(
+      password,
+      user.password
+    );
+
+    if (!valid) {
+      return res.status(401).json({
+        error: "Email au password sio sahihi."
+      });
+    }
+
+    // Upgrade old plaintext password to secure hash
+    if (!String(user.password).startsWith("scrypt:")) {
+      user.password = hashPassword(password);
+      saveDB();
+    }
+
+    const token = createSession(user.id);
+    setSessionCookie(res, token);
+
+    return res.json({
+      ok: true,
+      user: publicUser(user)
+    });
+
+  } catch (err) {
+    console.error("Login error:", err);
+
+    return res.status(500).json({
+      error: "Imeshindikana kuingia."
+    });
+  }
+});
+
+// ===============================
+// LOGOUT
+// ===============================
+
+app.post("/api/logout", (req, res) => {
+  const cookie = req.headers.cookie || "";
+
+  const match = cookie.match(
+    /(?:^|;\s*)session=([^;]+)/
+  );
+
+  if (match) {
+    const token = decodeURIComponent(match[1]);
+    sessions.delete(token);
   }
 
-  res.setHeader(
-    "Set-Cookie",
-    "session=; Path=/; HttpOnly; Max-Age=0; SameSite=Lax"
-  );
+  clearSessionCookie(res);
 
   res.json({
     ok: true
   });
 });
 
-/* =========================
-   CURRENT USER
-========================= */
+// ===============================
+// CURRENT USER
+// ===============================
 
-app.get(
-  "/api/me",
-  requireLogin,
-  (req, res) => {
+app.get("/api/me", requireAuth, (req, res) => {
+  res.json({
+    user: publicUser(req.user)
+  });
+});
 
-    const user =
-      db.users.find(
-        u => u.id === req.userId
-      );
+// ===============================
+// DISCOVER
+// ===============================
 
-    if (!user) {
-      return res.status(404).json({
-        error:
-          "User hajapatikana."
-      });
-    }
+app.get("/api/discover", requireAuth, (req, res) => {
+  const currentId = String(req.user.id);
 
-    res.json(
-      publicUser(user)
+  const likedIds = new Set(
+    db.likes
+      .filter(l => String(l.from) === currentId)
+      .map(l => String(l.to))
+  );
+
+  const users = db.users
+    .filter(u => String(u.id) !== currentId)
+    .filter(u => !likedIds.has(String(u.id)))
+    .map(publicUser);
+
+  res.json(users);
+});
+
+// ===============================
+// LIKE
+// ===============================
+
+app.post("/api/like", requireAuth, (req, res) => {
+  try {
+    const targetId = String(
+      req.body.userId || ""
     );
-  }
-);
 
-/* =========================
-   DISCOVER
-========================= */
-
-app.get(
-  "/api/discover",
-  requireLogin,
-  (req, res) => {
-
-    const users =
-      db.users
-        .filter(
-          u => u.id !== req.userId
-        )
-        .map(publicUser);
-
-    res.json(users);
-  }
-);
-
-/* =========================
-   LIKE
-========================= */
-
-app.post(
-  "/api/like",
-  requireLogin,
-  (req, res) => {
-
-    const targetId =
-      Number(req.body.userId);
-
-    if (!Number.isFinite(targetId)) {
+    if (!targetId) {
       return res.status(400).json({
-        error:
-          "User ID si sahihi."
+        error: "User ID inahitajika."
       });
     }
 
-    if (
-      targetId === req.userId
-    ) {
+    if (targetId === String(req.user.id)) {
       return res.status(400).json({
-        error:
-          "Huwezi kujilike mwenyewe."
+        error: "Huwezi kujilike mwenyewe."
       });
     }
 
-    const target =
-      db.users.find(
-        u => u.id === targetId
-      );
+    const target = db.users.find(
+      u => String(u.id) === targetId
+    );
 
     if (!target) {
       return res.status(404).json({
-        error:
-          "User hajapatikana."
+        error: "User hakupatikana."
       });
     }
 
-    const alreadyLiked =
-      db.likes.find(
-        l =>
-          l.from === req.userId &&
-          l.to === targetId
-      );
+    const alreadyLiked = db.likes.some(
+      l =>
+        String(l.from) === String(req.user.id) &&
+        String(l.to) === targetId
+    );
 
     if (!alreadyLiked) {
-
       db.likes.push({
-
-        id: Date.now(),
-
-        from: req.userId,
-
+        id: makeId(),
+        from: req.user.id,
         to: targetId,
-
-        createdAt:
-          new Date().toISOString()
-      });
-
-      saveDB();
-    }
-
-    const mutual =
-      db.likes.some(
-        l =>
-          l.from === targetId &&
-          l.to === req.userId
-      );
-
-    res.json({
-      ok: true,
-      matched: mutual
-    });
-  }
-);
-
-/* =========================
-   MATCHES
-========================= */
-
-app.get(
-  "/api/matches",
-  requireLogin,
-  (req, res) => {
-
-    const myLikes =
-      db.likes
-        .filter(
-          l => l.from === req.userId
-        )
-        .map(
-          l => l.to
-        );
-
-    const matches =
-      db.likes
-        .filter(
-          l =>
-            l.to === req.userId &&
-            myLikes.includes(l.from)
-        )
-        .map(
-          l =>
-            db.users.find(
-              u => u.id === l.from
-            )
-        )
-        .filter(Boolean)
-        .map(publicUser);
-
-    res.json(matches);
-  }
-);
-
-/* =========================
-   PROFILE UPDATE
-========================= */
-
-app.post(
-  "/api/profile",
-  requireLogin,
-  (req, res) => {
-
-    const user =
-      db.users.find(
-        u => u.id === req.userId
-      );
-
-    if (!user) {
-      return res.status(404).json({
-        error:
-          "User hajapatikana."
+        createdAt: new Date().toISOString()
       });
     }
 
-    const {
-      name,
-      age,
-      gender,
-      city,
-      bio,
-      photo
-    } = req.body;
-
-    const newName =
-      String(name || "").trim();
-
-    const newAge =
-      Number(age);
-
-    const newCity =
-      String(city || "").trim();
-
-    if (
-      !newName ||
-      !newCity ||
-      !Number.isFinite(newAge) ||
-      newAge < 18 ||
-      newAge > 100
-    ) {
-      return res.status(400).json({
-        error:
-          "Jina, umri na mji ni lazima ziwe sahihi."
-      });
-    }
-
-    user.name =
-      newName;
-
-    user.age =
-      newAge;
-
-    user.gender =
-      String(gender || user.gender);
-
-    user.city =
-      newCity;
-
-    user.bio =
-      String(bio || "").trim();
-
-    user.photo =
-      String(photo || "").trim();
+    const matched = db.likes.some(
+      l =>
+        String(l.from) === targetId &&
+        String(l.to) === String(req.user.id)
+    );
 
     saveDB();
 
     res.json({
       ok: true,
-      user: publicUser(user)
+      matched
+    });
+
+  } catch (err) {
+    console.error("Like error:", err);
+
+    res.status(500).json({
+      error: "Like imeshindikana."
     });
   }
-);
+});
 
-/* =========================
-   MESSAGES
-========================= */
+// ===============================
+// MATCHES
+// ===============================
 
-app.get(
-  "/api/messages/:id",
-  requireLogin,
-  (req, res) => {
+app.get("/api/matches", requireAuth, (req, res) => {
+  const myId = String(req.user.id);
 
-    const otherId =
-      Number(req.params.id);
+  const matches = db.users.filter(user => {
+    const id = String(user.id);
 
-    const otherUser =
-      db.users.find(
-        u => u.id === otherId
-      );
+    const iLikedThem = db.likes.some(
+      l =>
+        String(l.from) === myId &&
+        String(l.to) === id
+    );
 
-    if (!otherUser) {
-      return res.status(404).json({
-        error:
-          "User hajapatikana."
+    const theyLikedMe = db.likes.some(
+      l =>
+        String(l.from) === id &&
+        String(l.to) === myId
+    );
+
+    return iLikedThem && theyLikedMe;
+  });
+
+  res.json(
+    matches.map(publicUser)
+  );
+});
+
+// ===============================
+// PROFILE
+// ===============================
+
+app.post("/api/profile", requireAuth, (req, res) => {
+  try {
+    const name = String(req.body.name || "").trim();
+    const age = Number(req.body.age);
+    const gender = String(req.body.gender || "").trim();
+    const city = String(req.body.city || "").trim();
+    const bio = String(req.body.bio || "").trim();
+
+    // Important:
+    // Frontend inaweza kutuma photo mpya,
+    // au "" ikiwa user ame-remove picha.
+    const photo =
+      typeof req.body.photo === "string"
+        ? req.body.photo
+        : req.user.photo || "";
+
+    if (!name) {
+      return res.status(400).json({
+        error: "Jina linahitajika."
       });
     }
 
-    const messages =
-      db.messages.filter(
-        m =>
-          (
-            m.sender === req.userId &&
-            m.receiver === otherId
-          ) ||
-          (
-            m.sender === otherId &&
-            m.receiver === req.userId
-          )
-      );
+    if (name.length > 80) {
+      return res.status(400).json({
+        error: "Jina ni refu sana."
+      });
+    }
+
+    if (!Number.isInteger(age) || age < 18 || age > 100) {
+      return res.status(400).json({
+        error: "Umri lazima uwe kati ya 18 na 100."
+      });
+    }
+
+    if (!gender) {
+      return res.status(400).json({
+        error: "Chagua jinsia."
+      });
+    }
+
+    if (!city) {
+      return res.status(400).json({
+        error: "Mji unahitajika."
+      });
+    }
+
+    if (bio.length > 500) {
+      return res.status(400).json({
+        error: "Bio ni refu sana."
+      });
+    }
+
+    const photoResult = validatePhoto(photo);
+
+    if (!photoResult.ok) {
+      return res.status(400).json({
+        error: photoResult.error
+      });
+    }
+
+    req.user.name = name;
+    req.user.age = age;
+    req.user.gender = gender;
+    req.user.city = city;
+    req.user.bio = bio;
+    req.user.photo = photoResult.value;
+
+    saveDB();
+
+    res.json({
+      ok: true,
+      user: publicUser(req.user)
+    });
+
+  } catch (err) {
+    console.error("Profile error:", err);
+
+    res.status(500).json({
+      error: "Profile haijahifadhiwa."
+    });
+  }
+});
+
+// ===============================
+// MESSAGES
+// ===============================
+
+app.get(
+  "/api/messages/:id",
+  requireAuth,
+  (req, res) => {
+    const otherId = String(req.params.id);
+    const myId = String(req.user.id);
+
+    const isMatch = db.likes.some(
+      l =>
+        String(l.from) === myId &&
+        String(l.to) === otherId
+    ) &&
+    db.likes.some(
+      l =>
+        String(l.from) === otherId &&
+        String(l.to) === myId
+    );
+
+    if (!isMatch) {
+      return res.status(403).json({
+        error: "Mnaweza kuchat baada ya kuwa match."
+      });
+    }
+
+    const messages = db.messages
+      .filter(m =>
+        (
+          String(m.sender) === myId &&
+          String(m.receiver) === otherId
+        ) ||
+        (
+          String(m.sender) === otherId &&
+          String(m.receiver) === myId
+        )
+      )
+      .map(m => ({
+        id: m.id,
+        sender: m.sender,
+        receiver: m.receiver,
+        body: m.body,
+        createdAt: m.createdAt
+      }));
 
     res.json(messages);
   }
@@ -749,201 +837,229 @@ app.get(
 
 app.post(
   "/api/messages/:id",
-  requireLogin,
+  requireAuth,
   (req, res) => {
+    try {
+      const receiverId = String(
+        req.params.id
+      );
 
-    const receiver =
-      Number(req.params.id);
-
-    const body =
-      String(
+      const body = String(
         req.body.body || ""
       ).trim();
 
-    if (!body) {
-      return res.status(400).json({
-        error:
-          "Ujumbe hauwezi kuwa tupu."
-      });
-    }
+      if (!body) {
+        return res.status(400).json({
+          error: "Ujumbe hauwezi kuwa empty."
+        });
+      }
 
-    if (body.length > 2000) {
-      return res.status(400).json({
-        error:
-          "Ujumbe ni mrefu sana."
-      });
-    }
+      if (body.length > 2000) {
+        return res.status(400).json({
+          error: "Ujumbe ni mrefu sana."
+        });
+      }
 
-    const user =
-      db.users.find(
-        u => u.id === receiver
+      const receiver = db.users.find(
+        u => String(u.id) === receiverId
       );
 
-    if (!user) {
-      return res.status(404).json({
-        error:
-          "User hajapatikana."
+      if (!receiver) {
+        return res.status(404).json({
+          error: "User hakupatikana."
+        });
+      }
+
+      const myId = String(req.user.id);
+
+      const isMatch =
+        db.likes.some(
+          l =>
+            String(l.from) === myId &&
+            String(l.to) === receiverId
+        ) &&
+        db.likes.some(
+          l =>
+            String(l.from) === receiverId &&
+            String(l.to) === myId
+        );
+
+      if (!isMatch) {
+        return res.status(403).json({
+          error: "Mnaweza kuchat baada ya kuwa match."
+        });
+      }
+
+      const message = {
+        id: makeId(),
+        sender: req.user.id,
+        receiver: receiver.id,
+        body,
+        createdAt: new Date().toISOString()
+      };
+
+      db.messages.push(message);
+      saveDB();
+
+      res.json({
+        ok: true,
+        message
+      });
+
+    } catch (err) {
+      console.error("Message error:", err);
+
+      res.status(500).json({
+        error: "Ujumbe haujatumwa."
       });
     }
-
-    if (
-      receiver === req.userId
-    ) {
-      return res.status(400).json({
-        error:
-          "Huwezi kujitumia ujumbe."
-      });
-    }
-
-    const message = {
-
-      id: Date.now(),
-
-      sender: req.userId,
-
-      receiver,
-
-      body,
-
-      createdAt:
-        new Date().toISOString()
-    };
-
-    db.messages.push(
-      message
-    );
-
-    saveDB();
-
-    res.json({
-      ok: true,
-      message
-    });
   }
 );
 
-/* =========================
-   REPORT
-========================= */
+// ===============================
+// REPORT USER
+// ===============================
 
 app.post(
   "/api/report",
-  requireLogin,
+  requireAuth,
   (req, res) => {
+    try {
+      const userId = String(
+        req.body.userId || ""
+      );
 
-    const userId =
-      Number(req.body.userId);
-
-    const reason =
-      String(
+      const reason = String(
         req.body.reason || ""
       ).trim();
 
-    if (!reason) {
-      return res.status(400).json({
-        error:
-          "Andika sababu ya ripoti."
-      });
-    }
+      if (!userId || !reason) {
+        return res.status(400).json({
+          error: "User na sababu vinahitajika."
+        });
+      }
 
-    const reportedUser =
-      db.users.find(
-        u => u.id === userId
+      if (reason.length > 1000) {
+        return res.status(400).json({
+          error: "Sababu ni ndefu sana."
+        });
+      }
+
+      const user = db.users.find(
+        u => String(u.id) === userId
       );
 
-    if (!reportedUser) {
-      return res.status(404).json({
-        error:
-          "User hajapatikana."
+      if (!user) {
+        return res.status(404).json({
+          error: "User hakupatikana."
+        });
+      }
+
+      db.reports.push({
+        id: makeId(),
+        reporter: req.user.id,
+        reportedUser: user.id,
+        reason,
+        status: "open",
+        createdAt: new Date().toISOString()
+      });
+
+      saveDB();
+
+      res.json({
+        ok: true
+      });
+
+    } catch (err) {
+      console.error("Report error:", err);
+
+      res.status(500).json({
+        error: "Report haijatumwa."
       });
     }
-
-    if (
-      userId === req.userId
-    ) {
-      return res.status(400).json({
-        error:
-          "Huwezi kujireport mwenyewe."
-      });
-    }
-
-    db.reports.push({
-
-      id: Date.now(),
-
-      reporter:
-        req.userId,
-
-      reported:
-        userId,
-
-      reason,
-
-      status:
-        "open",
-
-      createdAt:
-        new Date().toISOString()
-    });
-
-    saveDB();
-
-    res.json({
-      ok: true
-    });
   }
 );
 
-/* =========================
-   ADMIN LOGIN
-========================= */
+// ===============================
+// ADMIN LOGIN
+// ===============================
+
+app.post("/admin/login", (req, res) => {
+  const email = normalizeEmail(
+    req.body.email
+  );
+
+  const password = String(
+    req.body.password || ""
+  );
+
+  const adminEmail = normalizeEmail(
+    process.env.ADMIN_EMAIL
+  );
+
+  const adminPassword = String(
+    process.env.ADMIN_PASSWORD || ""
+  );
+
+  if (!adminEmail || !adminPassword) {
+    return res.status(503).json({
+      error: "ADMIN_EMAIL na ADMIN_PASSWORD hazijawekwa."
+    });
+  }
+
+  if (
+    email !== adminEmail ||
+    password !== adminPassword
+  ) {
+    return res.status(401).json({
+      error: "Admin email au password sio sahihi."
+    });
+  }
+
+  const token = crypto.randomBytes(32).toString("hex");
+
+  sessions.set("admin:" + token, {
+    role: "admin",
+    createdAt: Date.now()
+  });
+
+  res.setHeader(
+    "Set-Cookie",
+    `adminSession=${encodeURIComponent(token)}; HttpOnly; Path=/; SameSite=Lax`
+  );
+
+  res.json({
+    ok: true
+  });
+});
+
+// ===============================
+// ADMIN LOGOUT
+// ===============================
 
 app.post(
-  "/api/admin/login",
+  "/admin/logout",
+  requireAdmin,
   (req, res) => {
+    const cookie = req.headers.cookie || "";
 
-    const adminEmail =
-      process.env.ADMIN_EMAIL;
+    const match = cookie.match(
+      /(?:^|;\s*)adminSession=([^;]+)/
+    );
 
-    const adminPassword =
-      process.env.ADMIN_PASSWORD;
-
-    if (
-      !adminEmail ||
-      !adminPassword
-    ) {
-      return res.status(503).json({
-        error:
-          "Admin credentials hazijawekwa kwenye Environment Variables."
-      });
-    }
-
-    const email =
-      String(
-        req.body.email || ""
-      ).trim();
-
-    if (
-      email !== adminEmail ||
-      String(
-        req.body.password || ""
-      ) !== adminPassword
-    ) {
-      return res.status(401).json({
-        error:
-          "Admin email au password si sahihi."
-      });
-    }
-
-    const token =
-      createSession(
-        "admin",
-        true
+    if (match) {
+      const token = decodeURIComponent(
+        match[1]
       );
 
-    setSession(
-      res,
-      token
+      sessions.delete(
+        "admin:" + token
+      );
+    }
+
+    res.setHeader(
+      "Set-Cookie",
+      "adminSession=; HttpOnly; Path=/; SameSite=Lax; Max-Age=0"
     );
 
     res.json({
@@ -952,129 +1068,110 @@ app.post(
   }
 );
 
-/* =========================
-   ADMIN STATS
-========================= */
+// ===============================
+// ADMIN STATS
+// ===============================
 
 app.get(
-  "/api/admin/stats",
+  "/admin/stats",
   requireAdmin,
   (req, res) => {
-
-    const uniquePairs =
-      new Set();
-
-    for (
-      const like of db.likes
-    ) {
-
-      const mutual =
-        db.likes.some(
-          other =>
-            other.from === like.to &&
-            other.to === like.from
-        );
-
-      if (mutual) {
-
-        uniquePairs.add(
-          [
-            like.from,
-            like.to
-          ]
-            .sort(
-              (a, b) => a - b
-            )
-            .join(":")
-        );
-      }
-    }
-
     res.json({
-
-      users:
-        db.users.length,
-
-      matches:
-        uniquePairs.size,
-
-      messages:
-        db.messages.length,
-
-      reports:
-        db.reports.filter(
-          r =>
-            r.status === "open"
-        ).length
+      users: db.users.length,
+      likes: db.likes.length,
+      matches: countMatches(),
+      messages: db.messages.length,
+      reports: db.reports.filter(
+        r => r.status === "open"
+      ).length
     });
   }
 );
 
-/* =========================
-   ADMIN USERS
-========================= */
+function countMatches() {
+  let count = 0;
+  const seen = new Set();
+
+  for (const like of db.likes) {
+    const a = String(like.from);
+    const b = String(like.to);
+
+    const reverse = db.likes.some(
+      l =>
+        String(l.from) === b &&
+        String(l.to) === a
+    );
+
+    if (!reverse) continue;
+
+    const key = [a, b]
+      .sort()
+      .join(":");
+
+    if (!seen.has(key)) {
+      seen.add(key);
+      count++;
+    }
+  }
+
+  return count;
+}
+
+// ===============================
+// ADMIN USERS
+// ===============================
 
 app.get(
-  "/api/admin/users",
+  "/admin/users",
   requireAdmin,
   (req, res) => {
-
     res.json(
-      db.users.map(
-        publicUser
-      )
+      db.users.map(publicUser)
     );
   }
 );
 
-/* =========================
-   DELETE USER
-========================= */
+// ===============================
+// ADMIN DELETE USER
+// ===============================
 
 app.delete(
-  "/api/admin/users/:id",
+  "/admin/users/:id",
   requireAdmin,
   (req, res) => {
+    const id = String(req.params.id);
 
-    const id =
-      Number(req.params.id);
+    const exists = db.users.some(
+      u => String(u.id) === id
+    );
 
-    if (
-      !db.users.some(
-        u => u.id === id
-      )
-    ) {
+    if (!exists) {
       return res.status(404).json({
-        error:
-          "User hajapatikana."
+        error: "User hakupatikana."
       });
     }
 
-    db.users =
-      db.users.filter(
-        u => u.id !== id
-      );
+    db.users = db.users.filter(
+      u => String(u.id) !== id
+    );
 
-    db.likes =
-      db.likes.filter(
-        l =>
-          l.from !== id &&
-          l.to !== id
-      );
+    db.likes = db.likes.filter(
+      l =>
+        String(l.from) !== id &&
+        String(l.to) !== id
+    );
 
-    db.messages =
-      db.messages.filter(
-        m =>
-          m.sender !== id &&
-          m.receiver !== id
-      );
+    db.messages = db.messages.filter(
+      m =>
+        String(m.sender) !== id &&
+        String(m.receiver) !== id
+    );
 
-    db.reports =
-      db.reports.filter(
-        r =>
-          r.reporter !== id &&
-          r.reported !== id
-      );
+    db.reports = db.reports.filter(
+      r =>
+        String(r.reporter) !== id &&
+        String(r.reportedUser) !== id
+    );
 
     saveDB();
 
@@ -1084,93 +1181,61 @@ app.delete(
   }
 );
 
-/* =========================
-   ADMIN REPORTS
-========================= */
+// ===============================
+// ADMIN REPORTS
+// ===============================
 
 app.get(
-  "/api/admin/reports",
+  "/admin/reports",
   requireAdmin,
   (req, res) => {
-
-    const reports =
-      db.reports.map(r => {
-
-        const reported =
+    const reports = db.reports.map(report => ({
+      ...report,
+      reporterUser:
+        publicUser(
           db.users.find(
             u =>
-              u.id === r.reported
-          );
-
-        const reporter =
+              String(u.id) ===
+              String(report.reporter)
+          )
+        ),
+      reportedUser:
+        publicUser(
           db.users.find(
             u =>
-              u.id === r.reporter
-          );
-
-        return {
-
-          id: r.id,
-
-          reporter_name:
-            reporter
-              ? reporter.name
-              : "Deleted user",
-
-          reported_name:
-            reported
-              ? reported.name
-              : "Deleted user",
-
-          reason:
-            r.reason,
-
-          status:
-            r.status,
-
-          createdAt:
-            r.createdAt
-        };
-      });
+              String(u.id) ===
+              String(report.reportedUser)
+          )
+        )
+    }));
 
     res.json(reports);
   }
 );
 
-/* =========================
-   CLOSE REPORT
-========================= */
+// ===============================
+// CLOSE REPORT
+// ===============================
 
-app.patch(
-  "/api/admin/reports/:id",
+app.post(
+  "/admin/reports/:id/close",
   requireAdmin,
   (req, res) => {
-
-    const id =
-      Number(req.params.id);
-
-    const report =
-      db.reports.find(
-        r => r.id === id
-      );
+    const report = db.reports.find(
+      r =>
+        String(r.id) ===
+        String(req.params.id)
+    );
 
     if (!report) {
       return res.status(404).json({
-        error:
-          "Report haijapatikana."
+        error: "Report haikupatikana."
       });
     }
 
-    const status =
-      String(
-        req.body.status ||
-        "closed"
-      );
-
-    report.status =
-      status === "open"
-        ? "open"
-        : "closed";
+    report.status = "closed";
+    report.closedAt =
+      new Date().toISOString();
 
     saveDB();
 
@@ -1180,81 +1245,49 @@ app.patch(
   }
 );
 
-/* =========================
-   PUBLIC USER
-========================= */
+// ===============================
+// 404
+// ===============================
 
-function publicUser(user) {
-
-  return {
-
-    id: user.id,
-
-    name: user.name,
-
-    email: user.email,
-
-    age: user.age,
-
-    gender: user.gender,
-
-    city: user.city,
-
-    bio: user.bio,
-
-    photo: user.photo,
-
-    createdAt:
-      user.createdAt
-  };
-}
-
-/* =========================
-   API 404
-========================= */
-
-app.use(
-  "/api",
-  (req, res) => {
-
-    res.status(404).json({
-      error:
-        "API endpoint haijapatikana."
+app.use((req, res) => {
+  if (req.path.startsWith("/api/") ||
+      req.path.startsWith("/admin/")) {
+    return res.status(404).json({
+      error: "Endpoint haikupatikana."
     });
   }
-);
 
-/* =========================
-   ERROR HANDLER
-========================= */
+  res.status(404).send("Page haikupatikana.");
+});
 
-app.use(
-  (err, req, res, next) => {
+// ===============================
+// ERROR HANDLER
+// ===============================
 
-    console.error(
-      "SERVER ERROR:",
-      err
-    );
+app.use((err, req, res, next) => {
+  console.error("Server error:", err);
 
-    res.status(500).json({
-      error:
-        "Server error."
+  if (err.type === "entity.too.large") {
+    return res.status(413).json({
+      error: "Data ni kubwa sana."
     });
   }
-);
 
-/* =========================
-   START SERVER
-========================= */
+  res.status(500).json({
+    error: "Server error."
+  });
+});
+
+// ===============================
+// START SERVER
+// ===============================
 
 app.listen(
   PORT,
   "0.0.0.0",
   () => {
-
     console.log(
-      `Tanzania Dating running on port ${PORT}`
+      `Tanzania Dating server running on port ${PORT}`
     );
-
   }
 );
