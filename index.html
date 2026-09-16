@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <title>Tanzania Dating</title>
+  <title>Tanzania Dating ❤️</title>
 
   <style>
     * {
@@ -40,7 +40,7 @@
     header {
       background: linear-gradient(135deg, #ff174f, #e60046);
       color: white;
-      padding: 18px 20px;
+      padding: 17px 20px;
       display: flex;
       justify-content: space-between;
       align-items: center;
@@ -51,15 +51,15 @@
     }
 
     .logo {
-      font-size: 23px;
+      font-size: 22px;
       font-weight: bold;
     }
 
     .logout-btn {
-      border: 1px solid rgba(255,255,255,.6);
+      border: 1px solid rgba(255,255,255,.7);
       background: transparent;
       color: white;
-      padding: 8px 14px;
+      padding: 8px 15px;
       border-radius: 20px;
     }
 
@@ -89,15 +89,15 @@
 
     .auth-title {
       text-align: center;
-      margin-bottom: 8px;
       color: #e60046;
       font-size: 30px;
+      margin: 0 0 8px;
     }
 
     .auth-subtitle {
       text-align: center;
       color: #777;
-      margin-bottom: 25px;
+      margin: 0 0 25px;
     }
 
     .form-group {
@@ -228,7 +228,6 @@
       gap: 8px;
       overflow-x: auto;
       margin-bottom: 20px;
-      padding-bottom: 3px;
     }
 
     .nav button {
@@ -246,7 +245,7 @@
     }
 
     /* =========================
-       USER CARDS
+       CARDS
     ========================= */
 
     .cards {
@@ -266,7 +265,7 @@
       width: 100%;
       height: 260px;
       object-fit: cover;
-      background: linear-gradient(135deg,#ffd4df,#ffeef3);
+      background: #ffd4df;
     }
 
     .no-photo {
@@ -355,6 +354,52 @@
     }
 
     /* =========================
+       MATCHES
+    ========================= */
+
+    .match-card {
+      display: flex;
+      align-items: center;
+      gap: 15px;
+      background: white;
+      padding: 15px;
+      border-radius: 16px;
+      margin-bottom: 10px;
+      box-shadow: 0 3px 12px rgba(0,0,0,.05);
+    }
+
+    .match-avatar {
+      width: 60px;
+      height: 60px;
+      border-radius: 50%;
+      object-fit: cover;
+      background: #ffd4df;
+      flex-shrink: 0;
+    }
+
+    .match-info {
+      flex: 1;
+    }
+
+    .match-info h3 {
+      margin: 0 0 4px;
+    }
+
+    .match-info p {
+      margin: 0;
+      color: #777;
+      font-size: 14px;
+    }
+
+    .small-btn {
+      border: 0;
+      background: #ff174f;
+      color: white;
+      padding: 9px 13px;
+      border-radius: 10px;
+    }
+
+    /* =========================
        CHAT
     ========================= */
 
@@ -433,55 +478,11 @@
     }
 
     /* =========================
-       MATCHES
-    ========================= */
-
-    .match-card {
-      display: flex;
-      align-items: center;
-      gap: 15px;
-      background: white;
-      padding: 15px;
-      border-radius: 16px;
-      margin-bottom: 10px;
-      box-shadow: 0 3px 12px rgba(0,0,0,.05);
-    }
-
-    .match-avatar {
-      width: 60px;
-      height: 60px;
-      border-radius: 50%;
-      object-fit: cover;
-      background: #ffd4df;
-    }
-
-    .match-info {
-      flex: 1;
-    }
-
-    .match-info h3 {
-      margin: 0 0 4px;
-    }
-
-    .match-info p {
-      margin: 0;
-      color: #777;
-      font-size: 14px;
-    }
-
-    .small-btn {
-      border: 0;
-      background: #ff174f;
-      color: white;
-      padding: 9px 13px;
-      border-radius: 10px;
-    }
-
-    /* =========================
        RESPONSIVE
     ========================= */
 
     @media (max-width: 600px) {
+
       .auth-card {
         padding: 22px;
       }
@@ -494,24 +495,35 @@
       .messages {
         height: 55vh;
       }
+
+      .logo {
+        font-size: 18px;
+      }
+
+      .container {
+        padding: 18px 12px 80px;
+      }
     }
   </style>
 </head>
 
 <body>
 
-<!-- =========================
-     AUTH SECTION
-========================= -->
+<!-- =====================================================
+     AUTH
+===================================================== -->
 
 <div id="auth">
 
   <!-- LOGIN -->
+
   <div id="loginPage" class="auth-page">
 
     <div class="auth-card">
 
-      <h1 class="auth-title">❤️ Tanzania Dating</h1>
+      <h1 class="auth-title">
+        ❤️ Tanzania Dating
+      </h1>
 
       <p class="auth-subtitle">
         Kutana na watu wapya Tanzania
@@ -522,34 +534,48 @@
       <form id="loginForm">
 
         <div class="form-group">
+
           <label>Email</label>
+
           <input
             type="email"
             id="loginEmail"
-            placeholder="example@gmail.com"
+            placeholder="Email yako"
             required
           >
+
         </div>
 
         <div class="form-group">
+
           <label>Password</label>
+
           <input
             type="password"
             id="loginPassword"
             placeholder="Password yako"
             required
           >
+
         </div>
 
-        <button class="primary-btn" type="submit">
+        <button
+          class="primary-btn"
+          type="submit"
+        >
           Ingia
         </button>
 
       </form>
 
       <div class="switch">
+
         Huna account?
-        <span onclick="showRegister()">Jisajili</span>
+
+        <span onclick="showRegister()">
+          Jisajili
+        </span>
+
       </div>
 
     </div>
@@ -558,108 +584,169 @@
 
 
   <!-- REGISTER -->
-  <div id="registerPage" class="auth-page hidden">
+
+  <div
+    id="registerPage"
+    class="auth-page hidden"
+  >
 
     <div class="auth-card">
 
-      <h1 class="auth-title">❤️ Jisajili</h1>
+      <h1 class="auth-title">
+        ❤️ Jisajili
+      </h1>
 
       <p class="auth-subtitle">
         Tengeneza profile yako
       </p>
 
-      <div id="registerMessage" class="message"></div>
+      <div
+        id="registerMessage"
+        class="message"
+      ></div>
 
       <form id="registerForm">
 
         <div class="form-group">
+
           <label>Jina</label>
+
           <input
             type="text"
             id="regName"
             placeholder="Jina lako"
             required
           >
+
         </div>
 
         <div class="form-group">
+
           <label>Email</label>
+
           <input
             type="email"
             id="regEmail"
             placeholder="example@gmail.com"
             required
           >
+
         </div>
 
         <div class="form-group">
+
           <label>Password</label>
+
           <input
             type="password"
             id="regPassword"
-            placeholder="Password"
+            placeholder="Angalau characters 6"
             minlength="6"
             required
           >
+
         </div>
 
         <div class="form-group">
+
           <label>Umri</label>
+
           <input
             type="number"
             id="regAge"
             min="18"
+            max="100"
             placeholder="18+"
             required
           >
+
         </div>
 
         <div class="form-group">
+
           <label>Jinsia</label>
-          <select id="regGender" required>
-            <option value="">Chagua jinsia</option>
-            <option value="Mwanaume">Mwanaume</option>
-            <option value="Mwanamke">Mwanamke</option>
-            <option value="Nyingine">Nyingine</option>
+
+          <select
+            id="regGender"
+            required
+          >
+
+            <option value="">
+              Chagua jinsia
+            </option>
+
+            <option value="Mwanaume">
+              Mwanaume
+            </option>
+
+            <option value="Mwanamke">
+              Mwanamke
+            </option>
+
+            <option value="Nyingine">
+              Nyingine
+            </option>
+
           </select>
+
         </div>
 
         <div class="form-group">
+
           <label>Mji</label>
+
           <input
             type="text"
             id="regCity"
-            placeholder="Dar es Salaam"
+            placeholder="Mfano: Dar es Salaam"
             required
           >
+
         </div>
 
         <div class="form-group">
+
           <label>Bio</label>
+
           <textarea
             id="regBio"
             placeholder="Jieleze kidogo..."
           ></textarea>
+
         </div>
 
         <div class="form-group">
-          <label>Link ya picha (optional)</label>
+
+          <label>
+            Link ya picha
+            <small>(optional)</small>
+          </label>
+
           <input
             type="url"
             id="regPhoto"
             placeholder="https://..."
           >
+
         </div>
 
-        <button class="primary-btn" type="submit">
+        <button
+          class="primary-btn"
+          type="submit"
+        >
           Jisajili
         </button>
 
       </form>
 
       <div class="switch">
+
         Tayari una account?
-        <span onclick="showLogin()">Ingia</span>
+
+        <span onclick="showLogin()">
+          Ingia
+        </span>
+
       </div>
 
     </div>
@@ -669,11 +756,14 @@
 </div>
 
 
-<!-- =========================
+<!-- =====================================================
      MAIN APP
-========================= -->
+===================================================== -->
 
-<div id="app" class="hidden">
+<div
+  id="app"
+  class="hidden"
+>
 
   <header>
 
@@ -681,7 +771,10 @@
       ❤️ Tanzania Dating
     </div>
 
-    <button class="logout-btn" onclick="logout()">
+    <button
+      class="logout-btn"
+      onclick="logout()"
+    >
       Toka
     </button>
 
@@ -690,10 +783,14 @@
 
   <div class="container">
 
+    <!-- WELCOME -->
+
     <div class="welcome">
 
       <h2>
-        Karibu, <span id="welcomeName"></span> ❤️
+        Karibu,
+        <span id="welcomeName"></span>
+        ❤️
       </h2>
 
       <p>
@@ -703,7 +800,7 @@
     </div>
 
 
-    <!-- NAVIGATION -->
+    <!-- NAV -->
 
     <div class="nav">
 
@@ -732,83 +829,171 @@
     </div>
 
 
-    <!-- DISCOVER -->
+    <!-- =================================================
+         DISCOVER
+    ================================================== -->
 
     <section id="discoverSection">
 
-      <h2>Watu wapya</h2>
+      <h2>
+        Watu wapya
+      </h2>
 
-      <div id="discoverList" class="cards">
+      <div
+        id="discoverList"
+        class="cards"
+      >
+
         <div class="empty">
           Inapakia...
         </div>
+
       </div>
 
     </section>
 
 
-    <!-- MATCHES -->
+    <!-- =================================================
+         MATCHES
+    ================================================== -->
 
-    <section id="matchesSection" class="hidden">
+    <section
+      id="matchesSection"
+      class="hidden"
+    >
 
-      <h2>❤️ Matches zako</h2>
+      <h2>
+        ❤️ Matches zako
+      </h2>
 
       <div id="matchesList">
+
         <div class="empty">
           Inapakia...
         </div>
+
       </div>
 
     </section>
 
 
-    <!-- PROFILE -->
+    <!-- =================================================
+         PROFILE
+    ================================================== -->
 
-    <section id="profileSection" class="hidden">
+    <section
+      id="profileSection"
+      class="hidden"
+    >
 
-      <h2>👤 Profile yangu</h2>
+      <h2>
+        👤 Profile yangu
+      </h2>
 
       <div class="profile-box">
 
-        <div id="profileMessage" class="message"></div>
+        <div
+          id="profileMessage"
+          class="message"
+        ></div>
 
         <form id="profileForm">
 
           <div class="form-group">
-            <label>Jina</label>
-            <input id="profileName" required>
+
+            <label>
+              Jina
+            </label>
+
+            <input
+              id="profileName"
+              required
+            >
+
           </div>
 
           <div class="form-group">
-            <label>Umri</label>
-            <input id="profileAge" type="number" min="18" required>
+
+            <label>
+              Umri
+            </label>
+
+            <input
+              id="profileAge"
+              type="number"
+              min="18"
+              required
+            >
+
           </div>
 
           <div class="form-group">
-            <label>Jinsia</label>
+
+            <label>
+              Jinsia
+            </label>
+
             <select id="profileGender">
-              <option value="Mwanaume">Mwanaume</option>
-              <option value="Mwanamke">Mwanamke</option>
-              <option value="Nyingine">Nyingine</option>
+
+              <option value="Mwanaume">
+                Mwanaume
+              </option>
+
+              <option value="Mwanamke">
+                Mwanamke
+              </option>
+
+              <option value="Nyingine">
+                Nyingine
+              </option>
+
             </select>
+
           </div>
 
           <div class="form-group">
-            <label>Mji</label>
-            <input id="profileCity" required>
+
+            <label>
+              Mji
+            </label>
+
+            <input
+              id="profileCity"
+              required
+            >
+
           </div>
 
           <div class="form-group">
-            <label>Bio</label>
-            <textarea id="profileBio"></textarea>
+
+            <label>
+              Bio
+            </label>
+
+            <textarea
+              id="profileBio"
+            ></textarea>
+
           </div>
 
           <div class="form-group">
-            <label>Link ya picha</label>
-            <input id="profilePhoto" type="url">
+
+            <label>
+              Link ya picha
+            </label>
+
+            <input
+              id="profilePhoto"
+              type="url"
+              placeholder="https://..."
+            >
+
           </div>
 
-          <button class="primary-btn" type="submit">
+          <button
+            class="primary-btn"
+            type="submit"
+          >
             Hifadhi Profile
           </button>
 
@@ -819,24 +1004,40 @@
     </section>
 
 
-    <!-- CHAT -->
+    <!-- =================================================
+         CHAT
+    ================================================== -->
 
-    <section id="chatSection" class="hidden">
+    <section
+      id="chatSection"
+      class="hidden"
+    >
 
-      <button class="back-btn" onclick="backFromChat()">
+      <button
+        class="back-btn"
+        onclick="backFromChat()"
+      >
         ← Rudi
       </button>
 
       <div class="chat-box">
 
-        <div class="chat-header" id="chatHeader">
-          Chat
+        <div
+          class="chat-header"
+          id="chatHeader"
+        >
+          💬 Chat
         </div>
 
-        <div id="messages" class="messages">
-        </div>
+        <div
+          id="messages"
+          class="messages"
+        ></div>
 
-        <form id="chatForm" class="chat-form">
+        <form
+          id="chatForm"
+          class="chat-form"
+        >
 
           <input
             type="text"
@@ -861,250 +1062,307 @@
 </div>
 
 
-<script>
+<!-- =====================================================
+     JAVASCRIPT
+===================================================== -->
 
-  /* =========================
-     GLOBAL VARIABLES
-  ========================= */
+<script>
 
   let currentUser = null;
   let chatUser = null;
 
 
-  /* =========================
-     API HELPER
-  ========================= */
+  /* =====================================================
+     API
+  ===================================================== */
 
   async function api(url, options = {}) {
 
-    try {
-
-      const response = await fetch(url, {
-        credentials: "same-origin",
-        ...options,
-        headers: {
-          "Content-Type": "application/json",
-          ...(options.headers || {})
-        }
-      });
-
-      const data = await response.json().catch(() => ({}));
-
-      if (!response.ok) {
-        throw new Error(
-          data.error || "Kuna tatizo limetokea."
-        );
+    const response = await fetch(url, {
+      credentials: "same-origin",
+      ...options,
+      headers: {
+        "Content-Type": "application/json",
+        ...(options.headers || {})
       }
+    });
 
-      return data;
+    const data =
+      await response.json().catch(() => ({}));
 
-    } catch (error) {
+    if (!response.ok) {
 
-      throw error;
+      throw new Error(
+        data.error ||
+        "Kuna tatizo limetokea."
+      );
 
     }
 
+    return data;
   }
 
 
-  /* =========================
+  /* =====================================================
      MESSAGE
-  ========================= */
+  ===================================================== */
 
-  function showMessage(elementId, text, type = "error") {
+  function showMessage(
+    elementId,
+    text,
+    type = "error"
+  ) {
 
-    const element = document.getElementById(elementId);
+    const element =
+      document.getElementById(elementId);
 
     if (!element) return;
 
-    element.className = "message " + type;
-    element.textContent = text;
+    element.className =
+      "message " + type;
 
+    element.textContent =
+      text;
   }
 
 
   function clearMessage(elementId) {
 
-    const element = document.getElementById(elementId);
+    const element =
+      document.getElementById(elementId);
 
     if (!element) return;
 
     element.className = "message";
     element.textContent = "";
-
   }
 
 
-  /* =========================
-     SHOW LOGIN
-  ========================= */
+  /* =====================================================
+     LOGIN / REGISTER
+  ===================================================== */
 
   function showLogin() {
 
-    document.getElementById("loginPage")
+    document
+      .getElementById("loginPage")
       .classList.remove("hidden");
 
-    document.getElementById("registerPage")
+    document
+      .getElementById("registerPage")
       .classList.add("hidden");
 
     clearMessage("loginMessage");
-
   }
 
-
-  /* =========================
-     SHOW REGISTER
-  ========================= */
 
   function showRegister() {
 
-    document.getElementById("loginPage")
+    document
+      .getElementById("loginPage")
       .classList.add("hidden");
 
-    document.getElementById("registerPage")
+    document
+      .getElementById("registerPage")
       .classList.remove("hidden");
 
     clearMessage("registerMessage");
-
   }
 
 
-  /* =========================
+  /* =====================================================
      LOGIN
-  ========================= */
+  ===================================================== */
 
-  document.getElementById("loginForm")
-    .addEventListener("submit", async function(e) {
+  document
+    .getElementById("loginForm")
+    .addEventListener(
+      "submit",
+      async function(e) {
 
-      e.preventDefault();
+        e.preventDefault();
 
-      clearMessage("loginMessage");
+        clearMessage("loginMessage");
 
-      const email =
-        document.getElementById("loginEmail").value.trim();
+        const email =
+          document
+            .getElementById("loginEmail")
+            .value
+            .trim();
 
-      const password =
-        document.getElementById("loginPassword").value;
+        const password =
+          document
+            .getElementById("loginPassword")
+            .value;
 
-      try {
+        try {
 
-        const data = await api("/api/login", {
-          method: "POST",
-          body: JSON.stringify({
-            email,
-            password
-          })
-        });
+          const data =
+            await api(
+              "/api/login",
+              {
+                method: "POST",
 
-        currentUser = data.user;
+                body: JSON.stringify({
+                  email,
+                  password
+                })
+              }
+            );
 
-        openApp();
+          currentUser =
+            data.user;
 
-      } catch (error) {
+          openApp();
 
-        showMessage(
-          "loginMessage",
-          error.message
-        );
+        } catch (error) {
+
+          showMessage(
+            "loginMessage",
+            error.message
+          );
+
+        }
 
       }
+    );
 
-    });
 
-
-  /* =========================
+  /* =====================================================
      REGISTER
-  ========================= */
+  ===================================================== */
 
-  document.getElementById("registerForm")
-    .addEventListener("submit", async function(e) {
+  document
+    .getElementById("registerForm")
+    .addEventListener(
+      "submit",
+      async function(e) {
 
-      e.preventDefault();
+        e.preventDefault();
 
-      clearMessage("registerMessage");
-
-      const user = {
-
-        name:
-          document.getElementById("regName").value.trim(),
-
-        email:
-          document.getElementById("regEmail").value.trim(),
-
-        password:
-          document.getElementById("regPassword").value,
-
-        age:
-          Number(document.getElementById("regAge").value),
-
-        gender:
-          document.getElementById("regGender").value,
-
-        city:
-          document.getElementById("regCity").value.trim(),
-
-        bio:
-          document.getElementById("regBio").value.trim(),
-
-        photo:
-          document.getElementById("regPhoto").value.trim()
-
-      };
-
-      try {
-
-        const data = await api("/api/register", {
-          method: "POST",
-          body: JSON.stringify(user)
-        });
-
-        currentUser = data.user;
-
-        openApp();
-
-      } catch (error) {
-
-        showMessage(
-          "registerMessage",
-          error.message
+        clearMessage(
+          "registerMessage"
         );
 
+        const user = {
+
+          name:
+            document
+              .getElementById("regName")
+              .value
+              .trim(),
+
+          email:
+            document
+              .getElementById("regEmail")
+              .value
+              .trim(),
+
+          password:
+            document
+              .getElementById("regPassword")
+              .value,
+
+          age:
+            Number(
+              document
+                .getElementById("regAge")
+                .value
+            ),
+
+          gender:
+            document
+              .getElementById("regGender")
+              .value,
+
+          city:
+            document
+              .getElementById("regCity")
+              .value
+              .trim(),
+
+          bio:
+            document
+              .getElementById("regBio")
+              .value
+              .trim(),
+
+          photo:
+            document
+              .getElementById("regPhoto")
+              .value
+              .trim()
+
+        };
+
+
+        try {
+
+          const data =
+            await api(
+              "/api/register",
+              {
+                method: "POST",
+
+                body:
+                  JSON.stringify(user)
+              }
+            );
+
+          currentUser =
+            data.user;
+
+          openApp();
+
+        } catch (error) {
+
+          showMessage(
+            "registerMessage",
+            error.message
+          );
+
+        }
+
       }
+    );
 
-    });
 
-
-  /* =========================
+  /* =====================================================
      OPEN APP
-  ========================= */
+  ===================================================== */
 
   function openApp() {
 
-    document.getElementById("auth")
+    document
+      .getElementById("auth")
       .classList.add("hidden");
 
-    document.getElementById("app")
+    document
+      .getElementById("app")
       .classList.remove("hidden");
 
-    document.getElementById("welcomeName")
-      .textContent = currentUser.name;
+    document
+      .getElementById("welcomeName")
+      .textContent =
+        currentUser.name;
 
     loadDiscover();
-
   }
 
 
-  /* =========================
+  /* =====================================================
      CHECK LOGIN
-  ========================= */
+  ===================================================== */
 
   async function checkLogin() {
 
     try {
 
-      const user = await api("/api/me");
+      const user =
+        await api("/api/me");
 
-      currentUser = user;
+      currentUser =
+        user;
 
       openApp();
 
@@ -1117,111 +1375,129 @@
   }
 
 
-  /* =========================
+  /* =====================================================
      LOGOUT
-  ========================= */
+  ===================================================== */
 
   async function logout() {
 
     try {
 
-      await api("/api/logout", {
-        method: "POST"
-      });
+      await api(
+        "/api/logout",
+        {
+          method: "POST"
+        }
+      );
 
     } catch {}
 
     currentUser = null;
 
-    document.getElementById("app")
+    chatUser = null;
+
+    document
+      .getElementById("app")
       .classList.add("hidden");
 
-    document.getElementById("auth")
+    document
+      .getElementById("auth")
       .classList.remove("hidden");
 
     showLogin();
-
   }
 
 
-  /* =========================
-     NAVIGATION
-  ========================= */
+  /* =====================================================
+     SECTIONS
+  ===================================================== */
 
   function showSection(section) {
 
-    document.getElementById("discoverSection")
+    document
+      .getElementById("discoverSection")
       .classList.add("hidden");
 
-    document.getElementById("matchesSection")
+    document
+      .getElementById("matchesSection")
       .classList.add("hidden");
 
-    document.getElementById("profileSection")
+    document
+      .getElementById("profileSection")
       .classList.add("hidden");
 
-    document.getElementById("chatSection")
+    document
+      .getElementById("chatSection")
       .classList.add("hidden");
 
 
-    document.getElementById("navDiscover")
+    document
+      .getElementById("navDiscover")
       .classList.remove("active");
 
-    document.getElementById("navMatches")
+    document
+      .getElementById("navMatches")
       .classList.remove("active");
 
-    document.getElementById("navProfile")
+    document
+      .getElementById("navProfile")
       .classList.remove("active");
 
 
     if (section === "discover") {
 
-      document.getElementById("discoverSection")
+      document
+        .getElementById("discoverSection")
         .classList.remove("hidden");
 
-      document.getElementById("navDiscover")
+      document
+        .getElementById("navDiscover")
         .classList.add("active");
 
       loadDiscover();
-
     }
 
 
     if (section === "matches") {
 
-      document.getElementById("matchesSection")
+      document
+        .getElementById("matchesSection")
         .classList.remove("hidden");
 
-      document.getElementById("navMatches")
+      document
+        .getElementById("navMatches")
         .classList.add("active");
 
       loadMatches();
-
     }
 
 
     if (section === "profile") {
 
-      document.getElementById("profileSection")
+      document
+        .getElementById("profileSection")
         .classList.remove("hidden");
 
-      document.getElementById("navProfile")
+      document
+        .getElementById("navProfile")
         .classList.add("active");
 
       loadProfile();
-
     }
 
   }
 
 
-  /* =========================
+  /* =====================================================
      DISCOVER
-  ========================= */
+  ===================================================== */
 
   async function loadDiscover() {
 
     const container =
-      document.getElementById("discoverList");
+      document.getElementById(
+        "discoverList"
+      );
 
     container.innerHTML =
       '<div class="empty">Inapakia watu...</div>';
@@ -1229,35 +1505,50 @@
     try {
 
       const users =
-        await api("/api/discover");
+        await api(
+          "/api/discover"
+        );
 
       if (!users.length) {
 
         container.innerHTML = `
+
           <div class="empty">
-            <h3>Hakuna users bado ❤️</h3>
-            <p>Watu wapya wakijiunga wataonekana hapa.</p>
+
+            <h3>
+              Hakuna users bado ❤️
+            </h3>
+
+            <p>
+              Watu wapya wakijiunga
+              wataonekana hapa.
+            </p>
+
           </div>
+
         `;
 
         return;
-
       }
+
 
       container.innerHTML = "";
 
       users.forEach(user => {
 
-        container.innerHTML += createUserCard(user);
+        container.innerHTML +=
+          createUserCard(user);
 
       });
 
     } catch (error) {
 
       container.innerHTML = `
+
         <div class="empty">
           ${escapeHtml(error.message)}
         </div>
+
       `;
 
     }
@@ -1265,34 +1556,45 @@
   }
 
 
-  /* =========================
+  /* =====================================================
      USER CARD
-  ========================= */
+  ===================================================== */
 
   function createUserCard(user) {
 
-    let photo = "";
+    let photo;
 
     if (user.photo) {
 
       photo = `
+
         <img
           class="user-photo"
           src="${escapeAttribute(user.photo)}"
           alt="Picha ya ${escapeAttribute(user.name)}"
-          onerror="this.style.display='none';this.nextElementSibling.style.display='flex';"
+          onerror="
+            this.style.display='none';
+            this.nextElementSibling.style.display='flex';
+          "
         >
-        <div class="no-photo" style="display:none">
+
+        <div
+          class="no-photo"
+          style="display:none"
+        >
           👤
         </div>
+
       `;
 
     } else {
 
       photo = `
+
         <div class="no-photo">
           👤
         </div>
+
       `;
 
     }
@@ -1307,17 +1609,29 @@
         <div class="user-info">
 
           <h3>
-            ${escapeHtml(user.name)}, ${user.age}
+            ${escapeHtml(user.name)},
+            ${escapeHtml(user.age)}
           </h3>
 
           <div class="user-meta">
+
             📍 ${escapeHtml(user.city)}
-            · ${escapeHtml(user.gender)}
+
+            ·
+
+            ${escapeHtml(user.gender)}
+
           </div>
 
           <div class="bio">
-            ${escapeHtml(user.bio || "Hakuna bio.")}
+
+            ${escapeHtml(
+              user.bio ||
+              "Hakuna bio."
+            )}
+
           </div>
+
 
           <div class="card-actions">
 
@@ -1330,16 +1644,23 @@
 
             <button
               class="chat-btn"
-              onclick="openChat(${user.id}, '${escapeJs(user.name)}')"
+              onclick="openChat(
+                ${user.id},
+                '${escapeJs(user.name)}'
+              )"
             >
               💬 Chat
             </button>
 
           </div>
 
+
           <button
             class="report-btn"
-            style="width:100%;margin-top:8px"
+            style="
+              width:100%;
+              margin-top:8px
+            "
             onclick="reportUser(${user.id})"
           >
             🚩 Report
@@ -1354,31 +1675,39 @@
   }
 
 
-  /* =========================
+  /* =====================================================
      LIKE
-  ========================= */
+  ===================================================== */
 
   async function likeUser(id) {
 
     try {
 
-      const data = await api("/api/like", {
+      const data =
+        await api(
+          "/api/like",
+          {
+            method: "POST",
 
-        method: "POST",
+            body:
+              JSON.stringify({
+                userId: id
+              })
+          }
+        );
 
-        body: JSON.stringify({
-          userId: id
-        })
-
-      });
 
       if (data.matched) {
 
-        alert("❤️ Match! Mnapendana wote wawili.");
+        alert(
+          "❤️ Match! Mnapendana wote wawili."
+        );
 
       } else {
 
-        alert("❤️ Like imetumwa.");
+        alert(
+          "❤️ Like imetumwa."
+        );
 
       }
 
@@ -1386,21 +1715,25 @@
 
     } catch (error) {
 
-      alert(error.message);
+      alert(
+        error.message
+      );
 
     }
 
   }
 
 
-  /* =========================
+  /* =====================================================
      MATCHES
-  ========================= */
+  ===================================================== */
 
   async function loadMatches() {
 
     const container =
-      document.getElementById("matchesList");
+      document.getElementById(
+        "matchesList"
+      );
 
     container.innerHTML =
       '<div class="empty">Inapakia...</div>';
@@ -1408,39 +1741,72 @@
     try {
 
       const matches =
-        await api("/api/matches");
+        await api(
+          "/api/matches"
+        );
+
 
       if (!matches.length) {
 
         container.innerHTML = `
+
           <div class="empty">
-            <h3>Bado huna match ❤️</h3>
-            <p>Endelea kulike watu unaowapenda.</p>
+
+            <h3>
+              Bado huna match ❤️
+            </h3>
+
+            <p>
+              Endelea kulike watu unaowapenda.
+            </p>
+
           </div>
+
         `;
 
         return;
-
       }
+
 
       container.innerHTML = "";
 
+
       matches.forEach(user => {
 
-        const avatar = user.photo
-          ? `
+        let avatar;
+
+        if (user.photo) {
+
+          avatar = `
+
             <img
               class="match-avatar"
               src="${escapeAttribute(user.photo)}"
+              alt=""
               onerror="this.style.display='none'"
             >
-          `
-          : `
-            <div class="match-avatar"
-              style="display:flex;align-items:center;justify-content:center">
+
+          `;
+
+        } else {
+
+          avatar = `
+
+            <div
+              class="match-avatar"
+              style="
+                display:flex;
+                align-items:center;
+                justify-content:center;
+                font-size:30px;
+              "
+            >
               👤
             </div>
+
           `;
+
+        }
 
 
         container.innerHTML += `
@@ -1452,7 +1818,8 @@
             <div class="match-info">
 
               <h3>
-                ${escapeHtml(user.name)}, ${user.age}
+                ${escapeHtml(user.name)},
+                ${escapeHtml(user.age)}
               </h3>
 
               <p>
@@ -1463,7 +1830,10 @@
 
             <button
               class="small-btn"
-              onclick="openChat(${user.id}, '${escapeJs(user.name)}')"
+              onclick="openChat(
+                ${user.id},
+                '${escapeJs(user.name)}'
+              )"
             >
               Chat
             </button>
@@ -1477,9 +1847,11 @@
     } catch (error) {
 
       container.innerHTML = `
+
         <div class="empty">
           ${escapeHtml(error.message)}
         </div>
+
       `;
 
     }
@@ -1487,36 +1859,57 @@
   }
 
 
-  /* =========================
+  /* =====================================================
      PROFILE
-  ========================= */
+  ===================================================== */
 
   async function loadProfile() {
 
     try {
 
       const user =
-        await api("/api/me");
+        await api(
+          "/api/me"
+        );
 
-      currentUser = user;
+      currentUser =
+        user;
 
-      document.getElementById("profileName").value =
-        user.name || "";
 
-      document.getElementById("profileAge").value =
-        user.age || "";
+      document
+        .getElementById("profileName")
+        .value =
+          user.name || "";
 
-      document.getElementById("profileGender").value =
-        user.gender || "";
 
-      document.getElementById("profileCity").value =
-        user.city || "";
+      document
+        .getElementById("profileAge")
+        .value =
+          user.age || "";
 
-      document.getElementById("profileBio").value =
-        user.bio || "";
 
-      document.getElementById("profilePhoto").value =
-        user.photo || "";
+      document
+        .getElementById("profileGender")
+        .value =
+          user.gender || "";
+
+
+      document
+        .getElementById("profileCity")
+        .value =
+          user.city || "";
+
+
+      document
+        .getElementById("profileBio")
+        .value =
+          user.bio || "";
+
+
+      document
+        .getElementById("profilePhoto")
+        .value =
+          user.photo || "";
 
     } catch (error) {
 
@@ -1530,162 +1923,253 @@
   }
 
 
-  /* =========================
-     SAVE PROFILE
-  ========================= */
+  /* =====================================================
+     UPDATE PROFILE
+  ===================================================== */
 
-  document.getElementById("profileForm")
-    .addEventListener("submit", async function(e) {
+  document
+    .getElementById("profileForm")
+    .addEventListener(
+      "submit",
+      async function(e) {
 
-      e.preventDefault();
+        e.preventDefault();
 
-      clearMessage("profileMessage");
-
-      const data = {
-
-        name:
-          document.getElementById("profileName").value.trim(),
-
-        age:
-          Number(document.getElementById("profileAge").value),
-
-        gender:
-          document.getElementById("profileGender").value,
-
-        city:
-          document.getElementById("profileCity").value.trim(),
-
-        bio:
-          document.getElementById("profileBio").value.trim(),
-
-        photo:
-          document.getElementById("profilePhoto").value.trim()
-
-      };
-
-
-      try {
-
-        const result =
-          await api("/api/profile", {
-
-            method: "POST",
-
-            body: JSON.stringify(data)
-
-          });
-
-        currentUser = result.user;
-
-        document.getElementById("welcomeName")
-          .textContent = currentUser.name;
-
-        showMessage(
-          "profileMessage",
-          "Profile imehifadhiwa vizuri ❤️",
-          "success"
+        clearMessage(
+          "profileMessage"
         );
 
-      } catch (error) {
 
-        showMessage(
-          "profileMessage",
-          error.message
-        );
+        const data = {
+
+          name:
+            document
+              .getElementById("profileName")
+              .value
+              .trim(),
+
+          age:
+            Number(
+              document
+                .getElementById("profileAge")
+                .value
+            ),
+
+          gender:
+            document
+              .getElementById("profileGender")
+              .value,
+
+          city:
+            document
+              .getElementById("profileCity")
+              .value
+              .trim(),
+
+          bio:
+            document
+              .getElementById("profileBio")
+              .value
+              .trim(),
+
+          photo:
+            document
+              .getElementById("profilePhoto")
+              .value
+              .trim()
+
+        };
+
+
+        try {
+
+          const result =
+            await api(
+              "/api/profile",
+              {
+                method: "POST",
+
+                body:
+                  JSON.stringify(data)
+              }
+            );
+
+
+          currentUser =
+            result.user;
+
+
+          document
+            .getElementById("welcomeName")
+            .textContent =
+              currentUser.name;
+
+
+          showMessage(
+            "profileMessage",
+            "Profile imehifadhiwa vizuri ❤️",
+            "success"
+          );
+
+
+        } catch (error) {
+
+          showMessage(
+            "profileMessage",
+            error.message
+          );
+
+        }
 
       }
+    );
 
-    });
 
-
-  /* =========================
+  /* =====================================================
      CHAT
-  ========================= */
+  ===================================================== */
 
   async function openChat(id, name) {
 
     chatUser = {
-      id,
-      name
+      id: id,
+      name: name
     };
 
-    document.getElementById("discoverSection")
+
+    document
+      .getElementById("discoverSection")
       .classList.add("hidden");
 
-    document.getElementById("matchesSection")
+    document
+      .getElementById("matchesSection")
       .classList.add("hidden");
 
-    document.getElementById("profileSection")
+    document
+      .getElementById("profileSection")
       .classList.add("hidden");
 
-    document.getElementById("chatSection")
+    document
+      .getElementById("chatSection")
       .classList.remove("hidden");
 
-    document.getElementById("chatHeader")
-      .textContent = "💬 " + name;
+
+    document
+      .getElementById("chatHeader")
+      .textContent =
+        "💬 " + name;
+
 
     await loadMessages();
 
   }
 
 
+  /* =====================================================
+     LOAD MESSAGES
+  ===================================================== */
+
   async function loadMessages() {
 
     if (!chatUser) return;
 
+
     const container =
-      document.getElementById("messages");
+      document.getElementById(
+        "messages"
+      );
+
 
     container.innerHTML =
       '<div style="text-align:center;color:#777">Inapakia...</div>';
 
+
     try {
 
       const messages =
-        await api("/api/messages/" + chatUser.id);
+        await api(
+          "/api/messages/" +
+          chatUser.id
+        );
+
 
       if (!messages.length) {
 
         container.innerHTML = `
-          <div style="text-align:center;color:#777">
+
+          <div
+            style="
+              text-align:center;
+              color:#777;
+              padding:20px;
+            "
+          >
+
             Hakuna ujumbe bado.<br>
+
             Anza mazungumzo ❤️
+
           </div>
+
         `;
 
         return;
-
       }
 
+
       container.innerHTML = "";
+
 
       messages.forEach(message => {
 
         const mine =
-          Number(message.sender) === Number(currentUser.id);
+          Number(message.sender) ===
+          Number(currentUser.id);
+
 
         const div =
-          document.createElement("div");
+          document.createElement(
+            "div"
+          );
+
 
         div.className =
-          "msg " + (mine ? "me" : "other");
+          "msg " +
+          (
+            mine
+              ? "me"
+              : "other"
+          );
+
 
         div.textContent =
           message.body;
 
-        container.appendChild(div);
+
+        container.appendChild(
+          div
+        );
 
       });
+
 
       container.scrollTop =
         container.scrollHeight;
 
+
     } catch (error) {
 
       container.innerHTML = `
-        <div style="text-align:center;color:#c00">
+
+        <div
+          style="
+            text-align:center;
+            color:#c00;
+          "
+        >
           ${escapeHtml(error.message)}
         </div>
+
       `;
 
     }
@@ -1693,59 +2177,77 @@
   }
 
 
-  /* =========================
+  /* =====================================================
      SEND MESSAGE
-  ========================= */
+  ===================================================== */
 
-  document.getElementById("chatForm")
-    .addEventListener("submit", async function(e) {
+  document
+    .getElementById("chatForm")
+    .addEventListener(
+      "submit",
+      async function(e) {
 
-      e.preventDefault();
+        e.preventDefault();
 
-      if (!chatUser) return;
+        if (!chatUser) return;
 
-      const input =
-        document.getElementById("messageInput");
 
-      const body =
-        input.value.trim();
+        const input =
+          document.getElementById(
+            "messageInput"
+          );
 
-      if (!body) return;
 
-      try {
+        const body =
+          input.value.trim();
 
-        await api(
-          "/api/messages/" + chatUser.id,
-          {
-            method: "POST",
-            body: JSON.stringify({
-              body
-            })
-          }
-        );
 
-        input.value = "";
+        if (!body) return;
 
-        await loadMessages();
 
-      } catch (error) {
+        try {
 
-        alert(error.message);
+          await api(
+            "/api/messages/" +
+            chatUser.id,
+            {
+              method: "POST",
+
+              body:
+                JSON.stringify({
+                  body: body
+                })
+            }
+          );
+
+
+          input.value = "";
+
+          await loadMessages();
+
+
+        } catch (error) {
+
+          alert(
+            error.message
+          );
+
+        }
 
       }
+    );
 
-    });
 
-
-  /* =========================
+  /* =====================================================
      BACK FROM CHAT
-  ========================= */
+  ===================================================== */
 
   function backFromChat() {
 
     chatUser = null;
 
-    document.getElementById("chatSection")
+    document
+      .getElementById("chatSection")
       .classList.add("hidden");
 
     showSection("matches");
@@ -1753,60 +2255,88 @@
   }
 
 
-  /* =========================
+  /* =====================================================
      REPORT
-  ========================= */
+  ===================================================== */
 
   async function reportUser(id) {
 
     const reason =
-      prompt("Andika sababu ya kumreport user huyu:");
+      prompt(
+        "Andika sababu ya kumreport user huyu:"
+      );
 
-    if (!reason || !reason.trim()) {
+
+    if (
+      !reason ||
+      !reason.trim()
+    ) {
 
       return;
 
     }
 
+
     try {
 
-      await api("/api/report", {
+      await api(
+        "/api/report",
+        {
+          method: "POST",
 
-        method: "POST",
+          body:
+            JSON.stringify({
+              userId: id,
+              reason:
+                reason.trim()
+            })
+        }
+      );
 
-        body: JSON.stringify({
 
-          userId: id,
+      alert(
+        "Report imetumwa kwa admin."
+      );
 
-          reason: reason.trim()
-
-        })
-
-      });
-
-      alert("Report imetumwa kwa admin.");
 
     } catch (error) {
 
-      alert(error.message);
+      alert(
+        error.message
+      );
 
     }
 
   }
 
 
-  /* =========================
+  /* =====================================================
      SECURITY HELPERS
-  ========================= */
+  ===================================================== */
 
   function escapeHtml(value) {
 
     return String(value || "")
-      .replace(/&/g, "&amp;")
-      .replace(/</g, "&lt;")
-      .replace(/>/g, "&gt;")
-      .replace(/"/g, "&quot;")
-      .replace(/'/g, "&#039;");
+      .replace(
+        /&/g,
+        "&amp;"
+      )
+      .replace(
+        /</g,
+        "&lt;"
+      )
+      .replace(
+        />/g,
+        "&gt;"
+      )
+      .replace(
+        /"/g,
+        "&quot;"
+      )
+      .replace(
+        /'/g,
+        "&#039;"
+      );
 
   }
 
@@ -1821,18 +2351,33 @@
   function escapeJs(value) {
 
     return String(value || "")
-      .replace(/\\/g, "\\\\")
-      .replace(/'/g, "\\'")
-      .replace(/"/g, '\\"')
-      .replace(/\n/g, "\\n")
-      .replace(/\r/g, "\\r");
+      .replace(
+        /\\/g,
+        "\\\\"
+      )
+      .replace(
+        /'/g,
+        "\\'"
+      )
+      .replace(
+        /"/g,
+        '\\"'
+      )
+      .replace(
+        /\n/g,
+        "\\n"
+      )
+      .replace(
+        /\r/g,
+        "\\r"
+      );
 
   }
 
 
-  /* =========================
-     START
-  ========================= */
+  /* =====================================================
+     START APP
+  ===================================================== */
 
   checkLogin();
 
