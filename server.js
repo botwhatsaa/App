@@ -6,15 +6,8 @@ const crypto = require("crypto");
 const app = express();
 const PORT = process.env.PORT || 3000;
 
-/* =========================
-   MIDDLEWARE
-========================= */
-
-app.use(express.json());
+app.use(express.json({ limit: "1mb" }));
 app.use(express.urlencoded({ extended: true }));
-
-/* Serve frontend */
-app.use(express.static(__dirname));
 
 /* =========================
    DATABASE
@@ -49,20 +42,24 @@ function loadDB() {
     );
 
     return {
-      users: Array.isArray(data.users) ? data.users : [],
-      likes: Array.isArray(data.likes) ? data.likes : [],
+      users: Array.isArray(data.users)
+        ? data.users
+        : [],
+
+      likes: Array.isArray(data.likes)
+        ? data.likes
+        : [],
+
       messages: Array.isArray(data.messages)
         ? data.messages
         : [],
+
       reports: Array.isArray(data.reports)
         ? data.reports
         : []
     };
-
   } catch (error) {
-
     console.error("Database error:", error);
-
     return emptyDB();
   }
 }
@@ -70,10 +67,62 @@ function loadDB() {
 let db = loadDB();
 
 function saveDB() {
+  const temp = DB_FILE + ".tmp";
+
   fs.writeFileSync(
-    DB_FILE,
+    temp,
     JSON.stringify(db, null, 2)
   );
+
+  fs.renameSync(temp, DB_FILE);
+}
+
+/* =========================
+   PASSWORDS
+========================= */
+
+function hashPassword(password) {
+  const salt = crypto
+    .randomBytes(16)
+    .toString("hex");
+
+  const hash = crypto
+    .scryptSync(password, salt, 64)
+    .toString("hex");
+
+  return `scrypt:${salt}:${hash}`;
+}
+
+function verifyPassword(password, stored) {
+
+  // Support old plaintext passwords
+  // so existing accounts don't break.
+  if (!String(stored).startsWith("scrypt:")) {
+    return stored === password;
+  }
+
+  const parts = String(stored).split(":");
+
+  if (parts.length !== 3) {
+    return false;
+  }
+
+  const salt = parts[1];
+  const storedHash = parts[2];
+
+  try {
+    const hash = crypto
+      .scryptSync(password, salt, 64)
+      .toString("hex");
+
+    return crypto.timingSafeEqual(
+      Buffer.from(hash, "hex"),
+      Buffer.from(storedHash, "hex")
+    );
+
+  } catch {
+    return false;
+  }
 }
 
 /* =========================
@@ -84,8 +133,9 @@ const sessions = new Map();
 
 function createSession(userId, admin = false) {
 
-  const token =
-    crypto.randomBytes(32).toString("hex");
+  const token = crypto
+    .randomBytes(32)
+    .toString("hex");
 
   sessions.set(token, {
     userId,
@@ -98,11 +148,11 @@ function createSession(userId, admin = false) {
 
 function getSession(req) {
 
-  const cookie =
-    req.headers.cookie || "";
+  const cookie = req.headers.cookie || "";
 
-  const match =
-    cookie.match(/(?:^|;\s*)session=([^;]+)/);
+  const match = cookie.match(
+    /(?:^|;\s*)session=([^;]+)/
+  );
 
   if (!match) {
     return null;
@@ -120,15 +170,18 @@ function setSession(res, token) {
 }
 
 /* =========================
-   LOGIN MIDDLEWARE
+   AUTH MIDDLEWARE
 ========================= */
 
 function requireLogin(req, res, next) {
 
   const session = getSession(req);
 
-  if (!session || !session.userId) {
-
+  if (
+    !session ||
+    !session.userId ||
+    session.admin
+  ) {
     return res.status(401).json({
       error: "Tafadhali ingia kwanza."
     });
@@ -139,16 +192,14 @@ function requireLogin(req, res, next) {
   next();
 }
 
-/* =========================
-   ADMIN MIDDLEWARE
-========================= */
-
 function requireAdmin(req, res, next) {
 
   const session = getSession(req);
 
-  if (!session || !session.admin) {
-
+  if (
+    !session ||
+    !session.admin
+  ) {
     return res.status(401).json({
       error: "Admin login required."
     });
@@ -158,8 +209,26 @@ function requireAdmin(req, res, next) {
 }
 
 /* =========================
-   HOME
+   PUBLIC FRONTEND
 ========================= */
+
+app.use((req, res, next) => {
+
+  const blocked = [
+    "/database.json",
+    "/server.js",
+    "/package.json",
+    "/package-lock.json"
+  ];
+
+  if (blocked.includes(req.path)) {
+    return res.status(404).end();
+  }
+
+  next();
+});
+
+app.use(express.static(__dirname));
 
 app.get("/", (req, res) => {
 
@@ -186,69 +255,83 @@ app.post("/api/register", (req, res) => {
     photo
   } = req.body;
 
-  if (
-    !name ||
-    !email ||
-    !password ||
-    !age ||
-    !gender ||
-    !city
-  ) {
-
-    return res.status(400).json({
-      error:
-        "Jaza taarifa zote zinazohitajika."
-    });
-
-  }
-
   const cleanName =
-    String(name).trim();
+    String(name || "").trim();
 
   const cleanEmail =
-    String(email).trim().toLowerCase();
+    String(email || "")
+      .trim()
+      .toLowerCase();
 
   const cleanPassword =
-    String(password);
+    String(password || "");
 
   const cleanAge =
     Number(age);
 
+  const cleanGender =
+    String(gender || "").trim();
+
   const cleanCity =
-    String(city).trim();
+    String(city || "").trim();
 
-  if (cleanAge < 18) {
+  const cleanBio =
+    String(bio || "").trim();
 
+  const cleanPhoto =
+    String(photo || "").trim();
+
+  if (
+    !cleanName ||
+    !cleanEmail ||
+    !cleanPassword ||
+    !cleanAge ||
+    !cleanGender ||
+    !cleanCity
+  ) {
     return res.status(400).json({
       error:
-        "Ni lazima uwe na miaka 18 au zaidi."
+        "Jaza taarifa zote zinazohitajika."
     });
+  }
 
+  if (
+    cleanAge < 18 ||
+    cleanAge > 100
+  ) {
+    return res.status(400).json({
+      error:
+        "Umri lazima uwe kati ya miaka 18 na 100."
+    });
   }
 
   if (cleanPassword.length < 6) {
-
     return res.status(400).json({
       error:
         "Password iwe na angalau characters 6."
     });
-
   }
 
-  const existing =
-    db.users.find(
-      u =>
-        String(u.email).toLowerCase() ===
-        cleanEmail
-    );
+  if (
+    !/^[^\s@]+@[^\s@]+\.[^\s@]+$/
+      .test(cleanEmail)
+  ) {
+    return res.status(400).json({
+      error: "Weka email sahihi."
+    });
+  }
+
+  const existing = db.users.find(
+    u =>
+      String(u.email).toLowerCase() ===
+      cleanEmail
+  );
 
   if (existing) {
-
     return res.status(400).json({
       error:
         "Email hii tayari imesajiliwa."
     });
-
   }
 
   const user = {
@@ -259,21 +342,21 @@ app.post("/api/register", (req, res) => {
 
     email: cleanEmail,
 
-    password: cleanPassword,
+    password:
+      hashPassword(cleanPassword),
 
     age: cleanAge,
 
-    gender: String(gender),
+    gender: cleanGender,
 
     city: cleanCity,
 
-    bio: String(bio || "").trim(),
+    bio: cleanBio,
 
-    photo: String(photo || "").trim(),
+    photo: cleanPhoto,
 
     createdAt:
       new Date().toISOString()
-
   };
 
   db.users.push(user);
@@ -286,13 +369,9 @@ app.post("/api/register", (req, res) => {
   setSession(res, token);
 
   res.json({
-
     ok: true,
-
     user: publicUser(user)
-
   });
-
 });
 
 /* =========================
@@ -301,34 +380,44 @@ app.post("/api/register", (req, res) => {
 
 app.post("/api/login", (req, res) => {
 
-  const {
-    email,
-    password
-  } = req.body;
-
   const cleanEmail =
-    String(email || "")
+    String(req.body.email || "")
       .trim()
       .toLowerCase();
 
   const cleanPassword =
-    String(password || "");
+    String(req.body.password || "");
 
-  const user =
-    db.users.find(
-      u =>
-        String(u.email).toLowerCase() ===
-          cleanEmail &&
-        u.password === cleanPassword
-    );
+  const user = db.users.find(
+    u =>
+      String(u.email).toLowerCase() ===
+      cleanEmail
+  );
 
-  if (!user) {
-
+  if (
+    !user ||
+    !verifyPassword(
+      cleanPassword,
+      user.password
+    )
+  ) {
     return res.status(401).json({
       error:
         "Email au password si sahihi."
     });
+  }
 
+  // Upgrade old plaintext password
+  // after successful login.
+  if (
+    !String(user.password)
+      .startsWith("scrypt:")
+  ) {
+
+    user.password =
+      hashPassword(cleanPassword);
+
+    saveDB();
   }
 
   const token =
@@ -337,13 +426,9 @@ app.post("/api/login", (req, res) => {
   setSession(res, token);
 
   res.json({
-
     ok: true,
-
     user: publicUser(user)
-
   });
-
 });
 
 /* =========================
@@ -360,15 +445,13 @@ app.post("/api/logout", (req, res) => {
     const cookie =
       req.headers.cookie || "";
 
-    const match =
-      cookie.match(
-        /(?:^|;\s*)session=([^;]+)/
-      );
+    const match = cookie.match(
+      /(?:^|;\s*)session=([^;]+)/
+    );
 
     if (match) {
       sessions.delete(match[1]);
     }
-
   }
 
   res.setHeader(
@@ -379,7 +462,6 @@ app.post("/api/logout", (req, res) => {
   res.json({
     ok: true
   });
-
 });
 
 /* =========================
@@ -397,18 +479,15 @@ app.get(
       );
 
     if (!user) {
-
       return res.status(404).json({
         error:
           "User hajapatikana."
       });
-
     }
 
     res.json(
       publicUser(user)
     );
-
   }
 );
 
@@ -429,7 +508,6 @@ app.get(
         .map(publicUser);
 
     res.json(users);
-
   }
 );
 
@@ -446,21 +524,19 @@ app.post(
       Number(req.body.userId);
 
     if (!Number.isFinite(targetId)) {
-
       return res.status(400).json({
         error:
           "User ID si sahihi."
       });
-
     }
 
-    if (targetId === req.userId) {
-
+    if (
+      targetId === req.userId
+    ) {
       return res.status(400).json({
         error:
           "Huwezi kujilike mwenyewe."
       });
-
     }
 
     const target =
@@ -469,12 +545,10 @@ app.post(
       );
 
     if (!target) {
-
       return res.status(404).json({
         error:
           "User hajapatikana."
       });
-
     }
 
     const alreadyLiked =
@@ -496,11 +570,9 @@ app.post(
 
         createdAt:
           new Date().toISOString()
-
       });
 
       saveDB();
-
     }
 
     const mutual =
@@ -511,13 +583,9 @@ app.post(
       );
 
     res.json({
-
       ok: true,
-
       matched: mutual
-
     });
-
   }
 );
 
@@ -535,7 +603,9 @@ app.get(
         .filter(
           l => l.from === req.userId
         )
-        .map(l => l.to);
+        .map(
+          l => l.to
+        );
 
     const matches =
       db.likes
@@ -554,7 +624,6 @@ app.get(
         .map(publicUser);
 
     res.json(matches);
-
   }
 );
 
@@ -573,12 +642,10 @@ app.post(
       );
 
     if (!user) {
-
       return res.status(404).json({
         error:
           "User hajapatikana."
       });
-
     }
 
     const {
@@ -590,31 +657,39 @@ app.post(
       photo
     } = req.body;
 
-    if (name) {
-      user.name =
-        String(name).trim();
+    const newName =
+      String(name || "").trim();
+
+    const newAge =
+      Number(age);
+
+    const newCity =
+      String(city || "").trim();
+
+    if (
+      !newName ||
+      !newCity ||
+      !Number.isFinite(newAge) ||
+      newAge < 18 ||
+      newAge > 100
+    ) {
+      return res.status(400).json({
+        error:
+          "Jina, umri na mji ni lazima ziwe sahihi."
+      });
     }
 
-    if (age) {
+    user.name =
+      newName;
 
-      const newAge =
-        Number(age);
+    user.age =
+      newAge;
 
-      if (newAge >= 18) {
-        user.age = newAge;
-      }
+    user.gender =
+      String(gender || user.gender);
 
-    }
-
-    if (gender) {
-      user.gender =
-        String(gender);
-    }
-
-    if (city) {
-      user.city =
-        String(city).trim();
-    }
+    user.city =
+      newCity;
 
     user.bio =
       String(bio || "").trim();
@@ -625,18 +700,14 @@ app.post(
     saveDB();
 
     res.json({
-
       ok: true,
-
       user: publicUser(user)
-
     });
-
   }
 );
 
 /* =========================
-   MESSAGES - GET
+   MESSAGES
 ========================= */
 
 app.get(
@@ -653,12 +724,10 @@ app.get(
       );
 
     if (!otherUser) {
-
       return res.status(404).json({
         error:
           "User hajapatikana."
       });
-
     }
 
     const messages =
@@ -675,13 +744,8 @@ app.get(
       );
 
     res.json(messages);
-
   }
 );
-
-/* =========================
-   MESSAGES - SEND
-========================= */
 
 app.post(
   "/api/messages/:id",
@@ -697,12 +761,17 @@ app.post(
       ).trim();
 
     if (!body) {
-
       return res.status(400).json({
         error:
           "Ujumbe hauwezi kuwa tupu."
       });
+    }
 
+    if (body.length > 2000) {
+      return res.status(400).json({
+        error:
+          "Ujumbe ni mrefu sana."
+      });
     }
 
     const user =
@@ -711,21 +780,19 @@ app.post(
       );
 
     if (!user) {
-
       return res.status(404).json({
         error:
           "User hajapatikana."
       });
-
     }
 
-    if (receiver === req.userId) {
-
+    if (
+      receiver === req.userId
+    ) {
       return res.status(400).json({
         error:
           "Huwezi kujitumia ujumbe."
       });
-
     }
 
     const message = {
@@ -734,32 +801,29 @@ app.post(
 
       sender: req.userId,
 
-      receiver: receiver,
+      receiver,
 
-      body: body,
+      body,
 
       createdAt:
         new Date().toISOString()
-
     };
 
-    db.messages.push(message);
+    db.messages.push(
+      message
+    );
 
     saveDB();
 
     res.json({
-
       ok: true,
-
       message
-
     });
-
   }
 );
 
 /* =========================
-   REPORT USER
+   REPORT
 ========================= */
 
 app.post(
@@ -776,12 +840,10 @@ app.post(
       ).trim();
 
     if (!reason) {
-
       return res.status(400).json({
         error:
           "Andika sababu ya ripoti."
       });
-
     }
 
     const reportedUser =
@@ -790,38 +852,38 @@ app.post(
       );
 
     if (!reportedUser) {
-
       return res.status(404).json({
         error:
           "User hajapatikana."
       });
-
     }
 
-    if (userId === req.userId) {
-
+    if (
+      userId === req.userId
+    ) {
       return res.status(400).json({
         error:
           "Huwezi kujireport mwenyewe."
       });
-
     }
 
     db.reports.push({
 
       id: Date.now(),
 
-      reporter: req.userId,
+      reporter:
+        req.userId,
 
-      reported: userId,
+      reported:
+        userId,
 
-      reason: reason,
+      reason,
 
-      status: "open",
+      status:
+        "open",
 
       createdAt:
         new Date().toISOString()
-
     });
 
     saveDB();
@@ -829,7 +891,6 @@ app.post(
     res.json({
       ok: true
     });
-
   }
 );
 
@@ -841,31 +902,37 @@ app.post(
   "/api/admin/login",
   (req, res) => {
 
-    const {
-      email,
-      password
-    } = req.body;
-
     const adminEmail =
-      process.env.ADMIN_EMAIL ||
-      "admin@tanzaniadating.com";
+      process.env.ADMIN_EMAIL;
 
     const adminPassword =
-      process.env.ADMIN_PASSWORD ||
-      "Admin@12345";
+      process.env.ADMIN_PASSWORD;
 
     if (
-      String(email || "").trim() !==
-        adminEmail ||
-      String(password || "") !==
-        adminPassword
+      !adminEmail ||
+      !adminPassword
     ) {
+      return res.status(503).json({
+        error:
+          "Admin credentials hazijawekwa kwenye Environment Variables."
+      });
+    }
 
+    const email =
+      String(
+        req.body.email || ""
+      ).trim();
+
+    if (
+      email !== adminEmail ||
+      String(
+        req.body.password || ""
+      ) !== adminPassword
+    ) {
       return res.status(401).json({
         error:
           "Admin email au password si sahihi."
       });
-
     }
 
     const token =
@@ -874,12 +941,14 @@ app.post(
         true
       );
 
-    setSession(res, token);
+    setSession(
+      res,
+      token
+    );
 
     res.json({
       ok: true
     });
-
   }
 );
 
@@ -892,18 +961,34 @@ app.get(
   requireAdmin,
   (req, res) => {
 
-    const uniqueMatches =
-      db.likes.filter(
-        like => {
+    const uniquePairs =
+      new Set();
 
-          return db.likes.some(
-            other =>
-              other.from === like.to &&
-              other.to === like.from
-          );
+    for (
+      const like of db.likes
+    ) {
 
-        }
-      ).length / 2;
+      const mutual =
+        db.likes.some(
+          other =>
+            other.from === like.to &&
+            other.to === like.from
+        );
+
+      if (mutual) {
+
+        uniquePairs.add(
+          [
+            like.from,
+            like.to
+          ]
+            .sort(
+              (a, b) => a - b
+            )
+            .join(":")
+        );
+      }
+    }
 
     res.json({
 
@@ -911,18 +996,17 @@ app.get(
         db.users.length,
 
       matches:
-        uniqueMatches,
+        uniquePairs.size,
 
       messages:
         db.messages.length,
 
       reports:
         db.reports.filter(
-          r => r.status === "open"
+          r =>
+            r.status === "open"
         ).length
-
     });
-
   }
 );
 
@@ -940,12 +1024,11 @@ app.get(
         publicUser
       )
     );
-
   }
 );
 
 /* =========================
-   ADMIN DELETE USER
+   DELETE USER
 ========================= */
 
 app.delete(
@@ -956,18 +1039,15 @@ app.delete(
     const id =
       Number(req.params.id);
 
-    const exists =
-      db.users.some(
+    if (
+      !db.users.some(
         u => u.id === id
-      );
-
-    if (!exists) {
-
+      )
+    ) {
       return res.status(404).json({
         error:
           "User hajapatikana."
       });
-
     }
 
     db.users =
@@ -1001,7 +1081,6 @@ app.delete(
     res.json({
       ok: true
     });
-
   }
 );
 
@@ -1019,12 +1098,14 @@ app.get(
 
         const reported =
           db.users.find(
-            u => u.id === r.reported
+            u =>
+              u.id === r.reported
           );
 
         const reporter =
           db.users.find(
-            u => u.id === r.reporter
+            u =>
+              u.id === r.reporter
           );
 
         return {
@@ -1049,18 +1130,15 @@ app.get(
 
           createdAt:
             r.createdAt
-
         };
-
       });
 
     res.json(reports);
-
   }
 );
 
 /* =========================
-   ADMIN CLOSE REPORT
+   CLOSE REPORT
 ========================= */
 
 app.patch(
@@ -1077,17 +1155,16 @@ app.patch(
       );
 
     if (!report) {
-
       return res.status(404).json({
         error:
           "Report haijapatikana."
       });
-
     }
 
     const status =
       String(
-        req.body.status || "closed"
+        req.body.status ||
+        "closed"
       );
 
     report.status =
@@ -1100,7 +1177,6 @@ app.patch(
     res.json({
       ok: true
     });
-
   }
 );
 
@@ -1130,13 +1206,11 @@ function publicUser(user) {
 
     createdAt:
       user.createdAt
-
   };
-
 }
 
 /* =========================
-   404 API
+   API 404
 ========================= */
 
 app.use(
@@ -1147,7 +1221,6 @@ app.use(
       error:
         "API endpoint haijapatikana."
     });
-
   }
 );
 
@@ -1167,7 +1240,6 @@ app.use(
       error:
         "Server error."
     });
-
   }
 );
 
