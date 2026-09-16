@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="sw">
 <head>
 <meta charset="UTF-8">
@@ -15,17 +15,10 @@ body{
   color:#24131b;
 }
 
-button,input,select,textarea{
-  font:inherit;
-}
+button,input,select,textarea{font:inherit}
+button{cursor:pointer}
 
-button{
-  cursor:pointer;
-}
-
-.hidden{
-  display:none!important;
-}
+.hidden{display:none!important}
 
 header{
   background:linear-gradient(135deg,#ff174f,#e60046);
@@ -59,13 +52,7 @@ header{
   justify-content:center;
   align-items:center;
   padding:20px;
-  background:
-    radial-gradient(
-      circle at top right,
-      #ffd0dc,
-      transparent 35%
-    ),
-    #fff5f8;
+  background:radial-gradient(circle at top right,#ffd0dc,transparent 35%),#fff5f8;
 }
 
 .auth-card{
@@ -101,9 +88,7 @@ label{
   margin-bottom:7px;
 }
 
-input,
-select,
-textarea{
+input,select,textarea{
   width:100%;
   padding:13px;
   border:1px solid #ddd;
@@ -112,9 +97,7 @@ textarea{
   background:#fff;
 }
 
-input:focus,
-select:focus,
-textarea:focus{
+input:focus,select:focus,textarea:focus{
   border-color:#ff174f;
   box-shadow:0 0 0 3px rgba(255,23,79,.08);
 }
@@ -228,8 +211,7 @@ textarea{
 
 .cards{
   display:grid;
-  grid-template-columns:
-    repeat(auto-fit,minmax(240px,1fr));
+  grid-template-columns:repeat(auto-fit,minmax(240px,1fr));
   gap:18px;
 }
 
@@ -245,6 +227,7 @@ textarea{
   height:260px;
   object-fit:cover;
   background:#ffd4df;
+  display:block;
 }
 
 .no-photo{
@@ -253,11 +236,7 @@ textarea{
   justify-content:center;
   align-items:center;
   font-size:75px;
-  background:linear-gradient(
-    135deg,
-    #ffd4df,
-    #ffeef3
-  );
+  background:linear-gradient(135deg,#ffd4df,#ffeef3);
 }
 
 .user-info{
@@ -286,9 +265,7 @@ textarea{
   margin-top:15px;
 }
 
-.like-btn,
-.chat-btn,
-.report-btn{
+.like-btn,.chat-btn,.report-btn{
   flex:1;
   border:0;
   padding:11px;
@@ -444,6 +421,73 @@ textarea{
   margin-bottom:15px;
 }
 
+/* PROFILE PHOTO */
+
+.photo-upload-box{
+  text-align:center;
+  margin-bottom:25px;
+}
+
+.profile-preview{
+  width:150px;
+  height:150px;
+  border-radius:50%;
+  object-fit:cover;
+  display:block;
+  margin:0 auto 15px;
+  background:linear-gradient(135deg,#ffd4df,#ffeef3);
+  border:4px solid #ff174f;
+}
+
+.profile-preview-placeholder{
+  width:150px;
+  height:150px;
+  border-radius:50%;
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  margin:0 auto 15px;
+  background:linear-gradient(135deg,#ffd4df,#ffeef3);
+  border:4px solid #ff174f;
+  font-size:55px;
+}
+
+.upload-label{
+  display:inline-block;
+  background:#ff174f;
+  color:#fff;
+  padding:11px 18px;
+  border-radius:12px;
+  font-weight:bold;
+  cursor:pointer;
+}
+
+.upload-label input{
+  display:none;
+}
+
+.photo-help{
+  font-size:12px;
+  color:#777;
+  margin-top:8px;
+}
+
+.remove-photo-btn{
+  border:0;
+  background:#fff0f0;
+  color:#c40000;
+  padding:8px 14px;
+  border-radius:10px;
+  margin-top:8px;
+  display:none;
+}
+
+.upload-status{
+  font-size:13px;
+  color:#777;
+  margin-top:8px;
+}
+
 @media(max-width:600px){
 
   .auth-card{
@@ -472,20 +516,17 @@ textarea{
 
 <body>
 
-<!-- =========================
-     AUTH
-========================= -->
+<!-- AUTH -->
 
 <div id="auth">
 
   <!-- LOGIN -->
+
   <div id="loginPage" class="auth-page">
 
     <div class="auth-card">
 
-      <h1 class="auth-title">
-        ❤️ Tanzania Dating
-      </h1>
+      <h1 class="auth-title">❤️ Tanzania Dating</h1>
 
       <p class="auth-subtitle">
         Kutana na watu wapya Tanzania
@@ -497,33 +538,25 @@ textarea{
 
         <div class="form-group">
           <label>Email</label>
-
           <input
             type="email"
             id="loginEmail"
             placeholder="Email yako"
-            autocomplete="email"
             required
           >
         </div>
 
         <div class="form-group">
           <label>Password</label>
-
           <input
             type="password"
             id="loginPassword"
             placeholder="Password yako"
-            autocomplete="current-password"
             required
           >
         </div>
 
-        <button
-          class="primary-btn"
-          type="submit"
-          id="loginButton"
-        >
+        <button class="primary-btn" type="submit">
           Ingia
         </button>
 
@@ -531,38 +564,32 @@ textarea{
 
       <div class="switch">
         Huna account?
-        <span onclick="showRegister()">
-          Jisajili
-        </span>
+        <span onclick="showRegister()">Jisajili</span>
       </div>
 
     </div>
+
   </div>
 
 
   <!-- REGISTER -->
+
   <div id="registerPage" class="auth-page hidden">
 
     <div class="auth-card">
 
-      <h1 class="auth-title">
-        ❤️ Jisajili
-      </h1>
+      <h1 class="auth-title">❤️ Jisajili</h1>
 
       <p class="auth-subtitle">
-        Tengeneza profile yako
+        Tengenza profile yako
       </p>
 
-      <div
-        id="registerMessage"
-        class="message"
-      ></div>
+      <div id="registerMessage" class="message"></div>
 
       <form id="registerForm">
 
         <div class="form-group">
           <label>Jina</label>
-
           <input
             type="text"
             id="regName"
@@ -574,32 +601,27 @@ textarea{
 
         <div class="form-group">
           <label>Email</label>
-
           <input
             type="email"
             id="regEmail"
             placeholder="example@gmail.com"
-            autocomplete="email"
             required
           >
         </div>
 
         <div class="form-group">
           <label>Password</label>
-
           <input
             type="password"
             id="regPassword"
             placeholder="Angalau characters 6"
             minlength="6"
-            autocomplete="new-password"
             required
           >
         </div>
 
         <div class="form-group">
           <label>Umri</label>
-
           <input
             type="number"
             id="regAge"
@@ -632,9 +654,11 @@ textarea{
             </option>
 
           </select>
+
         </div>
 
         <div class="form-group">
+
           <label>Mji</label>
 
           <input
@@ -644,9 +668,11 @@ textarea{
             maxlength="80"
             required
           >
+
         </div>
 
         <div class="form-group">
+
           <label>Bio</label>
 
           <textarea
@@ -654,47 +680,50 @@ textarea{
             placeholder="Jieleze kidogo..."
             maxlength="500"
           ></textarea>
+
         </div>
 
         <div class="form-group">
+
           <label>
-            Link ya picha
+            Picha
             <small>(optional)</small>
           </label>
 
           <input
-            type="url"
-            id="regPhoto"
-            placeholder="https://..."
+            type="file"
+            id="regPhotoFile"
+            accept="image/jpeg,image/png,image/webp"
           >
+
+          <div id="registerPhotoPreview"></div>
+
         </div>
 
-        <button
-          class="primary-btn"
-          type="submit"
-          id="registerButton"
-        >
+        <button class="primary-btn" type="submit">
           Jisajili
         </button>
 
       </form>
 
       <div class="switch">
+
         Tayari una account?
+
         <span onclick="showLogin()">
           Ingia
         </span>
+
       </div>
 
     </div>
+
   </div>
 
 </div>
 
 
-<!-- =========================
-     MAIN APP
-========================= -->
+<!-- APP -->
 
 <div id="app" class="hidden">
 
@@ -725,14 +754,13 @@ textarea{
       </h2>
 
       <p>
-        Tafuta mtu anayekufaa
-        na anza mazungumzo.
+        Tafuta mtu anayekufaa na anza mazungumzo.
       </p>
 
     </div>
 
 
-    <!-- NAVIGATION -->
+    <!-- NAV -->
 
     <div class="nav">
 
@@ -773,11 +801,9 @@ textarea{
         id="discoverList"
         class="cards"
       >
-
         <div class="empty">
           Inapakia...
         </div>
-
       </div>
 
     </section>
@@ -823,20 +849,73 @@ textarea{
           class="message"
         ></div>
 
+
+        <!-- PHOTO UPLOAD -->
+
+        <div class="photo-upload-box">
+
+          <div id="profilePreviewContainer">
+
+            <div class="profile-preview-placeholder">
+              👤
+            </div>
+
+          </div>
+
+          <label class="upload-label">
+
+            📸 Chagua picha
+
+            <input
+              type="file"
+              id="profilePhotoFile"
+              accept="image/jpeg,image/png,image/webp"
+            >
+
+          </label>
+
+          <div class="photo-help">
+            JPG, PNG au WEBP • Maximum 5MB
+          </div>
+
+          <button
+            type="button"
+            id="removePhotoBtn"
+            class="remove-photo-btn"
+          >
+            🗑️ Ondoa picha
+          </button>
+
+          <div
+            id="uploadStatus"
+            class="upload-status"
+          ></div>
+
+        </div>
+
+
         <form id="profileForm">
 
           <div class="form-group">
-            <label>Jina</label>
+
+            <label>
+              Jina
+            </label>
 
             <input
               id="profileName"
               required
               maxlength="80"
             >
+
           </div>
 
+
           <div class="form-group">
-            <label>Umri</label>
+
+            <label>
+              Umri
+            </label>
 
             <input
               id="profileAge"
@@ -845,10 +924,15 @@ textarea{
               max="100"
               required
             >
+
           </div>
 
+
           <div class="form-group">
-            <label>Jinsia</label>
+
+            <label>
+              Jinsia
+            </label>
 
             <select id="profileGender">
 
@@ -865,44 +949,44 @@ textarea{
               </option>
 
             </select>
+
           </div>
 
+
           <div class="form-group">
-            <label>Mji</label>
+
+            <label>
+              Mji
+            </label>
 
             <input
               id="profileCity"
               required
               maxlength="80"
             >
+
           </div>
 
+
           <div class="form-group">
-            <label>Bio</label>
+
+            <label>
+              Bio
+            </label>
 
             <textarea
               id="profileBio"
               maxlength="500"
             ></textarea>
+
           </div>
 
-          <div class="form-group">
-            <label>
-              Link ya picha
-            </label>
-
-            <input
-              id="profilePhoto"
-              type="url"
-              placeholder="https://..."
-            >
-          </div>
 
           <button
             class="primary-btn"
             type="submit"
           >
-            Hifadhi Profile
+            💾 Hifadhi Profile
           </button>
 
         </form>
@@ -971,179 +1055,149 @@ textarea{
 
 <script>
 
-/* =========================
-   VARIABLES
-========================= */
-
 let currentUser = null;
 let chatUser = null;
 let previousSection = "discover";
 
+let selectedProfilePhoto = null;
+let removePhoto = false;
 
-/* =========================
-   API HELPER
-========================= */
+
+/* API */
 
 async function api(url, options = {}) {
 
-  const config = {
-    credentials: "same-origin",
+  const response = await fetch(url, {
+
+    credentials:"same-origin",
+
     ...options,
-    headers: {
-      "Content-Type": "application/json",
+
+    headers:{
+      "Content-Type":"application/json",
       ...(options.headers || {})
     }
-  };
 
-  const response =
-    await fetch(url, config);
+  });
 
-  const data =
-    await response
-      .json()
-      .catch(() => ({}));
+  const data = await response
+    .json()
+    .catch(() => ({}));
 
-  if (!response.ok) {
+  if(!response.ok){
 
     throw new Error(
       data.error ||
       "Kuna tatizo limetokea."
     );
+
   }
 
   return data;
 }
 
 
-/* =========================
-   MESSAGES
-========================= */
+/* MESSAGES */
 
 function showMessage(
   id,
   text,
-  type = "error"
-) {
+  type="error"
+){
 
   const el =
     document.getElementById(id);
 
-  if (!el) return;
+  if(!el) return;
 
   el.className =
     "message " + type;
 
-  el.textContent =
-    text;
+  el.textContent = text;
 }
 
 
-function clearMessage(id) {
+function clearMessage(id){
 
   const el =
     document.getElementById(id);
 
-  if (el) {
+  if(el){
 
-    el.className =
-      "message";
-
-    el.textContent =
-      "";
+    el.className="message";
+    el.textContent="";
 
   }
+
 }
 
 
-/* =========================
-   LOGIN / REGISTER
-========================= */
+/* LOGIN / REGISTER */
 
-function showLogin() {
+function showLogin(){
 
   document
     .getElementById("loginPage")
-    .classList
-    .remove("hidden");
+    .classList.remove("hidden");
 
   document
     .getElementById("registerPage")
-    .classList
-    .add("hidden");
+    .classList.add("hidden");
 
   clearMessage("loginMessage");
+
 }
 
 
-function showRegister() {
+function showRegister(){
 
   document
     .getElementById("loginPage")
-    .classList
-    .add("hidden");
+    .classList.add("hidden");
 
   document
     .getElementById("registerPage")
-    .classList
-    .remove("hidden");
+    .classList.remove("hidden");
 
   clearMessage("registerMessage");
+
 }
 
 
-/* =========================
-   LOGIN
-========================= */
+/* LOGIN */
 
 document
   .getElementById("loginForm")
   .addEventListener(
     "submit",
-    async function(e) {
+    async e => {
 
       e.preventDefault();
 
-      clearMessage(
-        "loginMessage"
-      );
+      clearMessage("loginMessage");
 
-      const button =
-        document.getElementById(
-          "loginButton"
-        );
-
-      button.disabled = true;
-      button.textContent =
-        "Inaingia...";
-
-      try {
-
-        const email =
-          document
-            .getElementById(
-              "loginEmail"
-            )
-            .value
-            .trim();
-
-        const password =
-          document
-            .getElementById(
-              "loginPassword"
-            )
-            .value;
+      try{
 
         const data =
           await api(
             "/api/login",
             {
-              method: "POST",
+              method:"POST",
 
-              body:
-                JSON.stringify({
-                  email,
-                  password
-                })
+              body:JSON.stringify({
+
+                email:
+                  document
+                  .getElementById("loginEmail")
+                  .value,
+
+                password:
+                  document
+                  .getElementById("loginPassword")
+                  .value
+
+              })
+
             }
           );
 
@@ -1152,34 +1206,88 @@ document
 
         enterApp();
 
-      } catch (err) {
+      }catch(err){
 
         showMessage(
           "loginMessage",
-          err.message ||
-          "Login imeshindikana."
+          err.message
         );
 
-      } finally {
-
-        button.disabled = false;
-
-        button.textContent =
-          "Ingia";
       }
+
     }
   );
 
 
-/* =========================
-   REGISTER
-========================= */
+/* REGISTER PHOTO PREVIEW */
+
+document
+  .getElementById("regPhotoFile")
+  .addEventListener(
+    "change",
+    async function(){
+
+      const file =
+        this.files[0];
+
+      if(!file) return;
+
+      if(file.size > 5 * 1024 * 1024){
+
+        alert(
+          "Picha isiwe zaidi ya 5MB."
+        );
+
+        this.value="";
+        return;
+
+      }
+
+      if(!file.type.startsWith("image/")){
+
+        alert(
+          "Tafadhali chagua picha."
+        );
+
+        this.value="";
+        return;
+
+      }
+
+      try{
+
+        const base64 =
+          await fileToBase64(file);
+
+        const preview =
+          document.getElementById(
+            "registerPhotoPreview"
+          );
+
+        preview.innerHTML =
+          '<img class="profile-preview" src="' +
+          escapeAttr(base64) +
+          '" alt="Preview">';
+
+      }catch(err){
+
+        alert(
+          "Imeshindikana kusoma picha."
+        );
+
+      }
+
+    }
+  );
+
+
+/* REGISTER */
 
 document
   .getElementById("registerForm")
   .addEventListener(
     "submit",
-    async function(e) {
+    async e => {
 
       e.preventDefault();
 
@@ -1187,87 +1295,81 @@ document
         "registerMessage"
       );
 
-      const button =
-        document.getElementById(
-          "registerButton"
-        );
+      try{
 
-      button.disabled = true;
-      button.textContent =
-        "Inasajili...";
+        let photo = "";
 
-      try {
+        const photoFile =
+          document
+          .getElementById("regPhotoFile")
+          .files[0];
+
+        if(photoFile){
+
+          if(photoFile.size >
+             5 * 1024 * 1024){
+
+            throw new Error(
+              "Picha isiwe zaidi ya 5MB."
+            );
+
+          }
+
+          photo =
+            await fileToBase64(
+              photoFile
+            );
+
+        }
 
         const data =
           await api(
             "/api/register",
             {
-              method: "POST",
 
-              body:
-                JSON.stringify({
+              method:"POST",
 
-                  name:
-                    document
-                      .getElementById(
-                        "regName"
-                      )
-                      .value
-                      .trim(),
+              body:JSON.stringify({
 
-                  email:
-                    document
-                      .getElementById(
-                        "regEmail"
-                      )
-                      .value
-                      .trim(),
+                name:
+                  document
+                  .getElementById("regName")
+                  .value,
 
-                  password:
-                    document
-                      .getElementById(
-                        "regPassword"
-                      )
-                      .value,
+                email:
+                  document
+                  .getElementById("regEmail")
+                  .value,
 
-                  age:
-                    document
-                      .getElementById(
-                        "regAge"
-                      )
-                      .value,
+                password:
+                  document
+                  .getElementById("regPassword")
+                  .value,
 
-                  gender:
-                    document
-                      .getElementById(
-                        "regGender"
-                      )
-                      .value,
+                age:
+                  document
+                  .getElementById("regAge")
+                  .value,
 
-                  city:
-                    document
-                      .getElementById(
-                        "regCity"
-                      )
-                      .value
-                      .trim(),
+                gender:
+                  document
+                  .getElementById("regGender")
+                  .value,
 
-                  bio:
-                    document
-                      .getElementById(
-                        "regBio"
-                      )
-                      .value
-                      .trim(),
+                city:
+                  document
+                  .getElementById("regCity")
+                  .value,
 
-                  photo:
-                    document
-                      .getElementById(
-                        "regPhoto"
-                      )
-                      .value
-                      .trim()
-                })
+                bio:
+                  document
+                  .getElementById("regBio")
+                  .value,
+
+                photo
+
+              })
+
             }
           );
 
@@ -1276,140 +1378,109 @@ document
 
         enterApp();
 
-      } catch (err) {
+      }catch(err){
 
         showMessage(
           "registerMessage",
-          err.message ||
-          "Usajili umeshindikana."
+          err.message
         );
 
-      } finally {
-
-        button.disabled = false;
-
-        button.textContent =
-          "Jisajili";
       }
+
     }
   );
 
 
-/* =========================
-   CHECK SESSION
-========================= */
+/* SESSION */
 
-async function checkSession() {
+async function checkSession(){
 
-  try {
+  try{
 
     currentUser =
       await api("/api/me");
 
     enterApp();
 
-  } catch (err) {
+  }catch{
 
     document
       .getElementById("auth")
-      .classList
-      .remove("hidden");
+      .classList.remove("hidden");
 
     document
       .getElementById("app")
-      .classList
-      .add("hidden");
+      .classList.add("hidden");
+
   }
+
 }
 
 
-/* =========================
-   ENTER APP
-========================= */
+/* ENTER APP */
 
-function enterApp() {
+function enterApp(){
 
   document
     .getElementById("auth")
-    .classList
-    .add("hidden");
+    .classList.add("hidden");
 
   document
     .getElementById("app")
-    .classList
-    .remove("hidden");
+    .classList.remove("hidden");
 
   document
-    .getElementById(
-      "welcomeName"
-    )
+    .getElementById("welcomeName")
     .textContent =
-    currentUser.name || "";
+    currentUser.name;
 
   fillProfile();
 
-  showSection(
-    "discover"
-  );
+  showSection("discover");
+
 }
 
 
-/* =========================
-   LOGOUT
-========================= */
+/* LOGOUT */
 
-async function logout() {
+async function logout(){
 
-  try {
+  try{
 
     await api(
       "/api/logout",
       {
-        method: "POST"
+        method:"POST"
       }
     );
 
-  } catch (err) {}
+  }catch{}
 
-  currentUser = null;
-  chatUser = null;
+  currentUser=null;
+  chatUser=null;
 
   document
     .getElementById("app")
-    .classList
-    .add("hidden");
+    .classList.add("hidden");
 
   document
     .getElementById("auth")
-    .classList
-    .remove("hidden");
-
-  document
-    .getElementById(
-      "loginEmail"
-    )
-    .value = "";
-
-  document
-    .getElementById(
-      "loginPassword"
-    )
-    .value = "";
+    .classList.remove("hidden");
 
   showLogin();
+
 }
 
 
-/* =========================
-   SECTIONS
-========================= */
+/* SECTIONS */
 
-function showSection(section) {
+function showSection(section){
 
-  if (section !== "chat") {
+  if(section !== "chat"){
 
     previousSection =
       section;
+
   }
 
   [
@@ -1417,84 +1488,60 @@ function showSection(section) {
     "matches",
     "profile",
     "chat"
-  ].forEach(
-    function(s) {
+  ].forEach(s => {
 
-      const element =
-        document.getElementById(
-          s + "Section"
-        );
+    document
+      .getElementById(
+        s+"Section"
+      )
+      .classList
+      .toggle(
+        "hidden",
+        s !== section
+      );
 
-      if (element) {
-
-        element
-          .classList
-          .toggle(
-            "hidden",
-            s !== section
-          );
-      }
-    }
-  );
+  });
 
 
   [
     "Discover",
     "Matches",
     "Profile"
-  ].forEach(
-    function(s) {
+  ].forEach(s => {
 
-      const btn =
-        document.getElementById(
-          "nav" + s
-        );
+    const btn =
+      document.getElementById(
+        "nav"+s
+      );
 
-      if (btn) {
+    if(btn){
 
-        btn
-          .classList
-          .toggle(
-            "active",
-            s.toLowerCase() ===
-            section
-          );
-      }
+      btn.classList.toggle(
+        "active",
+        s.toLowerCase() ===
+        section
+      );
+
     }
-  );
+
+  });
 
 
-  if (
-    section === "discover"
-  ) {
-
+  if(section === "discover")
     loadDiscover();
 
-  }
-
-  if (
-    section === "matches"
-  ) {
-
+  if(section === "matches")
     loadMatches();
 
-  }
-
-  if (
-    section === "profile"
-  ) {
-
+  if(section === "profile")
     fillProfile();
 
-  }
 }
 
 
-/* =========================
-   DISCOVER
-========================= */
+/* DISCOVER */
 
-async function loadDiscover() {
+async function loadDiscover(){
 
   const box =
     document.getElementById(
@@ -1504,14 +1551,14 @@ async function loadDiscover() {
   box.innerHTML =
     '<div class="empty">Inapakia...</div>';
 
-  try {
+  try{
 
     const users =
       await api(
         "/api/discover"
       );
 
-    if (!users.length) {
+    if(!users.length){
 
       box.innerHTML =
         '<div class="empty">' +
@@ -1520,318 +1567,197 @@ async function loadDiscover() {
         '</div>';
 
       return;
+
     }
 
-    box.innerHTML = "";
+    box.innerHTML="";
 
-    users.forEach(
-      function(user) {
+    users.forEach(user => {
 
-        box.appendChild(
-          userCard(user)
-        );
+      box.appendChild(
+        userCard(user)
+      );
 
-      }
-    );
+    });
 
-  } catch (err) {
+  }catch(err){
 
     box.innerHTML =
       '<div class="empty">' +
-      escapeHtml(
-        err.message
-      ) +
+      escapeHtml(err.message) +
       '</div>';
+
   }
+
 }
 
 
-/* =========================
-   USER CARD
-   FIXED VERSION
-========================= */
+/* USER CARD */
 
-function userCard(user) {
+function userCard(user){
 
   const card =
-    document.createElement(
-      "div"
-    );
+    document.createElement("div");
 
   card.className =
     "user-card";
 
 
-  /* PHOTO */
+  const photo =
+    user.photo
 
-  if (user.photo) {
+    ? '<img class="user-photo" src="' +
+      escapeAttr(user.photo) +
+      '" alt="Picha ya ' +
+      escapeAttr(user.name) +
+      '">'
 
-    const img =
-      document.createElement(
-        "img"
-      );
+    : '<div class="no-photo">👤</div>';
 
-    img.className =
-      "user-photo";
 
-    img.src =
-      user.photo;
+  card.innerHTML =
+    photo +
 
-    img.alt =
-      "Picha ya " +
-      (user.name || "");
+    '<div class="user-info">' +
 
-    img.onerror =
-      function() {
+      '<h3>' +
+        escapeHtml(user.name) +
+        ', ' +
+        Number(user.age) +
+      '</h3>' +
 
-        const noPhoto =
-          document.createElement(
-            "div"
-          );
+      '<div class="user-meta">' +
+        '📍 ' +
+        escapeHtml(user.city) +
+        ' · ' +
+        escapeHtml(user.gender) +
+      '</div>' +
 
-        noPhoto.className =
-          "no-photo";
+      '<div class="bio">' +
+        escapeHtml(
+          user.bio ||
+          "Hakuna bio bado."
+        ) +
+      '</div>' +
 
-        noPhoto.textContent =
-          "👤";
+      '<div class="card-actions">' +
 
-        img.replaceWith(
-          noPhoto
-        );
-      };
+        '<button class="like-btn">' +
+          '❤️ Like' +
+        '</button>' +
 
-    card.appendChild(img);
+        '<button class="chat-btn">' +
+          '💬 Chat' +
+        '</button>' +
 
-  } else {
+        '<button class="report-btn">' +
+          '⚠️' +
+        '</button>' +
 
-    const noPhoto =
-      document.createElement(
-        "div"
-      );
+      '</div>' +
 
-    noPhoto.className =
-      "no-photo";
+    '</div>';
 
-    noPhoto.textContent =
-      "👤";
 
-    card.appendChild(
-      noPhoto
+  const image =
+    card.querySelector(
+      ".user-photo"
     );
+
+  if(image){
+
+    image.onerror = function(){
+
+      const replacement =
+        document.createElement(
+          "div"
+        );
+
+      replacement.className =
+        "no-photo";
+
+      replacement.textContent =
+        "👤";
+
+      this.replaceWith(
+        replacement
+      );
+
+    };
+
   }
 
 
-  /* USER INFORMATION */
-
-  const info =
-    document.createElement(
-      "div"
-    );
-
-  info.className =
-    "user-info";
+  card
+    .querySelector(".like-btn")
+    .onclick =
+    () => likeUser(user.id);
 
 
-  const title =
-    document.createElement(
-      "h3"
-    );
-
-  title.textContent =
-    (user.name || "") +
-    ", " +
-    Number(user.age || 0);
+  card
+    .querySelector(".chat-btn")
+    .onclick =
+    () => openChat(user);
 
 
-  const meta =
-    document.createElement(
-      "div"
-    );
-
-  meta.className =
-    "user-meta";
-
-  meta.textContent =
-    "📍 " +
-    (user.city || "") +
-    " · " +
-    (user.gender || "");
-
-
-  const bio =
-    document.createElement(
-      "div"
-    );
-
-  bio.className =
-    "bio";
-
-  bio.textContent =
-    user.bio ||
-    "Hakuna bio bado.";
-
-
-  const actions =
-    document.createElement(
-      "div"
-    );
-
-  actions.className =
-    "card-actions";
-
-
-  const likeButton =
-    document.createElement(
-      "button"
-    );
-
-  likeButton.className =
-    "like-btn";
-
-  likeButton.textContent =
-    "❤️ Like";
-
-
-  const chatButton =
-    document.createElement(
-      "button"
-    );
-
-  chatButton.className =
-    "chat-btn";
-
-  chatButton.textContent =
-    "💬 Chat";
-
-
-  const reportButton =
-    document.createElement(
-      "button"
-    );
-
-  reportButton.className =
-    "report-btn";
-
-  reportButton.textContent =
-    "⚠️";
-
-
-  likeButton.onclick =
-    function() {
-
-      likeUser(
-        user.id
-      );
-    };
-
-
-  chatButton.onclick =
-    function() {
-
-      openChat(
-        user
-      );
-    };
-
-
-  reportButton.onclick =
-    function() {
-
-      reportUser(
-        user.id
-      );
-    };
-
-
-  actions.appendChild(
-    likeButton
-  );
-
-  actions.appendChild(
-    chatButton
-  );
-
-  actions.appendChild(
-    reportButton
-  );
-
-
-  info.appendChild(
-    title
-  );
-
-  info.appendChild(
-    meta
-  );
-
-  info.appendChild(
-    bio
-  );
-
-  info.appendChild(
-    actions
-  );
-
-
-  card.appendChild(
-    info
-  );
+  card
+    .querySelector(".report-btn")
+    .onclick =
+    () => reportUser(user.id);
 
 
   return card;
+
 }
 
 
-/* =========================
-   LIKE
-========================= */
+/* LIKE */
 
-async function likeUser(id) {
+async function likeUser(id){
 
-  try {
+  try{
 
     const data =
       await api(
         "/api/like",
         {
-          method: "POST",
+          method:"POST",
 
-          body:
-            JSON.stringify({
-              userId: id
-            })
+          body:JSON.stringify({
+            userId:id
+          })
+
         }
       );
 
-    if (data.matched) {
+    if(data.matched){
 
       alert(
         "❤️ Match! Mnaweza kuanza chat."
       );
 
-    } else {
+    }else{
 
       alert(
         "❤️ Like imetumwa."
       );
+
     }
 
     loadDiscover();
 
-  } catch (err) {
+  }catch(err){
 
-    alert(
-      err.message
-    );
+    alert(err.message);
+
   }
+
 }
 
 
-/* =========================
-   MATCHES
-========================= */
+/* MATCHES */
 
-async function loadMatches() {
+async function loadMatches(){
 
   const box =
     document.getElementById(
@@ -1841,14 +1767,14 @@ async function loadMatches() {
   box.innerHTML =
     '<div class="empty">Inapakia...</div>';
 
-  try {
+  try{
 
     const matches =
       await api(
         "/api/matches"
       );
 
-    if (!matches.length) {
+    if(!matches.length){
 
       box.innerHTML =
         '<div class="empty">' +
@@ -1857,230 +1783,277 @@ async function loadMatches() {
         '</div>';
 
       return;
+
     }
 
-    box.innerHTML = "";
-
-    matches.forEach(
-      function(user) {
-
-        const row =
-          document.createElement(
-            "div"
-          );
-
-        row.className =
-          "match-card";
+    box.innerHTML="";
 
 
-        const avatar =
-          document.createElement(
-            "div"
-          );
+    matches.forEach(user => {
 
-        avatar.className =
-          "match-avatar";
-
-
-        if (user.photo) {
-
-          const img =
-            document.createElement(
-              "img"
-            );
-
-          img.src =
-            user.photo;
-
-          img.alt =
-            "";
-
-          img.className =
-            "match-avatar";
-
-          img.onerror =
-            function() {
-
-              avatar.textContent =
-                "👤";
-            };
-
-          row.appendChild(
-            img
-          );
-
-        } else {
-
-          avatar.style.display =
-            "flex";
-
-          avatar.style.alignItems =
-            "center";
-
-          avatar.style.justifyContent =
-            "center";
-
-          avatar.style.fontSize =
-            "28px";
-
-          avatar.textContent =
-            "👤";
-
-          row.appendChild(
-            avatar
-          );
-        }
-
-
-        const info =
-          document.createElement(
-            "div"
-          );
-
-        info.className =
-          "match-info";
-
-
-        const name =
-          document.createElement(
-            "h3"
-          );
-
-        name.textContent =
-          (user.name || "") +
-          ", " +
-          Number(user.age || 0);
-
-
-        const city =
-          document.createElement(
-            "p"
-          );
-
-        city.textContent =
-          "📍 " +
-          (user.city || "");
-
-
-        info.appendChild(
-          name
+      const row =
+        document.createElement(
+          "div"
         );
 
-        info.appendChild(
-          city
-        );
+      row.className =
+        "match-card";
 
 
-        const chatButton =
-          document.createElement(
-            "button"
-          );
+      const avatar =
+        user.photo
 
-        chatButton.className =
-          "small-btn";
+        ? '<img class="match-avatar" src="' +
+          escapeAttr(user.photo) +
+          '" alt="">'
 
-        chatButton.textContent =
-          "💬 Chat";
-
-        chatButton.onclick =
-          function() {
-
-            openChat(
-              user
-            );
-          };
+        : '<div class="match-avatar" style="display:flex;align-items:center;justify-content:center;font-size:28px">👤</div>';
 
 
-        row.appendChild(
-          info
-        );
+      row.innerHTML =
+        avatar +
 
-        row.appendChild(
-          chatButton
-        );
+        '<div class="match-info">' +
 
-        box.appendChild(
-          row
-        );
-      }
-    );
+          '<h3>' +
+            escapeHtml(user.name) +
+            ', ' +
+            Number(user.age) +
+          '</h3>' +
 
-  } catch (err) {
+          '<p>📍 ' +
+            escapeHtml(user.city) +
+          '</p>' +
+
+        '</div>' +
+
+        '<button class="small-btn">' +
+          '💬 Chat' +
+        '</button>';
+
+
+      row
+        .querySelector(".small-btn")
+        .onclick =
+        () => openChat(user);
+
+
+      box.appendChild(row);
+
+    });
+
+
+  }catch(err){
 
     box.innerHTML =
       '<div class="empty">' +
-      escapeHtml(
-        err.message
-      ) +
+      escapeHtml(err.message) +
       '</div>';
+
   }
+
 }
 
 
-/* =========================
-   PROFILE
-========================= */
+/* PROFILE */
 
-function fillProfile() {
+function fillProfile(){
 
-  if (!currentUser) {
+  if(!currentUser)
     return;
-  }
+
 
   document
-    .getElementById(
-      "profileName"
-    )
+    .getElementById("profileName")
     .value =
     currentUser.name || "";
 
+
   document
-    .getElementById(
-      "profileAge"
-    )
+    .getElementById("profileAge")
     .value =
     currentUser.age || "";
 
+
   document
-    .getElementById(
-      "profileGender"
-    )
+    .getElementById("profileGender")
     .value =
     currentUser.gender ||
     "Nyingine";
 
+
   document
-    .getElementById(
-      "profileCity"
-    )
+    .getElementById("profileCity")
     .value =
     currentUser.city || "";
 
+
   document
-    .getElementById(
-      "profileBio"
-    )
+    .getElementById("profileBio")
     .value =
     currentUser.bio || "";
 
-  document
-    .getElementById(
-      "profilePhoto"
-    )
-    .value =
-    currentUser.photo || "";
+
+  selectedProfilePhoto =
+    currentUser.photo || null;
+
+  removePhoto=false;
+
+  renderProfilePhoto();
+
 }
 
 
-/* =========================
-   SAVE PROFILE
-========================= */
+/* PROFILE PHOTO SELECT */
+
+document
+  .getElementById("profilePhotoFile")
+  .addEventListener(
+    "change",
+    async function(){
+
+      const file =
+        this.files[0];
+
+      if(!file)
+        return;
+
+
+      if(file.size >
+         5 * 1024 * 1024){
+
+        alert(
+          "Picha isiwe zaidi ya 5MB."
+        );
+
+        this.value="";
+        return;
+
+      }
+
+
+      if(!file.type.startsWith("image/")){
+
+        alert(
+          "Tafadhali chagua picha."
+        );
+
+        this.value="";
+        return;
+
+      }
+
+
+      try{
+
+        document
+          .getElementById(
+            "uploadStatus"
+          )
+          .textContent =
+          "Picha imechaguliwa. Bonyeza Hifadhi Profile.";
+
+
+        selectedProfilePhoto =
+          await fileToBase64(file);
+
+        removePhoto=false;
+
+        renderProfilePhoto();
+
+      }catch(err){
+
+        alert(
+          "Imeshindikana kusoma picha."
+        );
+
+      }
+
+    }
+  );
+
+
+/* RENDER PROFILE PHOTO */
+
+function renderProfilePhoto(){
+
+  const container =
+    document.getElementById(
+      "profilePreviewContainer"
+    );
+
+  const removeBtn =
+    document.getElementById(
+      "removePhotoBtn"
+    );
+
+
+  if(selectedProfilePhoto){
+
+    container.innerHTML =
+      '<img class="profile-preview" src="' +
+      escapeAttr(selectedProfilePhoto) +
+      '" alt="Profile photo">';
+
+    removeBtn.style.display =
+      "inline-block";
+
+  }else{
+
+    container.innerHTML =
+      '<div class="profile-preview-placeholder">' +
+      '👤' +
+      '</div>';
+
+    removeBtn.style.display =
+      "none";
+
+  }
+
+}
+
+
+/* REMOVE PHOTO */
+
+document
+  .getElementById(
+    "removePhotoBtn"
+  )
+  .addEventListener(
+    "click",
+    function(){
+
+      selectedProfilePhoto =
+        null;
+
+      removePhoto=true;
+
+      document
+        .getElementById(
+          "profilePhotoFile"
+        )
+        .value="";
+
+      document
+        .getElementById(
+          "uploadStatus"
+        )
+        .textContent =
+        "Picha itaondolewa ukihifadhi Profile.";
+
+      renderProfilePhoto();
+
+    }
+  );
+
+
+/* SAVE PROFILE */
 
 document
   .getElementById("profileForm")
   .addEventListener(
     "submit",
-    async function(e) {
+    async e => {
 
       e.preventDefault();
 
@@ -2088,68 +2061,84 @@ document
         "profileMessage"
       );
 
-      try {
+
+      const button =
+        e.target.querySelector(
+          "button[type='submit']"
+        );
+
+
+      const oldText =
+        button.textContent;
+
+      button.disabled=true;
+
+      button.textContent =
+        "Inahifadhi...";
+
+
+      try{
 
         const data =
           await api(
             "/api/profile",
             {
-              method: "POST",
 
-              body:
-                JSON.stringify({
+              method:"POST",
 
-                  name:
-                    document
-                      .getElementById(
-                        "profileName"
-                      )
-                      .value
-                      .trim(),
+              body:JSON.stringify({
 
-                  age:
-                    document
-                      .getElementById(
-                        "profileAge"
-                      )
-                      .value,
+                name:
+                  document
+                  .getElementById(
+                    "profileName"
+                  )
+                  .value,
 
-                  gender:
-                    document
-                      .getElementById(
-                        "profileGender"
-                      )
-                      .value,
+                age:
+                  document
+                  .getElementById(
+                    "profileAge"
+                  )
+                  .value,
 
-                  city:
-                    document
-                      .getElementById(
-                        "profileCity"
-                      )
-                      .value
-                      .trim(),
+                gender:
+                  document
+                  .getElementById(
+                    "profileGender"
+                  )
+                  .value,
 
-                  bio:
-                    document
-                      .getElementById(
-                        "profileBio"
-                      )
-                      .value
-                      .trim(),
+                city:
+                  document
+                  .getElementById(
+                    "profileCity"
+                  )
+                  .value,
 
-                  photo:
-                    document
-                      .getElementById(
-                        "profilePhoto"
-                      )
-                      .value
-                      .trim()
-                })
+                bio:
+                  document
+                  .getElementById(
+                    "profileBio"
+                  )
+                  .value,
+
+                photo:
+                  removePhoto
+                  ? ""
+                  : (
+                    selectedProfilePhoto || ""
+                  )
+
+              })
+
             }
           );
 
+
         currentUser =
           data.user;
+
 
         document
           .getElementById(
@@ -2158,31 +2147,56 @@ document
           .textContent =
           currentUser.name;
 
+
+        selectedProfilePhoto =
+          currentUser.photo || null;
+
+        removePhoto=false;
+
+
+        document
+          .getElementById(
+            "uploadStatus"
+          )
+          .textContent =
+          "Picha imehifadhiwa ❤️";
+
+
+        renderProfilePhoto();
+
+
         showMessage(
           "profileMessage",
           "Profile imehifadhiwa ❤️",
           "success"
         );
 
-      } catch (err) {
+
+      }catch(err){
 
         showMessage(
           "profileMessage",
           err.message
         );
+
+      }finally{
+
+        button.disabled=false;
+
+        button.textContent =
+          oldText;
+
       }
+
     }
   );
 
 
-/* =========================
-   OPEN CHAT
-========================= */
+/* CHAT */
 
-function openChat(user) {
+function openChat(user){
 
-  chatUser =
-    user;
+  chatUser=user;
 
   document
     .getElementById(
@@ -2192,55 +2206,50 @@ function openChat(user) {
     "💬 Chat na " +
     user.name;
 
+
   document
     .getElementById(
       "messageInput"
     )
-    .value = "";
+    .value="";
 
-  showSection(
-    "chat"
-  );
+
+  showSection("chat");
 
   loadMessages();
+
 }
 
 
-/* =========================
-   BACK FROM CHAT
-========================= */
+function backFromChat(){
 
-function backFromChat() {
-
-  chatUser =
-    null;
+  chatUser=null;
 
   showSection(
     previousSection ||
     "discover"
   );
+
 }
 
 
-/* =========================
-   LOAD MESSAGES
-========================= */
+async function loadMessages(){
 
-async function loadMessages() {
-
-  if (!chatUser) {
+  if(!chatUser)
     return;
-  }
+
 
   const box =
     document.getElementById(
       "messages"
     );
 
+
   box.innerHTML =
     '<div class="empty">Inapakia...</div>';
 
-  try {
+
+  try{
 
     const messages =
       await api(
@@ -2250,9 +2259,11 @@ async function loadMessages() {
         )
       );
 
-    box.innerHTML = "";
 
-    if (!messages.length) {
+    box.innerHTML="";
+
+
+    if(!messages.length){
 
       box.innerHTML =
         '<div class="empty">' +
@@ -2261,82 +2272,82 @@ async function loadMessages() {
         '</div>';
 
       return;
+
     }
 
-    messages.forEach(
-      function(message) {
 
-        const div =
-          document.createElement(
-            "div"
-          );
+    messages.forEach(m => {
 
-        div.className =
-          "msg " +
-          (
-            Number(
-              message.sender
-            ) ===
-            Number(
-              currentUser.id
-            )
-              ? "me"
-              : "other"
-          );
-
-        div.textContent =
-          message.body;
-
-        box.appendChild(
-          div
+      const div =
+        document.createElement(
+          "div"
         );
-      }
-    );
+
+      div.className =
+        "msg " +
+        (
+          Number(m.sender) ===
+          Number(currentUser.id)
+          ? "me"
+          : "other"
+        );
+
+
+      div.textContent =
+        m.body;
+
+
+      box.appendChild(div);
+
+    });
+
 
     box.scrollTop =
       box.scrollHeight;
 
-  } catch (err) {
+
+  }catch(err){
 
     box.innerHTML =
       '<div class="empty">' +
-      escapeHtml(
-        err.message
-      ) +
+      escapeHtml(err.message) +
       '</div>';
+
   }
+
 }
 
 
-/* =========================
-   SEND MESSAGE
-========================= */
+/* SEND MESSAGE */
 
 document
   .getElementById("chatForm")
   .addEventListener(
     "submit",
-    async function(e) {
+    async e => {
 
       e.preventDefault();
 
-      if (!chatUser) {
+
+      if(!chatUser)
         return;
-      }
+
 
       const input =
         document.getElementById(
           "messageInput"
         );
 
+
       const body =
         input.value.trim();
 
-      if (!body) {
-        return;
-      }
 
-      try {
+      if(!body)
+        return;
+
+
+      try{
 
         await api(
           "/api/messages/" +
@@ -2344,105 +2355,145 @@ document
             chatUser.id
           ),
           {
-            method: "POST",
 
-            body:
-              JSON.stringify({
-                body
-              })
+            method:"POST",
+
+            body:JSON.stringify({
+              body
+            })
+
           }
         );
 
-        input.value =
-          "";
+
+        input.value="";
 
         await loadMessages();
 
-      } catch (err) {
 
-        alert(
-          err.message
-        );
+      }catch(err){
+
+        alert(err.message);
+
       }
+
     }
   );
 
 
-/* =========================
-   REPORT USER
-========================= */
+/* REPORT */
 
-async function reportUser(id) {
+async function reportUser(id){
 
   const reason =
     prompt(
       "Andika sababu ya kumreport user huyu:"
     );
 
-  if (
-    !reason ||
-    !reason.trim()
-  ) {
-    return;
-  }
 
-  try {
+  if(!reason ||
+     !reason.trim())
+    return;
+
+
+  try{
 
     await api(
       "/api/report",
       {
-        method: "POST",
 
-        body:
-          JSON.stringify({
-            userId: id,
-            reason:
-              reason.trim()
-          })
+        method:"POST",
+
+        body:JSON.stringify({
+
+          userId:id,
+
+          reason:
+            reason.trim()
+
+        })
+
       }
     );
+
 
     alert(
       "Report imetumwa kwa admin."
     );
 
-  } catch (err) {
 
-    alert(
-      err.message
-    );
+  }catch(err){
+
+    alert(err.message);
+
   }
+
 }
 
 
-/* =========================
-   SECURITY HELPERS
-========================= */
+/* FILE TO BASE64 */
 
-function escapeHtml(value) {
+function fileToBase64(file){
+
+  return new Promise(
+    (resolve,reject) => {
+
+      const reader =
+        new FileReader();
+
+
+      reader.onload =
+        () => resolve(
+          reader.result
+        );
+
+
+      reader.onerror =
+        () => reject(
+          new Error(
+            "Failed to read file"
+          )
+        );
+
+
+      reader.readAsDataURL(file);
+
+    }
+  );
+
+}
+
+
+/* SECURITY */
+
+function escapeHtml(value){
 
   return String(
     value ?? ""
   ).replace(
     /[&<>"']/g,
-    function(c) {
+    c => ({
 
-      return {
-        "&":"&amp;",
-        "<":"&lt;",
-        ">":"&gt;",
-        '"':"&quot;",
-        "'":"&#039;"
-      }[c];
+      "&":"&amp;",
+      "<":"&lt;",
+      ">":"&gt;",
+      '"':"&quot;",
+      "'":"&#039;"
 
-    }
+    }[c])
   );
+
 }
 
 
-/* =========================
-   START
-========================= */
+function escapeAttr(value){
+
+  return escapeHtml(value);
+
+}
+
+
+/* START */
 
 checkSession();
 
