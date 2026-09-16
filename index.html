@@ -1,0 +1,75 @@
+<!doctype html>
+<html lang="sw">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Tanzania Dating</title>
+<style>
+*{box-sizing:border-box}body{margin:0;font-family:Arial,sans-serif;background:#fff5f8;color:#24131b}
+header{background:linear-gradient(135deg,#ff174f,#e40046);color:#fff;padding:18px 22px;display:flex;justify-content:space-between;align-items:center;position:sticky;top:0;z-index:3}
+.logo{font-size:22px;font-weight:800}.wrap{max-width:1000px;margin:auto;padding:22px}.card{background:#fff;border-radius:22px;padding:22px;box-shadow:0 8px 30px #00000012;margin-bottom:18px}
+button{border:0;border-radius:14px;padding:12px 18px;font-weight:700;cursor:pointer;background:#ff174f;color:#fff}.ghost{background:#fff;color:#ff174f;border:1px solid #ff174f}.danger{background:#222}.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:18px}
+input,select,textarea{width:100%;padding:13px;border:1px solid #ddd;border-radius:12px;margin:7px 0 13px}textarea{min-height:90px}.muted{color:#777}.hidden{display:none!important}.tabs{display:flex;gap:8px;flex-wrap:wrap;margin:15px 0}.tabs button{flex:1;min-width:110px}
+.profile img{width:100%;height:330px;object-fit:cover;border-radius:18px;background:#eee}.pill{display:inline-block;padding:7px 10px;border-radius:30px;background:#ffe4ec;margin:4px;font-size:12px}
+.msg{padding:10px 14px;border-radius:15px;background:#f1f1f1;margin:7px 0;max-width:75%}.mine{margin-left:auto;background:#ff174f;color:white}
+nav{display:flex;gap:8px;flex-wrap:wrap}.stat{font-size:30px;font-weight:800}.table{width:100%;border-collapse:collapse}.table td,.table th{padding:10px;border-bottom:1px solid #eee;text-align:left}
+</style></head>
+<body>
+<header><div class="logo">❤️ Tanzania Dating</div><nav id="topnav"></nav></header>
+<main class="wrap">
+
+<section id="home">
+<div class="card" style="text-align:center">
+<h1>Pata mtu sahihi 🇹🇿</h1><p class="muted">Unganisha moyo na watu wapya Tanzania.</p>
+<button onclick="show('register')">Anza sasa</button> <button class="ghost" onclick="show('login')">Ingia</button>
+</div></section>
+
+<section id="register" class="hidden card"><h2>Unda akaunti</h2>
+<form onsubmit="register(event)">
+<input name="name" placeholder="Jina kamili" required><input name="email" type="email" placeholder="Email" required>
+<input name="password" type="password" placeholder="Nenosiri" required><input name="age" type="number" min="18" placeholder="Umri (18+)" required>
+<select name="gender"><option value="Mwanaume">Mwanaume</option><option value="Mwanamke">Mwanamke</option></select>
+<input name="city" placeholder="Mji, mfano Dar es Salaam" required><textarea name="bio" placeholder="Jieleze kwa kifupi"></textarea>
+<input name="photo" placeholder="Link ya picha (hiari)"><button>Jisajili</button>
+</form></section>
+
+<section id="login" class="hidden card"><h2>Karibu tena</h2>
+<form onsubmit="login(event)"><input name="email" type="email" placeholder="Email" required><input name="password" type="password" placeholder="Nenosiri" required><button>Ingia</button></form>
+<p><button class="ghost" onclick="show('admin')">Admin Panel</button></p></section>
+
+<section id="app" class="hidden">
+<div class="tabs">
+<button onclick="loadDiscover()">🔎 Tafuta</button><button onclick="loadMatches()">❤️ Matches</button><button onclick="loadProfile()">👤 Profile</button><button onclick="logout()">Toka</button>
+</div>
+<div id="content"></div>
+</section>
+
+<section id="admin" class="hidden card"><h2>Admin Panel</h2>
+<form onsubmit="adminLogin(event)"><input name="email" placeholder="Admin email" required><input name="password" type="password" placeholder="Admin password" required><button>Ingia Admin</button></form>
+<div id="adminarea"></div></section>
+
+</main>
+<script>
+const $=id=>document.getElementById(id);
+function show(id){['home','register','login','app','admin'].forEach(x=>$(x).classList.add('hidden'));$(id).classList.remove('hidden')}
+async function api(url,opt={}){let r=await fetch(url,{headers:{'Content-Type':'application/json'},...opt});let d=await r.json();if(!r.ok)throw Error(d.error||'Error');return d}
+async function register(e){e.preventDefault();let f=new FormData(e.target);try{await api('/api/register',{method:'POST',body:JSON.stringify(Object.fromEntries(f))});openApp()}catch(x){alert(x.message)}}
+async function login(e){e.preventDefault();let f=new FormData(e.target);try{await api('/api/login',{method:'POST',body:JSON.stringify(Object.fromEntries(f))});openApp()}catch(x){alert(x.message)}}
+async function openApp(){show('app');loadDiscover()}
+async function logout(){await api('/api/logout',{method:'POST'});show('home')}
+async function loadDiscover(){let a=await api('/api/discover');$('content').innerHTML='<h2>Watu wapya</h2><div class="grid">'+a.map(u=>card(u)).join('')+'</div>'}
+function card(u){let img=u.photo||'https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&w=700&q=80';return `<div class="card profile"><img src="${img}"><h2>${esc(u.name)}, ${u.age}</h2><span class="pill">${esc(u.city)}</span><span class="pill">${esc(u.gender)}</span><p>${esc(u.bio||'')}</p><button onclick="like(${u.id})">❤️ Like</button> <button class="ghost" onclick="report(${u.id})">Ripoti</button></div>`}
+async function like(id){let r=await api('/api/like',{method:'POST',body:JSON.stringify({userId:id})});alert(r.matched?'🎉 Ni Match!':'Like imetumwa');loadDiscover()}
+async function loadMatches(){let a=await api('/api/matches');$('content').innerHTML='<h2>❤️ Matches zako</h2><div class="grid">'+(a.length?a.map(u=>`<div class="card"><h3>${esc(u.name)}, ${u.age}</h3><p>${esc(u.city)}</p><button onclick="chat(${u.id},'${esc(u.name)}')">💬 Chat</button></div>`).join(''):'<p class="muted">Bado huna match.</p>')+'</div>'}
+async function chat(id,name){let msgs=await api('/api/messages/'+id);$('content').innerHTML=`<div class="card"><h2>💬 ${name}</h2><div id="msgs">${msgs.map(m=>`<div class="msg ${m.sender===id?'':'mine'}">${esc(m.body)}</div>`).join('')}</div><form onsubmit="sendMsg(event,${id})"><input name="body" placeholder="Andika ujumbe..." required><button>Tuma</button></form></div>`}
+async function sendMsg(e,id){e.preventDefault();let f=new FormData(e.target);await api('/api/messages/'+id,{method:'POST',body:JSON.stringify(Object.fromEntries(f))});chat(id,'Chat')}
+async function loadProfile(){let u=await api('/api/me');$('content').innerHTML=`<div class="card"><h2>👤 Profile yangu</h2><form onsubmit="saveProfile(event)"><input name="name" value="${esc(u.name)}" required><input name="age" type="number" min="18" value="${u.age}" required><select name="gender"><option>${esc(u.gender)}</option><option>Mwanaume</option><option>Mwanamke</option></select><input name="city" value="${esc(u.city)}" required><textarea name="bio">${esc(u.bio||'')}</textarea><input name="photo" value="${esc(u.photo||'')}" placeholder="Link ya picha"><button>Hifadhi</button></form></div>`}
+async function saveProfile(e){e.preventDefault();await api('/api/profile',{method:'POST',body:JSON.stringify(Object.fromEntries(new FormData(e.target)))});alert('Profile imehifadhiwa')}
+async function report(id){let reason=prompt('Sababu ya ripoti?');if(reason)await api('/api/report',{method:'POST',body:JSON.stringify({userId:id,reason})});alert('Ripoti imetumwa')}
+async function adminLogin(e){e.preventDefault();let f=new FormData(e.target);try{await api('/api/admin/login',{method:'POST',body:JSON.stringify(Object.fromEntries(f))});adminDashboard()}catch(x){alert(x.message)}}
+async function adminDashboard(){let s=await api('/api/admin/stats');let users=await api('/api/admin/users');let reports=await api('/api/admin/reports');$('adminarea').innerHTML=`<hr><div class="grid"><div class="card"><div class="stat">${s.users}</div>Users</div><div class="card"><div class="stat">${s.matches}</div>Likes</div><div class="card"><div class="stat">${s.messages}</div>Messages</div><div class="card"><div class="stat">${s.reports}</div>Open reports</div></div><div class="card"><h3>Watumiaji</h3><table class="table"><tr><th>Jina</th><th>Email</th><th>Mji</th><th></th></tr>${users.map(u=>`<tr><td>${esc(u.name)}</td><td>${esc(u.email)}</td><td>${esc(u.city)}</td><td><button class="danger" onclick="delUser(${u.id})">Futa</button></td></tr>`).join('')}</table></div><div class="card"><h3>Ripoti</h3>${reports.map(r=>`<p><b>${esc(r.reported_name)}</b>: ${esc(r.reason)} — ${r.status} ${r.status==='open'?`<button onclick="closeReport(${r.id})">Funga</button>`:''}</p>`).join('')||'<p>Hakuna ripoti.</p>'}</div>`}
+async function delUser(id){if(confirm('Futa mtumiaji?')){await api('/api/admin/users/'+id,{method:'DELETE'});adminDashboard()}}
+async function closeReport(id){await api('/api/admin/reports/'+id,{method:'PATCH',body:JSON.stringify({status:'closed'})});adminDashboard()}
+function esc(s){return String(s??'').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[m]))}
+(async()=>{try{if(await api('/api/me'))openApp()}catch(e){}})();
+</script>
+</body></html>
