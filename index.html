@@ -1,569 +1,556 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="sw">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Tanzania Dating</title>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Tanzania Dating</title>
 
-<style>
-*{
-  box-sizing:border-box;
-}
+  <style>
+    * {
+      box-sizing: border-box;
+    }
 
-body{
-  margin:0;
-  font-family:Arial,sans-serif;
-  background:#fff5f8;
-  color:#24131b;
-}
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background: #fff5f8;
+      color: #24131b;
+    }
 
-header{
-  background:linear-gradient(135deg,#ff174f,#e60046);
-  color:white;
-  padding:15px;
-  display:flex;
-  justify-content:space-between;
-  align-items:center;
-  position:sticky;
-  top:0;
-  z-index:10;
-}
+    button,
+    input,
+    textarea,
+    select {
+      font: inherit;
+    }
 
-.logo{
-  font-size:21px;
-  font-weight:bold;
-}
+    button {
+      cursor: pointer;
+    }
 
-.header-actions{
-  display:flex;
-  gap:8px;
-  align-items:center;
-}
+    .hidden {
+      display: none !important;
+    }
 
-button{
-  border:0;
-  border-radius:10px;
-  padding:11px 15px;
-  cursor:pointer;
-  font-weight:bold;
-}
+    .center {
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+    }
 
-.primary-btn{
-  background:#ff174f;
-  color:white;
-}
+    .card {
+      background: white;
+      border-radius: 18px;
+      padding: 22px;
+      box-shadow: 0 8px 30px rgba(0,0,0,.08);
+    }
 
-.secondary-btn{
-  background:#eee;
-  color:#222;
-}
+    .auth-card {
+      width: 100%;
+      max-width: 430px;
+    }
 
-.danger-btn{
-  background:#d60000;
-  color:white;
-}
+    h1,
+    h2,
+    h3 {
+      margin-top: 0;
+    }
 
-.notification-btn{
-  background:white;
-  color:#ff174f;
-  position:relative;
-  font-size:18px;
-  padding:8px 11px;
-}
+    .logo {
+      text-align: center;
+      color: #e91e63;
+      margin-bottom: 8px;
+    }
 
-.badge{
-  position:absolute;
-  top:-5px;
-  right:-5px;
-  background:#222;
-  color:white;
-  min-width:20px;
-  height:20px;
-  border-radius:50%;
-  font-size:11px;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-}
+    .subtitle {
+      text-align: center;
+      color: #777;
+      margin-bottom: 20px;
+    }
 
-.hidden{
-  display:none !important;
-}
+    input,
+    textarea,
+    select {
+      width: 100%;
+      padding: 13px;
+      margin: 7px 0;
+      border: 1px solid #ddd;
+      border-radius: 10px;
+      outline: none;
+      background: white;
+    }
 
-.container{
-  max-width:1000px;
-  margin:auto;
-  padding:20px;
-}
+    input:focus,
+    textarea:focus,
+    select:focus {
+      border-color: #e91e63;
+    }
 
-.auth-box{
-  max-width:430px;
-  margin:50px auto;
-  background:white;
-  padding:25px;
-  border-radius:18px;
-  box-shadow:0 5px 25px rgba(0,0,0,.08);
-}
+    textarea {
+      resize: vertical;
+      min-height: 90px;
+    }
 
-.auth-box h1{
-  text-align:center;
-  color:#ff174f;
-}
+    .btn {
+      border: 0;
+      border-radius: 10px;
+      padding: 13px 16px;
+      width: 100%;
+      font-weight: bold;
+      margin-top: 8px;
+    }
 
-input,
-select,
-textarea{
-  width:100%;
-  padding:13px;
-  border:1px solid #ddd;
-  border-radius:10px;
-  margin:7px 0 12px;
-  font-size:15px;
-  outline:none;
-}
+    .primary {
+      background: #e91e63;
+      color: white;
+    }
 
-textarea{
-  resize:vertical;
-  min-height:90px;
-}
+    .secondary {
+      background: #fce4ec;
+      color: #c2185b;
+    }
 
-input:focus,
-select:focus,
-textarea:focus{
-  border-color:#ff174f;
-}
+    .danger {
+      background: #ffebee;
+      color: #c62828;
+    }
 
-.auth-box button{
-  width:100%;
-}
+    .link-btn {
+      border: 0;
+      background: none;
+      color: #e91e63;
+      font-weight: bold;
+    }
 
-.switch{
-  text-align:center;
-  margin-top:15px;
-}
+    .message {
+      padding: 11px;
+      border-radius: 10px;
+      margin: 10px 0;
+      display: none;
+      font-size: 14px;
+    }
 
-.switch button{
-  width:auto;
-  padding:0;
-  background:none;
-  color:#ff174f;
-}
+    .error {
+      background: #ffebee;
+      color: #c62828;
+    }
 
-nav{
-  background:white;
-  border-bottom:1px solid #eee;
-  padding:10px;
-  display:flex;
-  gap:8px;
-  overflow-x:auto;
-}
+    .success {
+      background: #e8f5e9;
+      color: #2e7d32;
+    }
 
-nav button{
-  white-space:nowrap;
-  background:#f5f5f5;
-}
+    /* APP */
 
-nav button.active{
-  background:#ff174f;
-  color:white;
-}
+    #app {
+      min-height: 100vh;
+    }
 
-.section-title{
-  margin-top:5px;
-}
+    header {
+      background: linear-gradient(135deg, #ff174f, #e91e63);
+      color: white;
+      padding: 15px;
+      position: sticky;
+      top: 0;
+      z-index: 20;
+      box-shadow: 0 3px 15px rgba(0,0,0,.15);
+    }
 
-.grid{
-  display:grid;
-  grid-template-columns:repeat(auto-fill,minmax(230px,1fr));
-  gap:18px;
-}
+    .header-inner {
+      max-width: 1000px;
+      margin: auto;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 10px;
+    }
 
-.card{
-  background:white;
-  border-radius:18px;
-  overflow:hidden;
-  box-shadow:0 4px 18px rgba(0,0,0,.08);
-}
+    .brand {
+      font-size: 20px;
+      font-weight: bold;
+    }
 
-.card-photo{
-  width:100%;
-  height:260px;
-  object-fit:cover;
-  background:#f1f1f1;
-}
+    .header-actions {
+      display: flex;
+      gap: 7px;
+    }
 
-.no-photo{
-  height:260px;
-  background:#f5dce5;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  font-size:60px;
-}
+    .header-actions button {
+      border: 0;
+      background: rgba(255,255,255,.18);
+      color: white;
+      padding: 9px 11px;
+      border-radius: 9px;
+    }
 
-.card-body{
-  padding:15px;
-}
+    .badge {
+      background: white;
+      color: #e91e63;
+      border-radius: 50%;
+      min-width: 19px;
+      height: 19px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 11px;
+      font-weight: bold;
+    }
 
-.card-name{
-  font-size:20px;
-  font-weight:bold;
-}
+    main {
+      max-width: 1000px;
+      margin: auto;
+      padding: 18px;
+    }
 
-.muted{
-  color:#777;
-  font-size:14px;
-  margin:5px 0;
-}
+    .section {
+      display: none;
+    }
 
-.bio{
-  margin:10px 0;
-  line-height:1.4;
-}
+    .section.active {
+      display: block;
+    }
 
-.card-actions{
-  display:flex;
-  gap:8px;
-  margin-top:12px;
-}
+    .section-title {
+      margin-bottom: 15px;
+    }
 
-.card-actions button{
-  flex:1;
-}
+    .users-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+      gap: 15px;
+    }
 
-.profile-box,
-.notifications-box,
-.chat-box{
-  background:white;
-  border-radius:18px;
-  padding:20px;
-  box-shadow:0 4px 18px rgba(0,0,0,.07);
-}
+    .user-card {
+      background: white;
+      border-radius: 17px;
+      overflow: hidden;
+      box-shadow: 0 5px 20px rgba(0,0,0,.08);
+    }
 
-.profile-photo{
-  width:150px;
-  height:150px;
-  object-fit:cover;
-  border-radius:50%;
-  display:block;
-  margin:0 auto 15px;
-  background:#eee;
-}
+    .user-photo {
+      width: 100%;
+      height: 280px;
+      background: #f8bbd0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+      font-size: 60px;
+      color: #ad1457;
+    }
 
-.photo-preview{
-  text-align:center;
-  margin:15px 0;
-}
+    .user-photo img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
 
-.photo-preview img{
-  width:150px;
-  height:150px;
-  object-fit:cover;
-  border-radius:50%;
-}
+    .user-info {
+      padding: 15px;
+    }
 
-.notification{
-  border-bottom:1px solid #eee;
-  padding:14px 5px;
-}
+    .user-name {
+      font-size: 20px;
+      font-weight: bold;
+      margin-bottom: 5px;
+    }
 
-.notification:last-child{
-  border-bottom:0;
-}
+    .user-meta {
+      color: #777;
+      font-size: 14px;
+      margin-bottom: 8px;
+    }
 
-.notification.unread{
-  background:#fff0f4;
-  border-radius:10px;
-  padding:14px;
-}
+    .user-bio {
+      font-size: 14px;
+      color: #555;
+      line-height: 1.4;
+      margin-bottom: 10px;
+    }
 
-.notification-title{
-  font-weight:bold;
-}
+    .user-actions {
+      display: flex;
+      gap: 8px;
+    }
 
-.notification-message{
-  margin-top:5px;
-}
+    .user-actions button {
+      flex: 1;
+      border: 0;
+      border-radius: 10px;
+      padding: 11px;
+      font-weight: bold;
+    }
 
-.notification-time{
-  font-size:12px;
-  color:#888;
-  margin-top:5px;
-}
+    .like-btn {
+      background: #e91e63;
+      color: white;
+    }
 
-.chat-messages{
-  height:400px;
-  overflow-y:auto;
-  background:#fafafa;
-  border-radius:12px;
-  padding:15px;
-  margin-bottom:12px;
-}
+    .message-btn {
+      background: #fce4ec;
+      color: #c2185b;
+    }
 
-.message{
-  max-width:75%;
-  padding:10px 13px;
-  border-radius:15px;
-  margin-bottom:9px;
-  clear:both;
-}
+    .empty {
+      background: white;
+      padding: 25px;
+      border-radius: 15px;
+      text-align: center;
+      color: #777;
+    }
 
-.message.mine{
-  background:#ff174f;
-  color:white;
-  margin-left:auto;
-  border-bottom-right-radius:4px;
-}
+    /* Profile */
 
-.message.theirs{
-  background:#e9e9e9;
-  color:#222;
-  margin-right:auto;
-  border-bottom-left-radius:4px;
-}
+    .profile-box {
+      max-width: 600px;
+      margin: auto;
+    }
 
-.message-time{
-  font-size:10px;
-  opacity:.7;
-  margin-top:4px;
-}
+    .profile-photo {
+      width: 150px;
+      height: 150px;
+      border-radius: 50%;
+      margin: 0 auto 20px;
+      background: #f8bbd0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+      font-size: 50px;
+    }
 
-.chat-input{
-  display:flex;
-  gap:8px;
-}
+    .profile-photo img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
 
-.chat-input input{
-  margin:0;
-}
+    /* Notifications */
 
-.empty{
-  text-align:center;
-  padding:35px 10px;
-  color:#777;
-}
+    .notification {
+      background: white;
+      border-radius: 14px;
+      padding: 15px;
+      margin-bottom: 10px;
+      box-shadow: 0 3px 12px rgba(0,0,0,.06);
+    }
 
-.error{
-  color:#c40000;
-  background:#ffe5e5;
-  padding:10px;
-  border-radius:10px;
-  margin-bottom:10px;
-}
+    .notification.unread {
+      border-left: 4px solid #e91e63;
+    }
 
-.success{
-  color:#087a2a;
-  background:#e4ffe9;
-  padding:10px;
-  border-radius:10px;
-  margin-bottom:10px;
-}
+    .notification-title {
+      font-weight: bold;
+      margin-bottom: 5px;
+    }
 
-.loading{
-  text-align:center;
-  padding:30px;
-}
+    .notification-message {
+      color: #666;
+      font-size: 14px;
+    }
 
-.form-row{
-  display:grid;
-  grid-template-columns:1fr 1fr;
-  gap:10px;
-}
+    /* Chat */
 
-@media(max-width:600px){
-  .container{
-    padding:12px;
-  }
+    .chat-box {
+      max-width: 700px;
+      margin: auto;
+      background: white;
+      border-radius: 16px;
+      overflow: hidden;
+    }
 
-  .form-row{
-    grid-template-columns:1fr;
-    gap:0;
-  }
+    .chat-header {
+      padding: 15px;
+      background: #e91e63;
+      color: white;
+      font-weight: bold;
+    }
 
-  .card-photo,
-  .no-photo{
-    height:230px;
-  }
-}
-</style>
+    .messages {
+      height: 400px;
+      overflow-y: auto;
+      padding: 15px;
+      background: #fff8fa;
+    }
+
+    .msg {
+      max-width: 75%;
+      padding: 10px 13px;
+      border-radius: 14px;
+      margin-bottom: 9px;
+      font-size: 14px;
+      line-height: 1.4;
+    }
+
+    .msg.me {
+      margin-left: auto;
+      background: #e91e63;
+      color: white;
+      border-bottom-right-radius: 3px;
+    }
+
+    .msg.them {
+      background: #eeeeee;
+      color: #222;
+      border-bottom-left-radius: 3px;
+    }
+
+    .chat-input {
+      display: flex;
+      gap: 8px;
+      padding: 12px;
+      border-top: 1px solid #eee;
+    }
+
+    .chat-input input {
+      margin: 0;
+      flex: 1;
+    }
+
+    .chat-input button {
+      width: auto;
+      margin: 0;
+    }
+
+    .back {
+      margin-bottom: 12px;
+    }
+
+    .loading {
+      text-align: center;
+      padding: 25px;
+      color: #777;
+    }
+
+    @media(max-width:600px) {
+      .users-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .user-photo {
+        height: 320px;
+      }
+
+      .header-inner {
+        flex-wrap: wrap;
+      }
+    }
+  </style>
 </head>
 
 <body>
 
-<header id="mainHeader" class="hidden">
-  <div class="logo">❤️ Tanzania Dating</div>
+<!-- LOGIN -->
+<div id="loginPage" class="center">
+  <div class="card auth-card">
 
-  <div class="header-actions">
-    <button
-      class="notification-btn"
-      type="button"
-      onclick="showNotifications()"
-      aria-label="Notifications"
-    >
-      🔔
-      <span id="notificationBadge" class="badge hidden">0</span>
-    </button>
+    <h1 class="logo">❤️ Tanzania Dating</h1>
+    <p class="subtitle">Karibu Tanzania Dating</p>
 
-    <button
-      class="secondary-btn"
-      type="button"
-      onclick="logout()"
-    >
-      Toka
-    </button>
-  </div>
-</header>
-
-
-<!-- =========================
-     LOGIN
-========================= -->
-
-<section id="loginSection">
-  <div class="auth-box">
-
-    <h1>❤️ Tanzania Dating</h1>
-
-    <p style="text-align:center">
-      Ingia kwenye account yako
-    </p>
-
-    <div id="loginMessage"></div>
+    <div id="loginMessage" class="message"></div>
 
     <form id="loginForm">
-
-      <label>Email</label>
 
       <input
         id="loginEmail"
         type="email"
-        placeholder="Weka email yako"
+        placeholder="Email"
         autocomplete="email"
         required
       >
-
-      <label>Password</label>
 
       <input
         id="loginPassword"
         type="password"
-        placeholder="Weka password yako"
+        placeholder="Password"
         autocomplete="current-password"
         required
       >
 
-      <button
-        id="loginBtn"
-        class="primary-btn"
-        type="submit"
-      >
-        Login
+      <button id="loginBtn" type="submit" class="btn primary">
+        Ingia
       </button>
 
     </form>
 
-    <div class="switch">
+    <p style="text-align:center;margin-top:18px">
       Huna account?
-      <button
-        type="button"
-        onclick="showRegister()"
-      >
+      <button id="showRegisterBtn" class="link-btn" type="button">
         Jisajili
       </button>
-    </div>
+    </p>
 
   </div>
-</section>
+</div>
 
 
-<!-- =========================
-     REGISTER
-========================= -->
+<!-- REGISTER -->
+<div id="registerPage" class="center hidden">
+  <div class="card auth-card">
 
-<section id="registerSection" class="hidden">
+    <h1 class="logo">❤️ Jisajili</h1>
+    <p class="subtitle">Tengeneza account yako</p>
 
-  <div class="auth-box">
-
-    <h1>Jisajili ❤️</h1>
-
-    <div id="registerMessage"></div>
+    <div id="registerMessage" class="message"></div>
 
     <form id="registerForm">
-
-      <label>Jina</label>
 
       <input
         id="registerName"
         type="text"
-        placeholder="Mfano: Daniel"
+        placeholder="Jina lako"
+        autocomplete="name"
         required
       >
-
-      <label>Email</label>
 
       <input
         id="registerEmail"
         type="email"
-        placeholder="email@example.com"
+        placeholder="Email"
         autocomplete="email"
         required
       >
 
-      <label>Password</label>
-
       <input
         id="registerPassword"
         type="password"
-        placeholder="Angalau characters 6"
+        placeholder="Password"
         autocomplete="new-password"
         required
       >
 
-      <div class="form-row">
+      <input
+        id="registerAge"
+        type="number"
+        min="18"
+        max="100"
+        placeholder="Umri"
+        required
+      >
 
-        <div>
-          <label>Umri</label>
-
-          <input
-            id="registerAge"
-            type="number"
-            min="18"
-            max="100"
-            placeholder="18"
-            required
-          >
-        </div>
-
-        <div>
-          <label>Jinsia</label>
-
-          <select id="registerGender" required>
-            <option value="">Chagua</option>
-            <option value="Mwanaume">Mwanaume</option>
-            <option value="Mwanamke">Mwanamke</option>
-          </select>
-        </div>
-
-      </div>
-
-      <label>Mji</label>
+      <select id="registerGender" required>
+        <option value="">Chagua jinsia</option>
+        <option value="Mwanaume">Mwanaume</option>
+        <option value="Mwanamke">Mwanamke</option>
+      </select>
 
       <input
         id="registerCity"
         type="text"
-        placeholder="Mfano: Dar es Salaam"
+        placeholder="Mji, mfano Dar es Salaam"
         required
       >
 
-      <label>Bio</label>
-
       <textarea
         id="registerBio"
-        maxlength="500"
         placeholder="Jieleze kidogo..."
       ></textarea>
 
-      <label>Picha</label>
+      <label style="display:block;margin-top:8px;font-weight:bold">
+        Picha yako
+      </label>
 
       <input
         id="registerPhoto"
@@ -571,105 +558,80 @@ nav button.active{
         accept="image/jpeg,image/png,image/webp"
       >
 
-      <div id="registerPhotoPreview" class="photo-preview"></div>
+      <small style="color:#777">
+        Picha isiwe zaidi ya 5MB.
+      </small>
 
       <button
         id="registerBtn"
-        class="primary-btn"
         type="submit"
+        class="btn primary"
       >
         Jisajili
       </button>
 
     </form>
 
-    <div class="switch">
-      Una account tayari?
-      <button
-        type="button"
-        onclick="showLogin()"
-      >
-        Login
+    <p style="text-align:center;margin-top:18px">
+      Una account?
+      <button id="showLoginBtn" class="link-btn" type="button">
+        Ingia
       </button>
-    </div>
+    </p>
 
   </div>
-
-</section>
-
-
-<!-- =========================
-     APP
-========================= -->
-
-<section id="appSection" class="hidden">
-
-  <nav>
-
-    <button
-      id="navDiscover"
-      class="active"
-      type="button"
-      onclick="showDiscover()"
-    >
-      🔎 Watu
-    </button>
-
-    <button
-      id="navMatches"
-      type="button"
-      onclick="showMatches()"
-    >
-      ❤️ Matches
-    </button>
-
-    <button
-      id="navNotifications"
-      type="button"
-      onclick="showNotifications()"
-    >
-      🔔 Notifications
-    </button>
-
-    <button
-      id="navProfile"
-      type="button"
-      onclick="showProfile()"
-    >
-      👤 Profile
-    </button>
-
-  </nav>
+</div>
 
 
-  <main class="container">
+<!-- APP -->
+<div id="app" class="hidden">
 
-    <!-- DISCOVER -->
+  <header>
 
-    <section id="discoverSection">
+    <div class="header-inner">
 
-      <h2 class="section-title">
-        🔎 Watu wapya
-      </h2>
-
-      <div id="discoverList" class="grid">
-        <div class="loading">
-          Inapakia...
-        </div>
+      <div class="brand">
+        ❤️ Tanzania Dating
       </div>
 
-    </section>
+      <div class="header-actions">
+
+        <button type="button" onclick="showSection('discover')">
+          🏠
+        </button>
+
+        <button type="button" onclick="showSection('notifications')">
+          🔔
+          <span id="notificationBadge" class="badge hidden">0</span>
+        </button>
+
+        <button type="button" onclick="showSection('profile')">
+          👤
+        </button>
+
+        <button type="button" onclick="logout()">
+          🚪
+        </button>
+
+      </div>
+
+    </div>
+
+  </header>
 
 
-    <!-- MATCHES -->
+  <main>
 
-    <section id="matchesSection" class="hidden">
+    <!-- DISCOVER -->
+    <section id="discoverSection" class="section active">
 
       <h2 class="section-title">
-        ❤️ Matches zako
+        Watu wapya
       </h2>
 
-      <div id="matchesList" class="grid">
+      <div id="discoverMessage" class="message"></div>
+
+      <div id="usersGrid" class="users-grid">
         <div class="loading">
           Inapakia...
         </div>
@@ -679,135 +641,99 @@ nav button.active{
 
 
     <!-- NOTIFICATIONS -->
+    <section id="notificationsSection" class="section">
 
-    <section id="notificationsSection" class="hidden">
+      <div style="display:flex;justify-content:space-between;align-items:center;gap:10px">
+        <h2>🔔 Notifications</h2>
 
-      <div class="notifications-box">
+        <button
+          type="button"
+          class="link-btn"
+          onclick="markNotificationsRead()"
+        >
+          Mark all read
+        </button>
+      </div>
 
-        <div style="
-          display:flex;
-          justify-content:space-between;
-          align-items:center;
-          gap:10px;
-        ">
-
-          <h2>🔔 Notifications</h2>
-
-          <button
-            class="secondary-btn"
-            type="button"
-            onclick="markNotificationsRead()"
-          >
-            Soma zote
-          </button>
-
+      <div id="notificationsList">
+        <div class="loading">
+          Inapakia...
         </div>
-
-        <div id="notificationsList">
-          <div class="empty">
-            Inapakia...
-          </div>
-        </div>
-
       </div>
 
     </section>
 
 
     <!-- PROFILE -->
-
-    <section id="profileSection" class="hidden">
+    <section id="profileSection" class="section">
 
       <div class="profile-box">
 
-        <h2>👤 Profile yangu</h2>
-
-        <div id="profileMessage"></div>
-
-        <div id="profilePhotoPreview" class="photo-preview">
-        </div>
-
-        <label>Badilisha picha</label>
-
-        <input
-          id="profilePhoto"
-          type="file"
-          accept="image/jpeg,image/png,image/webp"
-        >
-
         <button
-          id="removePhotoBtn"
-          class="secondary-btn"
           type="button"
-          onclick="removeProfilePhoto()"
+          class="btn secondary back"
+          onclick="showSection('discover')"
         >
-          Ondoa picha
+          ← Rudi
         </button>
 
-        <form id="profileForm">
+        <div class="card">
 
-          <label>Jina</label>
+          <h2>👤 Profile yangu</h2>
+
+          <div id="profileMessage" class="message"></div>
+
+          <div id="profilePhotoBox" class="profile-photo">
+            👤
+          </div>
+
+          <input
+            id="profilePhoto"
+            type="file"
+            accept="image/jpeg,image/png,image/webp"
+          >
 
           <input
             id="profileName"
             type="text"
-            required
+            placeholder="Jina"
           >
 
-          <div class="form-row">
+          <input
+            id="profileAge"
+            type="number"
+            min="18"
+            max="100"
+            placeholder="Umri"
+          >
 
-            <div>
-
-              <label>Umri</label>
-
-              <input
-                id="profileAge"
-                type="number"
-                min="18"
-                max="100"
-                required
-              >
-
-            </div>
-
-            <div>
-
-              <label>Jinsia</label>
-
-              <select id="profileGender" required>
-                <option value="">Chagua</option>
-                <option value="Mwanaume">Mwanaume</option>
-                <option value="Mwanamke">Mwanamke</option>
-              </select>
-
-            </div>
-
-          </div>
-
-          <label>Mji</label>
+          <select id="profileGender">
+            <option value="">Chagua jinsia</option>
+            <option value="Mwanaume">Mwanaume</option>
+            <option value="Mwanamke">Mwanamke</option>
+          </select>
 
           <input
             id="profileCity"
             type="text"
-            required
+            placeholder="Mji"
           >
-
-          <label>Bio</label>
 
           <textarea
             id="profileBio"
-            maxlength="500"
+            placeholder="Bio"
           ></textarea>
 
           <button
             id="saveProfileBtn"
-            class="primary-btn"
-            type="submit"
+            type="button"
+            class="btn primary"
+            onclick="saveProfile()"
           >
             Hifadhi Profile
           </button>
 
-        </form>
+        </div>
 
       </div>
 
@@ -815,49 +741,41 @@ nav button.active{
 
 
     <!-- CHAT -->
+    <section id="chatSection" class="section">
 
-    <section id="chatSection" class="hidden">
+      <button
+        type="button"
+        class="btn secondary back"
+        onclick="showSection('discover')"
+      >
+        ← Rudi
+      </button>
 
       <div class="chat-box">
 
-        <button
-          class="secondary-btn"
-          type="button"
-          onclick="showMatches()"
-        >
-          ← Rudi Matches
-        </button>
+        <div id="chatHeader" class="chat-header">
+          Chat
+        </div>
 
-        <h2 id="chatTitle">
-          💬 Chat
-        </h2>
-
-        <div
-          id="chatMessages"
-          class="chat-messages"
-        >
-          <div class="empty">
+        <div id="messagesList" class="messages">
+          <div class="loading">
             Inapakia...
           </div>
         </div>
 
-        <form
-          id="chatForm"
-          class="chat-input"
-        >
+        <form id="messageForm" class="chat-input">
 
           <input
-            id="chatInput"
+            id="messageInput"
             type="text"
-            maxlength="2000"
             placeholder="Andika ujumbe..."
+            autocomplete="off"
             required
           >
 
           <button
-            id="sendMessageBtn"
-            class="primary-btn"
             type="submit"
+            class="btn primary"
           >
             Tuma
           </button>
@@ -870,325 +788,1357 @@ nav button.active{
 
   </main>
 
-</section>
+</div>
 
 
 <script>
 
-let currentUser = null;
-let currentChatUser = null;
-let profilePhotoData = "";
-let registerPhotoData = "";
+  let currentUser = null;
+  let currentChatUser = null;
+  let notificationTimer = null;
 
 
-/* =========================
-   HELPERS
-========================= */
+  /* =========================
+     HELPERS
+  ========================= */
 
-function $(id){
-  return document.getElementById(id);
-}
+  const $ = id => document.getElementById(id);
 
 
-async function api(url, options = {}){
+  function showMessage(id, text, type = "error") {
 
-  const config = {
-    credentials: "include",
-    ...options,
-    headers: {
-      ...(options.body ? {
-        "Content-Type":"application/json"
-      } : {}),
-      ...(options.headers || {})
+    const el = $(id);
+
+    if (!el) return;
+
+    el.textContent = text;
+    el.className = "message " + type;
+    el.style.display = "block";
+
+  }
+
+
+  function hideMessage(id) {
+
+    const el = $(id);
+
+    if (!el) return;
+
+    el.style.display = "none";
+
+  }
+
+
+  async function api(url, options = {}) {
+
+    const config = {
+      ...options,
+      credentials: "include",
+      headers: {
+        ...(options.body instanceof FormData
+          ? {}
+          : {"Content-Type": "application/json"}),
+        ...(options.headers || {})
+      }
+    };
+
+    const response = await fetch(url, config);
+
+    let data = {};
+
+    try {
+      data = await response.json();
+    } catch (e) {
+      data = {};
     }
-  };
 
-  const response = await fetch(url, config);
+    if (!response.ok) {
 
-  let data = {};
+      const error = new Error(
+        data.error || "Kuna tatizo kwenye server."
+      );
 
-  try{
-    data = await response.json();
-  }catch{
-    data = {};
+      error.status = response.status;
+
+      throw error;
+    }
+
+    return data;
   }
 
-  if(!response.ok){
-    throw new Error(
-      data.error || "Kuna tatizo kwenye server."
-    );
+
+  function showLogin() {
+
+    $("loginPage").classList.remove("hidden");
+    $("registerPage").classList.add("hidden");
+    $("app").classList.add("hidden");
+
   }
 
-  return data;
-}
 
+  function showRegister() {
 
-function escapeHTML(value){
+    $("loginPage").classList.add("hidden");
+    $("registerPage").classList.remove("hidden");
+    $("app").classList.add("hidden");
 
-  return String(value ?? "")
-    .replace(/&/g,"&amp;")
-    .replace(/</g,"&lt;")
-    .replace(/>/g,"&gt;")
-    .replace(/"/g,"&quot;")
-    .replace(/'/g,"&#039;");
-}
-
-
-function formatDate(date){
-
-  try{
-    return new Date(date).toLocaleString("sw-TZ");
-  }catch{
-    return "";
   }
-}
 
 
-function showMessage(id, message, type="error"){
+  function showApp() {
 
-  const el = $(id);
+    $("loginPage").classList.add("hidden");
+    $("registerPage").classList.add("hidden");
+    $("app").classList.remove("hidden");
 
-  if(!el) return;
-
-  el.innerHTML = `
-    <div class="${type}">
-      ${escapeHTML(message)}
-    </div>
-  `;
-}
-
-
-function clearMessage(id){
-
-  const el = $(id);
-
-  if(el){
-    el.innerHTML = "";
   }
-}
 
 
-/* =========================
-   AUTH SCREENS
-========================= */
+  function showSection(section) {
 
-function showLogin(){
+    document.querySelectorAll(".section").forEach(el => {
+      el.classList.remove("active");
+    });
 
-  $("loginSection").classList.remove("hidden");
-  $("registerSection").classList.add("hidden");
-  $("appSection").classList.add("hidden");
-  $("mainHeader").classList.add("hidden");
+    const target = $(section + "Section");
 
-  clearMessage("loginMessage");
-  clearMessage("registerMessage");
-}
+    if (target) {
+      target.classList.add("active");
+    }
 
+    if (section === "discover") {
+      loadDiscover();
+    }
 
-function showRegister(){
+    if (section === "notifications") {
+      loadNotifications();
+    }
 
-  $("loginSection").classList.add("hidden");
-  $("registerSection").classList.remove("hidden");
-  $("appSection").classList.add("hidden");
-  $("mainHeader").classList.add("hidden");
+    if (section === "profile") {
+      loadProfile();
+    }
 
-  clearMessage("registerMessage");
-}
-
-
-function showApp(){
-
-  $("loginSection").classList.add("hidden");
-  $("registerSection").classList.add("hidden");
-  $("appSection").classList.remove("hidden");
-  $("mainHeader").classList.remove("hidden");
-
-  showDiscover();
-}
+  }
 
 
-/* =========================
-   LOGIN
-========================= */
+  /* =========================
+     LOGIN
+  ========================= */
 
-$("loginForm").addEventListener(
-  "submit",
-  async function(event){
+  $("loginForm").addEventListener("submit", async function(e) {
 
-    event.preventDefault();
+    e.preventDefault();
+
+    hideMessage("loginMessage");
+
+    const btn = $("loginBtn");
 
     const email = $("loginEmail").value.trim();
     const password = $("loginPassword").value;
 
-    if(!email || !password){
+    if (!email || !password) {
+
       showMessage(
         "loginMessage",
-        "Weka email na password."
+        "Weka email na password.",
+        "error"
       );
+
       return;
     }
 
-    const button = $("loginBtn");
+    btn.disabled = true;
+    btn.textContent = "Inaingia...";
 
-    try{
+    try {
 
-      clearMessage("loginMessage");
+      const result = await api("/api/login", {
+        method: "POST",
+        body: JSON.stringify({
+          email,
+          password
+        })
+      });
 
-      button.disabled = true;
-      button.textContent = "Inaingia...";
-
-      const data = await api(
-        "/api/login",
-        {
-          method:"POST",
-          body:JSON.stringify({
-            email,
-            password
-          })
-        }
-      );
-
-      if(!data.ok || !data.user){
-        throw new Error(
-          "Login haikukamilika."
-        );
+      if (!result || !result.ok) {
+        throw new Error("Login imeshindikana.");
       }
 
-      currentUser = data.user;
-
-      localStorage.setItem(
-        "tanzaniaDatingUser",
-        JSON.stringify(data.user)
-      );
+      currentUser = result.user;
 
       $("loginPassword").value = "";
 
       showApp();
 
-      await Promise.allSettled([
-        loadDiscover(),
-        loadMatches(),
-        loadProfile(),
-        loadNotificationCount()
-      ]);
+      await loadDiscover();
+      await loadNotifications();
 
-    }catch(error){
+      startNotificationPolling();
 
-      console.error(
-        "LOGIN ERROR:",
-        error
-      );
+    } catch (error) {
+
+      console.error("LOGIN ERROR:", error);
 
       showMessage(
         "loginMessage",
-        error.message ||
-        "Email au password sio sahihi."
+        error.message || "Email au password sio sahihi.",
+        "error"
       );
 
-    }finally{
+    } finally {
 
-      button.disabled = false;
-      button.textContent = "Login";
+      btn.disabled = false;
+      btn.textContent = "Ingia";
 
     }
 
-  }
-);
+  });
 
 
-/* =========================
-   REGISTER PHOTO
-========================= */
+  /* =========================
+     REGISTER
+  ========================= */
 
-$("registerPhoto").addEventListener(
-  "change",
-  async function(){
+  $("registerForm").addEventListener("submit", async function(e) {
 
-    const file = this.files[0];
+    e.preventDefault();
 
-    if(!file){
-      registerPhotoData = "";
-      $("registerPhotoPreview").innerHTML = "";
+    hideMessage("registerMessage");
+
+    const btn = $("registerBtn");
+
+    const name = $("registerName").value.trim();
+    const email = $("registerEmail").value.trim();
+    const password = $("registerPassword").value;
+    const age = Number($("registerAge").value);
+    const gender = $("registerGender").value;
+    const city = $("registerCity").value.trim();
+    const bio = $("registerBio").value.trim();
+
+    if (!name || !email || !password || !age || !gender || !city) {
+
+      showMessage(
+        "registerMessage",
+        "Jaza taarifa zote zinazohitajika.",
+        "error"
+      );
+
       return;
     }
 
-    if(file.size > 5 * 1024 * 1024){
+    if (age < 18) {
 
-      alert(
-        "Picha ni kubwa sana. Maximum ni 5MB."
+      showMessage(
+        "registerMessage",
+        "Lazima uwe na miaka 18 au zaidi.",
+        "error"
       );
-
-      this.value = "";
-      registerPhotoData = "";
-      $("registerPhotoPreview").innerHTML = "";
 
       return;
     }
 
-    try{
+    if (password.length < 6) {
 
-      registerPhotoData =
-        await fileToBase64(file);
-
-      $("registerPhotoPreview").innerHTML = `
-        <img
-          src="${registerPhotoData}"
-          alt="Preview"
-        >
-      `;
-
-    }catch{
-
-      alert(
-        "Imeshindikana kusoma picha."
+      showMessage(
+        "registerMessage",
+        "Password iwe na angalau characters 6.",
+        "error"
       );
 
-      this.value = "";
-      registerPhotoData = "";
-
+      return;
     }
 
-  }
-);
+
+    btn.disabled = true;
+    btn.textContent = "Inasajili..." ;
 
 
-/* =========================
-   REGISTER
-========================= */
+    try {
 
-$("registerForm").addEventListener(
-  "submit",
-  async function(event){
+      let photo = "";
 
-    event.preventDefault();
+      const file = $("registerPhoto").files[0];
 
-    const data = {
-      name:$("registerName").value.trim(),
-      email:$("registerEmail").value.trim(),
-      password:$("registerPassword").value,
-      age:Number($("registerAge").value),
-      gender:$("registerGender").value,
-      city:$("registerCity").value.trim(),
-      bio:$("registerBio").value.trim(),
-      photo:registerPhotoData
-    };
+      if (file) {
 
-    const button = $("registerBtn");
+        if (file.size > 5 * 1024 * 1024) {
 
-    try{
+          throw new Error("Picha isizidi 5MB.");
 
-      clearMessage("registerMessage");
-
-      button.disabled = true;
-      button.textContent = "Inasajili...";
-
-      const result = await api(
-        "/api/register",
-        {
-          method:"POST",
-          body:JSON.stringify(data)
         }
-      );
+
+        photo = await fileToDataURL(file);
+
+      }
+
+
+      const result = await api("/api/register", {
+
+        method: "POST",
+
+        body: JSON.stringify({
+          name,
+          email,
+          password,
+          age,
+          gender,
+          city,
+          bio,
+          photo
+        })
+
+      });
+
+
+      if (!result || !result.ok) {
+
+        throw new Error(
+          result?.error || "Usajili umeshindikana."
+        );
+
+      }
+
 
       currentUser = result.user;
 
-     
+      $("registerForm").reset();
+
+      showApp();
+
+      await loadDiscover();
+      await loadNotifications();
+
+      startNotificationPolling();
+
+
+    } catch (error) {
+
+      console.error("REGISTER ERROR:", error);
+
+      showMessage(
+        "registerMessage",
+        error.message || "Usajili umeshindikana.",
+        "error"
+      );
+
+    } finally {
+
+      btn.disabled = false;
+      btn.textContent = "Jisajili";
+
+    }
+
+  });
+
+
+  $("showRegisterBtn").addEventListener(
+    "click",
+    showRegister
+  );
+
+
+  $("showLoginBtn").addEventListener(
+    "click",
+    showLogin
+  );
+
+
+  /* =========================
+     IMAGE
+  ========================= */
+
+  function fileToDataURL(file) {
+
+    return new Promise((resolve, reject) => {
+
+      const reader = new FileReader();
+
+      reader.onload = () => resolve(reader.result);
+
+      reader.onerror = () =>
+        reject(new Error("Picha haikuweza kusomwa."));
+
+      reader.readAsDataURL(file);
+
+    });
+
+  }
+
+
+  /* =========================
+     DISCOVER
+  ========================= */
+
+  async function loadDiscover() {
+
+    const grid = $("usersGrid");
+
+    grid.innerHTML = `
+      <div class="loading">
+        Inapakia watu...
+      </div>
+    `;
+
+
+    try {
+
+      const result = await api("/api/discover");
+
+      const users = Array.isArray(result)
+        ? result
+        : (result.users || []);
+
+
+      if (!users.length) {
+
+        grid.innerHTML = `
+          <div class="empty">
+            Hakuna watu wapya kwa sasa.
+          </div>
+        `;
+
+        return;
+      }
+
+
+      grid.innerHTML = "";
+
+      users.forEach(user => {
+
+        grid.appendChild(
+          createUserCard(user)
+        );
+
+      });
+
+
+    } catch (error) {
+
+      console.error("DISCOVER ERROR:", error);
+
+      if (error.status === 401) {
+
+        await forceLogout();
+
+        return;
+      }
+
+      grid.innerHTML = `
+        <div class="empty">
+          ${escapeHtml(error.message)}
+        </div>
+      `;
+
+    }
+
+  }
+
+
+  function createUserCard(user) {
+
+    const card = document.createElement("div");
+
+    card.className = "user-card";
+
+
+    const photo = document.createElement("div");
+
+    photo.className = "user-photo";
+
+
+    if (user.photo) {
+
+      const img = document.createElement("img");
+
+      img.src = user.photo;
+
+      img.alt = user.name || "Picha";
+
+      img.onerror = function() {
+
+        this.remove();
+
+        photo.textContent = "👤";
+
+      };
+
+      photo.appendChild(img);
+
+    } else {
+
+      photo.textContent = "👤";
+
+    }
+
+
+    const info = document.createElement("div");
+
+    info.className = "user-info";
+
+
+    const name = document.createElement("div");
+
+    name.className = "user-name";
+
+    name.textContent =
+      `${user.name || "User"}${user.age ? ", " + user.age : ""}`;
+
+
+    const meta = document.createElement("div");
+
+    meta.className = "user-meta";
+
+    meta.textContent =
+      `${user.city || ""}${user.gender ? " · " + user.gender : ""}`;
+
+
+    const bio = document.createElement("div");
+
+    bio.className = "user-bio";
+
+    bio.textContent =
+      user.bio || "Hakuna bio bado.";
+
+
+    const actions = document.createElement("div");
+
+    actions.className = "user-actions";
+
+
+    const likeBtn = document.createElement("button");
+
+    likeBtn.className = "like-btn";
+
+    likeBtn.textContent = "❤️ Like";
+
+    likeBtn.onclick = () =>
+      likeUser(user.id, likeBtn);
+
+
+    const chatBtn = document.createElement("button");
+
+    chatBtn.className = "message-btn";
+
+    chatBtn.textContent = "💬 Chat";
+
+    chatBtn.onclick = () =>
+      openChat(user);
+
+
+    actions.appendChild(likeBtn);
+    actions.appendChild(chatBtn);
+
+
+    info.appendChild(name);
+    info.appendChild(meta);
+    info.appendChild(bio);
+    info.appendChild(actions);
+
+
+    card.appendChild(photo);
+    card.appendChild(info);
+
+
+    return card;
+
+  }
+
+
+  /* =========================
+     LIKE
+  ========================= */
+
+  async function likeUser(userId, button) {
+
+    if (!userId) return;
+
+
+    button.disabled = true;
+    button.textContent = "❤️...";
+
+
+    try {
+
+      const result = await api("/api/like", {
+
+        method: "POST",
+
+        body: JSON.stringify({
+          userId
+        })
+
+      });
+
+
+      if (result.match || result.isMatch) {
+
+        alert("🎉 Mme-match!");
+
+      } else {
+
+        button.textContent = "❤️ Liked";
+
+      }
+
+
+      await loadNotifications();
+
+
+    } catch (error) {
+
+      console.error("LIKE ERROR:", error);
+
+      button.disabled = false;
+      button.textContent = "❤️ Like";
+
+      if (error.status === 401) {
+
+        await forceLogout();
+
+      } else {
+
+        alert(error.message);
+
+      }
+
+    }
+
+  }
+
+
+  /* =========================
+     PROFILE
+  ========================= */
+
+  async function loadProfile() {
+
+    try {
+
+      const result = await api("/api/me");
+
+      currentUser = result.user || result;
+
+      fillProfile();
+
+    } catch (error) {
+
+      console.error("PROFILE ERROR:", error);
+
+      if (error.status === 401) {
+        await forceLogout();
+      }
+
+    }
+
+  }
+
+
+  function fillProfile() {
+
+    if (!currentUser) return;
+
+
+    $("profileName").value =
+      currentUser.name || "";
+
+    $("profileAge").value =
+      currentUser.age || "";
+
+    $("profileGender").value =
+      currentUser.gender || "";
+
+    $("profileCity").value =
+      currentUser.city || "";
+
+    $("profileBio").value =
+      currentUser.bio || "";
+
+
+    const box = $("profilePhotoBox");
+
+    box.innerHTML = "";
+
+
+    if (currentUser.photo) {
+
+      const img = document.createElement("img");
+
+      img.src = currentUser.photo;
+
+      img.alt = "Profile";
+
+      box.appendChild(img);
+
+    } else {
+
+      box.textContent = "👤";
+
+    }
+
+  }
+
+
+  async function saveProfile() {
+
+    hideMessage("profileMessage");
+
+
+    try {
+
+      const name =
+        $("profileName").value.trim();
+
+      const age =
+        Number($("profileAge").value);
+
+      const gender =
+        $("profileGender").value;
+
+      const city =
+        $("profileCity").value.trim();
+
+      const bio =
+        $("profileBio").value.trim();
+
+
+      if (!name || !age || !gender || !city) {
+
+        throw new Error(
+          "Jaza taarifa zote zinazohitajika."
+        );
+
+      }
+
+
+      let photo =
+        currentUser.photo || "";
+
+
+      const file =
+        $("profilePhoto").files[0];
+
+
+      if (file) {
+
+        if (file.size > 5 * 1024 * 1024) {
+
+          throw new Error(
+            "Picha isizidi 5MB."
+          );
+
+        }
+
+        photo =
+          await fileToDataURL(file);
+
+      }
+
+
+      const result = await api("/api/profile", {
+
+        method: "PUT",
+
+        body: JSON.stringify({
+          name,
+          age,
+          gender,
+          city,
+          bio,
+          photo
+        })
+
+      });
+
+
+      currentUser =
+        result.user || result;
+
+
+      fillProfile();
+
+
+      showMessage(
+        "profileMessage",
+        "Profile imehifadhiwa.",
+        "success"
+      );
+
+
+      $("profilePhoto").value = "";
+
+
+    } catch (error) {
+
+      console.error("PROFILE SAVE ERROR:", error);
+
+      if (error.status === 401) {
+
+        await forceLogout();
+
+        return;
+
+      }
+
+      showMessage(
+        "profileMessage",
+        error.message,
+        "error"
+      );
+
+    }
+
+  }
+
+
+  /* =========================
+     CHAT
+  ========================= */
+
+  function openChat(user) {
+
+    currentChatUser = user;
+
+    $("chatHeader").textContent =
+      "💬 " + (user.name || "Chat");
+
+
+    showSection("chat");
+
+    loadMessages();
+
+  }
+
+
+  async function loadMessages() {
+
+    if (!currentChatUser) return;
+
+
+    const list =
+      $("messagesList");
+
+
+    list.innerHTML = `
+      <div class="loading">
+        Inapakia ujumbe...
+      </div>
+    `;
+
+
+    try {
+
+      const result = await api(
+        "/api/messages?userId=" +
+        encodeURIComponent(currentChatUser.id)
+      );
+
+
+      const messages =
+        Array.isArray(result)
+          ? result
+          : (result.messages || []);
+
+
+      list.innerHTML = "";
+
+
+      if (!messages.length) {
+
+        list.innerHTML = `
+          <div class="empty">
+            Hakuna ujumbe bado.
+          </div>
+        `;
+
+        return;
+
+      }
+
+
+      messages.forEach(message => {
+
+        const div =
+          document.createElement("div");
+
+
+        const senderId =
+          message.fromUserId ||
+          message.senderId;
+
+
+        div.className =
+          "msg " +
+          (
+            String(senderId) ===
+            String(currentUser.id)
+              ? "me"
+              : "them"
+          );
+
+
+        div.textContent =
+          message.text ||
+          message.message ||
+          "";
+
+
+        list.appendChild(div);
+
+      });
+
+
+      list.scrollTop =
+        list.scrollHeight;
+
+
+    } catch (error) {
+
+      console.error("MESSAGES ERROR:", error);
+
+      if (error.status === 401) {
+
+        await forceLogout();
+
+        return;
+
+      }
+
+      list.innerHTML = `
+        <div class="empty">
+          ${escapeHtml(error.message)}
+        </div>
+      `;
+
+    }
+
+  }
+
+
+  $("messageForm").addEventListener(
+    "submit",
+    async function(e) {
+
+      e.preventDefault();
+
+
+      if (!currentChatUser) return;
+
+
+      const input =
+        $("messageInput");
+
+      const text =
+        input.value.trim();
+
+
+      if (!text) return;
+
+
+      const button =
+        this.querySelector("button");
+
+
+      button.disabled = true;
+
+
+      try {
+
+        await api("/api/messages", {
+
+          method: "POST",
+
+          body: JSON.stringify({
+
+            toUserId:
+              currentChatUser.id,
+
+            text
+
+          })
+
+        });
+
+
+        input.value = "";
+
+        await loadMessages();
+
+        await loadNotifications();
+
+
+      } catch (error) {
+
+        console.error(
+          "SEND MESSAGE ERROR:",
+          error
+        );
+
+
+        if (error.status === 401) {
+
+          await forceLogout();
+
+        } else {
+
+          alert(error.message);
+
+        }
+
+
+      } finally {
+
+        button.disabled = false;
+
+      }
+
+    }
+  );
+
+
+  /* =========================
+     NOTIFICATIONS
+  ========================= */
+
+  async function loadNotifications() {
+
+    try {
+
+      const result =
+        await api("/api/notifications");
+
+
+      const notifications =
+        Array.isArray(result)
+          ? result
+          : (result.notifications || []);
+
+
+      const unread =
+        Number(
+          result.unread ??
+          notifications.filter(n => !n.read).length
+        );
+
+
+      updateNotificationBadge(unread);
+
+
+      const list =
+        $("notificationsList");
+
+
+      if (!notifications.length) {
+
+        list.innerHTML = `
+          <div class="empty">
+            Huna notifications bado.
+          </div>
+        `;
+
+        return;
+
+      }
+
+
+      list.innerHTML = "";
+
+
+      notifications.forEach(notification => {
+
+        const div =
+          document.createElement("div");
+
+
+        div.className =
+          "notification " +
+          (
+            notification.read
+              ? ""
+              : "unread"
+          );
+
+
+        const title =
+          document.createElement("div");
+
+
+        title.className =
+          "notification-title";
+
+
+        title.textContent =
+          notification.title ||
+          "Notification";
+
+
+        const message =
+          document.createElement("div");
+
+
+        message.className =
+          "notification-message";
+
+
+        message.textContent =
+          notification.message || "";
+
+
+        div.appendChild(title);
+        div.appendChild(message);
+
+
+        list.appendChild(div);
+
+      });
+
+
+    } catch (error) {
+
+      console.error(
+        "NOTIFICATIONS ERROR:",
+        error
+      );
+
+
+      if (error.status === 401) {
+
+        await forceLogout();
+
+      }
+
+    }
+
+  }
+
+
+  function updateNotificationBadge(count) {
+
+    const badge =
+      $("notificationBadge");
+
+
+    if (!count || count <= 0) {
+
+      badge.classList.add("hidden");
+
+      badge.textContent = "0";
+
+      return;
+
+    }
+
+
+    badge.classList.remove("hidden");
+
+    badge.textContent =
+      count > 99 ? "99+" : count;
+
+  }
+
+
+  async function markNotificationsRead() {
+
+    try {
+
+      await api(
+        "/api/notifications/read-all",
+        {
+          method: "POST",
+          body: JSON.stringify({})
+        }
+      );
+
+
+      await loadNotifications();
+
+
+    } catch (error) {
+
+      console.error(
+        "READ NOTIFICATIONS ERROR:",
+        error
+      );
+
+    }
+
+  }
+
+
+  function startNotificationPolling() {
+
+    if (notificationTimer) {
+
+      clearInterval(notificationTimer);
+
+    }
+
+
+    notificationTimer =
+      setInterval(
+        () => {
+
+          if (currentUser) {
+
+            loadNotifications();
+
+          }
+
+        },
+        15000
+      );
+
+  }
+
+
+  /* =========================
+     LOGOUT
+  ========================= */
+
+  async function logout() {
+
+    try {
+
+      await api(
+        "/api/logout",
+        {
+          method: "POST",
+          body: JSON.stringify({})
+        }
+      );
+
+    } catch (error) {
+
+      console.error(
+        "LOGOUT ERROR:",
+        error
+      );
+
+    } finally {
+
+      currentUser = null;
+      currentChatUser = null;
+
+      if (notificationTimer) {
+
+        clearInterval(notificationTimer);
+        notificationTimer = null;
+
+      }
+
+      showLogin();
+
+    }
+
+  }
+
+
+  async function forceLogout() {
+
+    currentUser = null;
+    currentChatUser = null;
+
+    if (notificationTimer) {
+
+      clearInterval(notificationTimer);
+      notificationTimer = null;
+
+    }
+
+    showLogin();
+
+    showMessage(
+      "loginMessage",
+      "Session imeisha. Ingia tena.",
+      "error"
+    );
+
+  }
+
+
+  /* =========================
+     SESSION CHECK
+  ========================= */
+
+  async function checkSession() {
+
+    try {
+
+      const result =
+        await api("/api/me");
+
+
+      if (result && result.user) {
+
+        currentUser =
+          result.user;
+
+      } else {
+
+        currentUser =
+          result;
+
+      }
+
+
+      if (currentUser) {
+
+        showApp();
+
+        await loadDiscover();
+        await loadNotifications();
+
+        startNotificationPolling();
+
+      } else {
+
+        showLogin();
+
+      }
+
+
+    } catch (error) {
+
+      console.log(
+        "No active session."
+      );
+
+      showLogin();
+
+    }
+
+  }
+
+
+  /* =========================
+     ESCAPE HTML
+  ========================= */
+
+  function escapeHtml(value) {
+
+    return String(value ?? "")
+      .replaceAll("&", "&amp;")
+      .replaceAll("<", "&lt;")
+      .replaceAll(">", "&gt;")
+      .replaceAll('"', "&quot;")
+      .replaceAll("'", "&#039;");
+
+  }
+
+
+  /* =========================
+     START
+  ========================= */
+
+  document.addEventListener(
+    "DOMContentLoaded",
+    function() {
+
+      checkSession();
+
+    }
+  );
+
+</script>
+
+</body>
+</html>
