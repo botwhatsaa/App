@@ -1,9 +1,8 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="sw">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Tanzania Dating ❤️</title>
 
 <style>
@@ -13,28 +12,27 @@
 
 body{
   margin:0;
-  font-family:Arial,Helvetica,sans-serif;
+  font-family:Arial,sans-serif;
   background:#fff5f8;
   color:#24131b;
 }
 
 header{
+  background:linear-gradient(135deg,#ff174f,#e60046);
+  color:white;
+  padding:16px;
   position:sticky;
   top:0;
   z-index:100;
-  background:linear-gradient(135deg,#ff174f,#e60046);
-  color:white;
-  padding:15px;
-  box-shadow:0 2px 10px rgba(0,0,0,.15);
+  box-shadow:0 2px 10px #0002;
 }
 
-.header-inner{
-  max-width:1000px;
+.header-row{
+  max-width:900px;
   margin:auto;
   display:flex;
   align-items:center;
   justify-content:space-between;
-  gap:10px;
 }
 
 .logo{
@@ -43,21 +41,17 @@ header{
 }
 
 .container{
-  max-width:1000px;
+  max-width:900px;
   margin:auto;
-  padding:20px 15px 50px;
+  padding:18px;
 }
 
 .card{
   background:white;
   border-radius:18px;
-  padding:20px;
-  margin-bottom:18px;
-  box-shadow:0 4px 18px rgba(0,0,0,.08);
-}
-
-h1,h2,h3{
-  margin-top:0;
+  padding:18px;
+  margin-bottom:16px;
+  box-shadow:0 4px 15px #00000012;
 }
 
 input,
@@ -67,7 +61,8 @@ textarea{
   padding:13px;
   border:1px solid #ddd;
   border-radius:12px;
-  margin:6px 0 12px;
+  margin-top:7px;
+  margin-bottom:12px;
   font-size:15px;
   outline:none;
 }
@@ -86,2079 +81,337 @@ textarea{
 button{
   border:0;
   border-radius:12px;
-  padding:12px 17px;
-  cursor:pointer;
-  font-weight:bold;
-  font-size:14px;
-}
-
-.primary{
+  padding:12px 16px;
   background:#ff174f;
   color:white;
+  font-size:15px;
+  font-weight:bold;
+  cursor:pointer;
 }
 
-.secondary{
-  background:#ffe1e9;
-  color:#d5003d;
+button:hover{
+  opacity:.92;
 }
 
-.gray{
+button.secondary{
   background:#eee;
   color:#333;
 }
 
-.danger{
-  background:#ffebee;
-  color:#c62828;
+button.green{
+  background:#19a974;
+}
+
+button.dark{
+  background:#333;
+}
+
+button.danger{
+  background:#d60035;
 }
 
 .hidden{
-  display:none !important;
+  display:none!important;
 }
 
 .center{
   text-align:center;
 }
 
-.small{
-  font-size:13px;
+.muted{
   color:#777;
 }
 
-.error{
-  background:#ffebee;
-  color:#c62828;
-  padding:12px;
-  border-radius:10px;
-  margin-bottom:12px;
-}
-
-.success{
-  background:#e8f5e9;
-  color:#2e7d32;
-  padding:12px;
-  border-radius:10px;
-  margin-bottom:12px;
-}
-
-/* AUTH */
-
-.auth{
-  max-width:450px;
-  margin:35px auto;
-}
-
-.auth-logo{
-  text-align:center;
-  font-size:32px;
-  font-weight:bold;
-  color:#e60046;
-  margin-bottom:20px;
+.small{
+  font-size:13px;
 }
 
 .tabs{
   display:flex;
   gap:8px;
-  margin-bottom:15px;
+  overflow-x:auto;
+  padding:12px 0;
+  position:sticky;
+  top:65px;
+  background:#fff5f8;
+  z-index:50;
 }
 
 .tabs button{
-  flex:1;
-}
-
-/* NAV */
-
-.nav{
-  max-width:1000px;
-  margin:auto;
-  display:flex;
-  gap:8px;
-  overflow-x:auto;
-  padding:8px 0 0;
-}
-
-.nav button{
   white-space:nowrap;
-  background:white;
-  color:#e60046;
+  padding:10px 14px;
 }
 
-.nav button.active{
-  background:#ff174f;
-  color:white;
-}
-
-/* USERS */
-
-.grid{
-  display:grid;
-  grid-template-columns:repeat(auto-fill,minmax(250px,1fr));
-  gap:16px;
-}
-
-.user-card{
-  background:white;
-  border-radius:18px;
-  overflow:hidden;
-  box-shadow:0 4px 16px rgba(0,0,0,.08);
-}
-
-.user-photo{
-  width:100%;
-  height:270px;
-  object-fit:cover;
-  background:#ffe1e9;
-  display:block;
-}
-
-.no-photo{
-  height:270px;
-  background:#ffe1e9;
-  display:flex;
+.badge{
+  display:inline-flex;
+  min-width:20px;
+  height:20px;
   align-items:center;
   justify-content:center;
-  font-size:70px;
+  background:white;
+  color:#e60046;
+  border-radius:20px;
+  font-size:11px;
+  margin-left:5px;
 }
 
-.user-info{
-  padding:16px;
+/* AUTH */
+
+.auth-box{
+  max-width:430px;
+  margin:40px auto;
 }
 
-.user-name{
-  font-size:20px;
-  font-weight:bold;
+.auth-title{
+  text-align:center;
+  font-size:30px;
   margin-bottom:5px;
 }
 
-.user-city{
+.auth-sub{
+  text-align:center;
   color:#777;
-  margin-bottom:10px;
+  margin-bottom:25px;
 }
 
-.user-bio{
-  color:#444;
-  line-height:1.5;
-  margin-bottom:15px;
+.photo-preview{
+  width:120px;
+  height:120px;
+  border-radius:50%;
+  object-fit:cover;
+  display:block;
+  margin:10px auto;
+  background:#eee;
+}
+
+/* DISCOVER */
+
+.profile-card{
+  display:flex;
+  gap:15px;
+  align-items:flex-start;
+}
+
+.profile-photo{
+  width:105px;
+  height:105px;
+  border-radius:50%;
+  object-fit:cover;
+  background:#eee;
+  flex-shrink:0;
+}
+
+.profile-info{
+  flex:1;
+}
+
+.profile-name{
+  font-size:20px;
+  font-weight:bold;
 }
 
 .actions{
   display:flex;
   gap:8px;
+  flex-wrap:wrap;
+  margin-top:14px;
 }
 
 .actions button{
   flex:1;
+  min-width:130px;
 }
 
-/* PROFILE */
+/* CHATS */
 
-.profile-photo{
-  width:130px;
-  height:130px;
-  border-radius:50%;
-  object-fit:cover;
-  background:#ffe1e9;
-  display:block;
-  margin:0 auto 15px;
+.chat-list{
+  display:flex;
+  flex-direction:column;
 }
 
-.profile-placeholder{
-  width:130px;
-  height:130px;
-  border-radius:50%;
-  background:#ffe1e9;
+.chat-item{
   display:flex;
   align-items:center;
-  justify-content:center;
-  font-size:50px;
-  margin:0 auto 15px;
-}
-
-/* NOTIFICATIONS */
-
-.notification{
-  padding:14px;
+  gap:12px;
+  padding:13px 5px;
   border-bottom:1px solid #eee;
+  cursor:pointer;
 }
 
-.notification:last-child{
+.chat-item:last-child{
   border-bottom:0;
 }
 
-.notification.unread{
-  background:#fff0f4;
-  border-radius:10px;
+.chat-avatar{
+  width:55px;
+  height:55px;
+  border-radius:50%;
+  object-fit:cover;
+  background:#eee;
 }
 
-/* CHAT */
+.chat-info{
+  flex:1;
+  min-width:0;
+}
 
-.chat-box{
-  height:350px;
+.chat-name{
+  font-weight:bold;
+  margin-bottom:5px;
+}
+
+.last-message{
+  color:#777;
+  white-space:nowrap;
+  overflow:hidden;
+  text-overflow:ellipsis;
+}
+
+.chat-time{
+  font-size:11px;
+  color:#999;
+}
+
+/* CHAT WINDOW */
+
+.chat-window{
+  background:white;
+  border-radius:18px;
+  overflow:hidden;
+  box-shadow:0 4px 15px #00000012;
+}
+
+.chat-header{
+  display:flex;
+  align-items:center;
+  gap:10px;
+  padding:13px;
+  background:#ff174f;
+  color:white;
+}
+
+.chat-header img{
+  width:45px;
+  height:45px;
+  border-radius:50%;
+  object-fit:cover;
+  background:white;
+}
+
+.chat-header-info{
+  flex:1;
+}
+
+.chat-messages{
+  height:55vh;
+  min-height:350px;
+  max-height:600px;
   overflow-y:auto;
-  background:#fafafa;
-  border-radius:14px;
   padding:15px;
-  margin-bottom:12px;
+  background:#fff8fa;
+}
+
+.message-row{
+  display:flex;
+  margin-bottom:9px;
+}
+
+.message-row.mine{
+  justify-content:flex-end;
 }
 
 .message{
-  max-width:75%;
+  max-width:78%;
   padding:10px 13px;
   border-radius:15px;
-  margin-bottom:10px;
-  line-height:1.4;
+  background:#eee;
+  word-wrap:break-word;
 }
 
-.message.mine{
+.message-row.mine .message{
   background:#ff174f;
   color:white;
-  margin-left:auto;
   border-bottom-right-radius:4px;
 }
 
-.message.theirs{
-  background:#eee;
-  color:#222;
+.message-row:not(.mine) .message{
   border-bottom-left-radius:4px;
+}
+
+.message-time{
+  display:block;
+  font-size:10px;
+  opacity:.65;
+  margin-top:4px;
 }
 
 .chat-input{
   display:flex;
   gap:8px;
+  padding:10px;
+  background:white;
+  border-top:1px solid #eee;
 }
 
 .chat-input input{
   margin:0;
+  flex:1;
 }
 
-/* LOADING */
+.chat-input button{
+  width:75px;
+}
 
-.loading{
+/* NOTIFICATIONS */
+
+.notification{
+  padding:13px;
+  border-bottom:1px solid #eee;
+}
+
+.notification.unread{
+  background:#fff0f4;
+}
+
+.notification-title{
+  font-weight:bold;
+}
+
+.notification-time{
+  color:#999;
+  font-size:11px;
+}
+
+/* PROFILE */
+
+.my-profile{
   text-align:center;
-  padding:35px;
-  color:#777;
 }
+
+.my-profile img{
+  width:140px;
+  height:140px;
+  border-radius:50%;
+  object-fit:cover;
+  background:#eee;
+}
+
+/* EMPTY */
 
 .empty{
   text-align:center;
-  padding:40px 20px;
+  padding:35px 15px;
   color:#777;
 }
 
-.badge{
-  display:inline-block;
-  background:#ff174f;
-  color:white;
-  border-radius:20px;
-  padding:3px 8px;
-  font-size:11px;
+.loading{
+  text-align:center;
+  padding:30px;
 }
 
 /* MOBILE */
 
 @media(max-width:600px){
+
   .container{
-    padding:15px 10px 40px;
-  }
-
-  .grid{
-    grid-template-columns:1fr;
-  }
-
-  .user-photo,
-  .no-photo{
-    height:300px;
-  }
-
-  .header-inner{
-    align-items:flex-start;
-  }
-
-  .nav{
-    padding-bottom:2px;
-  }
-}
-</style>
-</head>
-
-<body>
-
-<!-- =====================================================
-HEADER
-===================================================== -->
-
-<header id="mainHeader" class="hidden">
-
-  <div class="header-inner">
-
-    <div class="logo">
-      Tanzania Dating ❤️
-    </div>
-
-    <button class="secondary" onclick="logout()">
-      Toka
-    </button>
-
-  </div>
-
-  <div class="nav">
-
-    <button id="navDiscover"
-            class="active"
-            onclick="showPage('discover')">
-      👥 Discover
-    </button>
-
-    <button id="navMatches"
-            onclick="showPage('matches')">
-      💕 Matches
-    </button>
-
-    <button id="navNotifications"
-            onclick="showPage('notifications')">
-      🔔 Notifications
-      <span id="notificationBadge"></span>
-    </button>
-
-    <button id="navProfile"
-            onclick="showPage('profile')">
-      👤 Profile
-    </button>
-
-  </div>
-
-</header>
-
-
-<!-- =====================================================
-MAIN
-===================================================== -->
-
-<div class="container">
-
-
-<!-- =====================================================
-AUTH
-===================================================== -->
-
-<section id="authSection" class="auth">
-
-  <div class="auth-logo">
-    Tanzania Dating ❤️
-  </div>
-
-  <div class="card">
-
-    <div class="tabs">
-
-      <button
-        id="loginTab"
-        class="primary"
-        onclick="showAuth('login')">
-        Ingia
-      </button>
-
-      <button
-        id="registerTab"
-        class="secondary"
-        onclick="showAuth('register')">
-        Jisajili
-      </button>
-
-    </div>
-
-
-    <div id="authMessage"></div>
-
-
-    <!-- LOGIN -->
-
-    <form id="loginForm">
-
-      <h2>Karibu tena ❤️</h2>
-
-      <label>Email</label>
-
-      <input
-        id="loginEmail"
-        type="email"
-        placeholder="Weka email yako"
-        required
-      >
-
-      <label>Password</label>
-
-      <input
-        id="loginPassword"
-        type="password"
-        placeholder="Weka password"
-        required
-      >
-
-      <button
-        type="submit"
-        class="primary"
-        style="width:100%">
-        Ingia
-      </button>
-
-    </form>
-
-
-    <!-- REGISTER -->
-
-    <form id="registerForm" class="hidden">
-
-      <h2>Jisajili ❤️</h2>
-
-      <label>Jina</label>
-
-      <input
-        id="registerName"
-        type="text"
-        placeholder="Mfano: Juma"
-        required
-      >
-
-      <label>Email</label>
-
-      <input
-        id="registerEmail"
-        type="email"
-        placeholder="Mfano: juma@gmail.com"
-        required
-      >
-
-      <label>Password</label>
-
-      <input
-        id="registerPassword"
-        type="password"
-        placeholder="Angalau herufi 6"
-        required
-      >
-
-      <label>Umri</label>
-
-      <input
-        id="registerAge"
-        type="number"
-        min="18"
-        max="100"
-        placeholder="Miaka"
-        required
-      >
-
-      <label>Jinsia</label>
-
-      <select id="registerGender" required>
-
-        <option value="">
-          Chagua jinsia
-        </option>
-
-        <option value="Mwanaume">
-          Mwanaume
-        </option>
-
-        <option value="Mwanamke">
-          Mwanamke
-        </option>
-
-      </select>
-
-      <label>Mji</label>
-
-      <input
-        id="registerCity"
-        type="text"
-        placeholder="Mfano: Dar es Salaam"
-        required
-      >
-
-      <label>Bio</label>
-
-      <textarea
-        id="registerBio"
-        maxlength="500"
-        placeholder="Jieleze kidogo..."
-      ></textarea>
-
-      <label>Picha yako</label>
-
-      <input
-        id="registerPhoto"
-        type="file"
-        accept="image/jpeg,image/png,image/webp"
-      >
-
-      <div class="small">
-        Maximum picha ni 5MB.
-      </div>
-
-      <br>
-
-      <button
-        type="submit"
-        class="primary"
-        style="width:100%">
-        Jisajili
-      </button>
-
-    </form>
-
-  </div>
-
-</section>
-
-
-<!-- =====================================================
-APP
-===================================================== -->
-
-<section id="appSection" class="hidden">
-
-
-  <!-- DISCOVER -->
-
-  <div id="pageDiscover">
-
-    <div class="card">
-
-      <h2>👥 Watu wapya</h2>
-
-      <p class="small">
-        Hawa ni watu waliosajiliwa kwenye Tanzania Dating.
-      </p>
-
-      <button
-        class="secondary"
-        onclick="loadDiscover()">
-        🔄 Refresh
-      </button>
-
-    </div>
-
-    <div id="discoverMessage"></div>
-
-    <div
-      id="discoverList"
-      class="grid">
-
-      <div class="loading">
-        Inapakia watu...
-      </div>
-
-    </div>
-
-  </div>
-
-
-  <!-- MATCHES -->
-
-  <div id="pageMatches" class="hidden">
-
-    <div class="card">
-
-      <h2>💕 Matches zako</h2>
-
-      <p class="small">
-        Watu ambao mme-like kila mmoja.
-      </p>
-
-    </div>
-
-    <div id="matchesList" class="grid">
-
-      <div class="loading">
-        Inapakia matches...
-      </div>
-
-    </div>
-
-  </div>
-
-
-  <!-- NOTIFICATIONS -->
-
-  <div id="pageNotifications" class="hidden">
-
-    <div class="card">
-
-      <h2>🔔 Notifications</h2>
-
-      <button
-        class="secondary"
-        onclick="markNotificationsRead()">
-        Soma zote
-      </button>
-
-    </div>
-
-    <div
-      id="notificationsList"
-      class="card">
-
-      <div class="loading">
-        Inapakia notifications...
-      </div>
-
-    </div>
-
-  </div>
-
-
-  <!-- PROFILE -->
-
-  <div id="pageProfile" class="hidden">
-
-    <div class="card">
-
-      <h2>👤 Profile yangu</h2>
-
-      <div id="profileMessage"></div>
-
-      <div id="profilePhotoBox"></div>
-
-      <form id="profileForm">
-
-        <label>Jina</label>
-
-        <input
-          id="profileName"
-          required
-        >
-
-        <label>Email</label>
-
-        <input
-          id="profileEmail"
-          disabled
-        >
-
-        <label>Umri</label>
-
-        <input
-          id="profileAge"
-          type="number"
-          min="18"
-          max="100"
-          required
-        >
-
-        <label>Jinsia</label>
-
-        <select id="profileGender" required>
-
-          <option value="Mwanaume">
-            Mwanaume
-          </option>
-
-          <option value="Mwanamke">
-            Mwanamke
-          </option>
-
-        </select>
-
-        <label>Mji</label>
-
-        <input
-          id="profileCity"
-          required
-        >
-
-        <label>Bio</label>
-
-        <textarea
-          id="profileBio"
-          maxlength="500">
-        </textarea>
-
-        <label>Badilisha picha</label>
-
-        <input
-          id="profilePhoto"
-          type="file"
-          accept="image/jpeg,image/png,image/webp"
-        >
-
-        <br><br>
-
-        <button
-          class="primary"
-          type="submit">
-          💾 Hifadhi Profile
-        </button>
-
-      </form>
-
-    </div>
-
-  </div>
-
-
-  <!-- CHAT -->
-
-  <div id="pageChat" class="hidden">
-
-    <div class="card">
-
-      <button
-        class="secondary"
-        onclick="showPage('matches')">
-        ← Rudi Matches
-      </button>
-
-      <h2 id="chatTitle">
-        💬 Chat
-      </h2>
-
-      <div
-        id="chatBox"
-        class="chat-box">
-      </div>
-
-      <form
-        id="messageForm"
-        class="chat-input">
-
-        <input
-          id="messageInput"
-          placeholder="Andika ujumbe..."
-          maxlength="2000"
-          required
-        >
-
-        <button
-          type="submit"
-          class="primary">
-          Tuma
-        </button>
-
-      </form>
-
-    </div>
-
-  </div>
-
-
-</section>
-
-</div>
-
-
-<script>
-
-/* =====================================================
-STATE
-===================================================== */
-
-let currentUser = null;
-let currentPage = "discover";
-let currentChatUserId = null;
-let currentProfilePhoto = "";
-
-
-/* =====================================================
-HELPERS
-===================================================== */
-
-function $(id){
-  return document.getElementById(id);
-}
-
-
-function escapeHtml(value){
-
-  if(value === null || value === undefined){
-    return "";
-  }
-
-  return String(value)
-    .replace(/&/g,"&amp;")
-    .replace(/</g,"&lt;")
-    .replace(/>/g,"&gt;")
-    .replace(/"/g,"&quot;")
-    .replace(/'/g,"&#039;");
-}
-
-
-function showMessage(elementId,message,type="error"){
-
-  const el = $(elementId);
-
-  if(!el) return;
-
-  el.innerHTML = `
-    <div class="${type}">
-      ${escapeHtml(message)}
-    </div>
-  `;
-}
-
-
-function clearMessage(elementId){
-
-  const el = $(elementId);
-
-  if(el){
-    el.innerHTML = "";
-  }
-
-}
-
-
-/* =====================================================
-AUTH TABS
-===================================================== */
-
-function showAuth(type){
-
-  clearMessage("authMessage");
-
-  if(type === "login"){
-
-    $("loginForm").classList.remove("hidden");
-    $("registerForm").classList.add("hidden");
-
-    $("loginTab").className = "primary";
-    $("registerTab").className = "secondary";
-
-  }else{
-
-    $("loginForm").classList.add("hidden");
-    $("registerForm").classList.remove("hidden");
-
-    $("loginTab").className = "secondary";
-    $("registerTab").className = "primary";
-
-  }
-
-}
-
-
-/* =====================================================
-API
-===================================================== */
-
-async function api(url,options={}){
-
-  const response = await fetch(url,{
-    credentials:"same-origin",
-    ...options,
-    headers:{
-      ...(options.headers || {})
-    }
-  });
-
-  let data = {};
-
-  try{
-    data = await response.json();
-  }catch(e){
-    data = {};
-  }
-
-  if(!response.ok){
-
-    throw new Error(
-      data.error ||
-      `Request failed (${response.status})`
-    );
-
-  }
-
-  return data;
-}
-
-
-/* =====================================================
-CHECK LOGIN
-===================================================== */
-
-async function checkLogin(){
-
-  try{
-
-    const data = await api("/api/me");
-
-    if(data.ok && data.user){
-
-      currentUser = data.user;
-
-      showApp();
-
-      await loadDiscover();
-
-      await loadNotifications();
-
-    }else{
-
-      showAuthScreen();
-
-    }
-
-  }catch(error){
-
-    showAuthScreen();
-
-  }
-
-}
-
-
-/* =====================================================
-SHOW APP
-===================================================== */
-
-function showApp(){
-
-  $("authSection").classList.add("hidden");
-  $("appSection").classList.remove("hidden");
-  $("mainHeader").classList.remove("hidden");
-
-}
-
-
-/* =====================================================
-SHOW AUTH
-===================================================== */
-
-function showAuthScreen(){
-
-  $("authSection").classList.remove("hidden");
-  $("appSection").classList.add("hidden");
-  $("mainHeader").classList.add("hidden");
-
-  showAuth("login");
-
-}
-
-
-/* =====================================================
-LOGIN
-===================================================== */
-
-$("loginForm").addEventListener("submit",async function(e){
-
-  e.preventDefault();
-
-  clearMessage("authMessage");
-
-  const email = $("loginEmail").value.trim();
-  const password = $("loginPassword").value;
-
-  try{
-
-    const data = await api("/api/login",{
-
-      method:"POST",
-
-      headers:{
-        "Content-Type":"application/json"
-      },
-
-      body:JSON.stringify({
-        email,
-        password
-      })
-
-    });
-
-    if(data.ok){
-
-      currentUser = data.user;
-
-      $("loginPassword").value = "";
-
-      showApp();
-
-      await loadDiscover();
-
-      await loadNotifications();
-
-    }
-
-  }catch(error){
-
-    showMessage(
-      "authMessage",
-      error.message
-    );
-
-  }
-
-});
-
-
-/* =====================================================
-REGISTER
-===================================================== */
-
-$("registerForm").addEventListener("submit",async function(e){
-
-  e.preventDefault();
-
-  clearMessage("authMessage");
-
-  const file = $("registerPhoto").files[0];
-
-  let photo = "";
-
-  if(file){
-
-    if(file.size > 5 * 1024 * 1024){
-
-      showMessage(
-        "authMessage",
-        "Picha ni kubwa sana. Maximum ni 5MB."
-      );
-
-      return;
-    }
-
-    photo = await fileToDataURL(file);
-
-  }
-
-  const body = {
-
-    name:$("registerName").value.trim(),
-
-    email:$("registerEmail").value.trim(),
-
-    password:$("registerPassword").value,
-
-    age:Number($("registerAge").value),
-
-    gender:$("registerGender").value,
-
-    city:$("registerCity").value.trim(),
-
-    bio:$("registerBio").value.trim(),
-
-    photo
-
-  };
-
-
-  try{
-
-    const data = await api("/api/register",{
-
-      method:"POST",
-
-      headers:{
-        "Content-Type":"application/json"
-      },
-
-      body:JSON.stringify(body)
-
-    });
-
-
-    if(data.ok){
-
-      currentUser = data.user;
-
-      showApp();
-
-      await loadDiscover();
-
-      await loadNotifications();
-
-    }
-
-  }catch(error){
-
-    showMessage(
-      "authMessage",
-      error.message
-    );
-
-  }
-
-});
-
-
-/* =====================================================
-FILE TO DATA URL
-===================================================== */
-
-function fileToDataURL(file){
-
-  return new Promise((resolve,reject)=>{
-
-    const reader = new FileReader();
-
-    reader.onload = () => resolve(reader.result);
-
-    reader.onerror = reject;
-
-    reader.readAsDataURL(file);
-
-  });
-
-}
-
-
-/* =====================================================
-NAVIGATION
-===================================================== */
-
-function showPage(page){
-
-  currentPage = page;
-
-  const pages = [
-    "pageDiscover",
-    "pageMatches",
-    "pageNotifications",
-    "pageProfile",
-    "pageChat"
-  ];
-
-  pages.forEach(id=>{
-
-    $(id).classList.add("hidden");
-
-  });
-
-
-  const navs = [
-    "navDiscover",
-    "navMatches",
-    "navNotifications",
-    "navProfile"
-  ];
-
-  navs.forEach(id=>{
-
-    $(id).className = "";
-
-  });
-
-
-  if(page === "discover"){
-
-    $("pageDiscover").classList.remove("hidden");
-    $("navDiscover").className = "active";
-
-    loadDiscover();
-
-  }
-
-
-  if(page === "matches"){
-
-    $("pageMatches").classList.remove("hidden");
-    $("navMatches").className = "active";
-
-    loadMatches();
-
-  }
-
-
-  if(page === "notifications"){
-
-    $("pageNotifications").classList.remove("hidden");
-    $("navNotifications").className = "active";
-
-    loadNotifications();
-
-  }
-
-
-  if(page === "profile"){
-
-    $("pageProfile").classList.remove("hidden");
-    $("navProfile").className = "active";
-
-    loadProfile();
-
-  }
-
-
-  if(page === "chat"){
-
-    $("pageChat").classList.remove("hidden");
-
-    loadMessages();
-
-  }
-
-}
-
-
-/* =====================================================
-DISCOVER
-===================================================== */
-
-async function loadDiscover(){
-
-  const list = $("discoverList");
-
-  list.innerHTML = `
-    <div class="loading">
-      Inatafuta watu wapya...
-    </div>
-  `;
-
-  clearMessage("discoverMessage");
-
-
-  try{
-
-    const data = await api("/api/discover");
-
-
-    console.log("DISCOVER RESPONSE:",data);
-
-
-    if(!data.ok){
-
-      throw new Error(
-        data.error || "Imeshindikana kupata users."
-      );
-
-    }
-
-
-    const users = Array.isArray(data.users)
-      ? data.users
-      : [];
-
-
-    if(users.length === 0){
-
-      list.innerHTML = `
-        <div class="card empty" style="grid-column:1/-1">
-
-          <div style="font-size:50px">
-            👥
-          </div>
-
-          <h3>Hakuna watu wapya</h3>
-
-          <p>
-            Kwa sasa hakuna watumiaji wengine
-            wapya wa kuonyesha.
-          </p>
-
-          <button
-            class="secondary"
-            onclick="loadDiscover()">
-            🔄 Jaribu tena
-          </button>
-
-        </div>
-      `;
-
-      return;
-
-    }
-
-
-    list.innerHTML = users
-      .map(userCard)
-      .join("");
-
-
-  }catch(error){
-
-    console.error("DISCOVER ERROR:",error);
-
-    list.innerHTML = "";
-
-    showMessage(
-      "discoverMessage",
-      error.message
-    );
-
-  }
-
-}
-
-
-/* =====================================================
-USER CARD
-===================================================== */
-
-function userCard(user){
-
-  const photo = user.photo
-    ? `
-      <img
-        class="user-photo"
-        src="${escapeHtml(user.photo)}"
-        alt="${escapeHtml(user.name)}"
-      >
-    `
-    : `
-      <div class="no-photo">
-        👤
-      </div>
-    `;
-
-
-  return `
-
-    <div class="user-card">
-
-      ${photo}
-
-      <div class="user-info">
-
-        <div class="user-name">
-          ${escapeHtml(user.name)}
-          <span class="badge">
-            ${escapeHtml(user.age)}
-          </span>
-        </div>
-
-        <div class="user-city">
-          📍 ${escapeHtml(user.city)}
-        </div>
-
-        <div class="small">
-          ${escapeHtml(user.gender)}
-        </div>
-
-        <div class="user-bio">
-          ${escapeHtml(user.bio || "Hakuna bio.")}
-        </div>
-
-        <div class="actions">
-
-          <button
-            class="primary"
-            onclick="likeUser(${Number(user.id)})">
-            ❤️ Like
-          </button>
-
-        </div>
-
-      </div>
-
-    </div>
-
-  `;
-
-}
-
-
-/* =====================================================
-LIKE
-===================================================== */
-
-async function likeUser(userId){
-
-  try{
-
-    const data = await api("/api/like",{
-
-      method:"POST",
-
-      headers:{
-        "Content-Type":"application/json"
-      },
-
-      body:JSON.stringify({
-        userId
-      })
-
-    });
-
-
-    if(data.match){
-
-      alert("❤️ Match mpya! Mme-match.");
-
-    }else{
-
-      alert("❤️ Like imetumwa.");
-
-    }
-
-
-    await loadDiscover();
-
-    await loadNotifications();
-
-  }catch(error){
-
-    alert(error.message);
-
-  }
-
-}
-
-
-/* =====================================================
-MATCHES
-===================================================== */
-
-async function loadMatches(){
-
-  const list = $("matchesList");
-
-  list.innerHTML = `
-    <div class="loading">
-      Inapakia matches...
-    </div>
-  `;
-
-
-  try{
-
-    const data = await api("/api/matches");
-
-    const users = Array.isArray(data.users)
-      ? data.users
-      : [];
-
-
-    if(users.length === 0){
-
-      list.innerHTML = `
-        <div class="card empty" style="grid-column:1/-1">
-
-          <div style="font-size:50px">
-            💕
-          </div>
-
-          <h3>Bado huna Match</h3>
-
-          <p>
-            Like mtu na akikulike pia,
-            mtapata Match.
-          </p>
-
-        </div>
-      `;
-
-      return;
-
-    }
-
-
-    list.innerHTML = users
-      .map(matchCard)
-      .join("");
-
-
-  }catch(error){
-
-    list.innerHTML = `
-      <div class="card error">
-        ${escapeHtml(error.message)}
-      </div>
-    `;
-
-  }
-
-}
-
-
-/* =====================================================
-MATCH CARD
-===================================================== */
-
-function matchCard(user){
-
-  const photo = user.photo
-    ? `
-      <img
-        class="user-photo"
-        src="${escapeHtml(user.photo)}"
-        alt="${escapeHtml(user.name)}"
-      >
-    `
-    : `
-      <div class="no-photo">
-        👤
-      </div>
-    `;
-
-
-  return `
-
-    <div class="user-card">
-
-      ${photo}
-
-      <div class="user-info">
-
-        <div class="user-name">
-          ${escapeHtml(user.name)}
-        </div>
-
-        <div class="user-city">
-          📍 ${escapeHtml(user.city)}
-        </div>
-
-        <div class="user-bio">
-          ${escapeHtml(user.bio || "")}
-        </div>
-
-        <button
-          class="primary"
-          style="width:100%"
-          onclick="openChat(${Number(user.id)},'${escapeHtml(user.name)}')">
-          💬 Tuma Message
-        </button>
-
-      </div>
-
-    </div>
-
-  `;
-
-}
-
-
-/* =====================================================
-NOTIFICATIONS
-===================================================== */
-
-async function loadNotifications(){
-
-  try{
-
-    const data = await api("/api/notifications");
-
-
-    const notifications =
-      Array.isArray(data.notifications)
-        ? data.notifications
-        : [];
-
-
-    const unread = Number(data.unread || 0);
-
-
-    if(unread > 0){
-
-      $("notificationBadge").innerHTML =
-        `<span class="badge">${unread}</span>`;
-
-    }else{
-
-      $("notificationBadge").innerHTML = "";
-
-    }
-
-
-    const list = $("notificationsList");
-
-    if(!list) return;
-
-
-    if(notifications.length === 0){
-
-      list.innerHTML = `
-        <div class="empty">
-          🔔 Hakuna notifications kwa sasa.
-        </div>
-      `;
-
-      return;
-
-    }
-
-
-    list.innerHTML = notifications
-      .map(n=>`
-
-        <div class="notification ${n.read ? "" : "unread"}">
-
-          <strong>
-            ${escapeHtml(n.title)}
-          </strong>
-
-          <div>
-            ${escapeHtml(n.message)}
-          </div>
-
-          <div class="small">
-            ${formatDate(n.created_at)}
-          </div>
-
-        </div>
-
-      `)
-      .join("");
-
-
-  }catch(error){
-
-    console.error(
-      "NOTIFICATIONS ERROR:",
-      error
-    );
-
-  }
-
-}
-
-
-/* =====================================================
-MARK NOTIFICATIONS READ
-===================================================== */
-
-async function markNotificationsRead(){
-
-  try{
-
-    await api(
-      "/api/notifications/read-all",
-      {
-        method:"POST"
-      }
-    );
-
-    await loadNotifications();
-
-  }catch(error){
-
-    alert(error.message);
-
-  }
-
-}
-
-
-/* =====================================================
-PROFILE
-===================================================== */
-
-async function loadProfile(){
-
-  try{
-
-    const data = await api("/api/me");
-
-    currentUser = data.user;
-
-    $("profileName").value =
-      currentUser.name || "";
-
-    $("profileEmail").value =
-      currentUser.email || "";
-
-    $("profileAge").value =
-      currentUser.age || "";
-
-    $("profileGender").value =
-      currentUser.gender || "";
-
-    $("profileCity").value =
-      currentUser.city || "";
-
-    $("profileBio").value =
-      currentUser.bio || "";
-
-    currentProfilePhoto =
-      currentUser.photo || "";
-
-
-    renderProfilePhoto();
-
-  }catch(error){
-
-    showMessage(
-      "profileMessage",
-      error.message
-    );
-
-  }
-
-}
-
-
-/* =====================================================
-PROFILE PHOTO
-===================================================== */
-
-function renderProfilePhoto(){
-
-  if(currentProfilePhoto){
-
-    $("profilePhotoBox").innerHTML = `
-
-      <img
-        class="profile-photo"
-        src="${escapeHtml(currentProfilePhoto)}"
-        alt="Profile"
-      >
-
-    `;
-
-  }else{
-
-    $("profilePhotoBox").innerHTML = `
-
-      <div class="profile-placeholder">
-        👤
-      </div>
-
-    `;
-
-  }
-
-}
-
-
-/* =====================================================
-UPDATE PROFILE
-===================================================== */
-
-$("profileForm").addEventListener(
-  "submit",
-  async function(e){
-
-    e.preventDefault();
-
-    clearMessage("profileMessage");
-
-
-    let photo = null;
-
-    const file =
-      $("profilePhoto").files[0];
-
-
-    if(file){
-
-      if(file.size > 5 * 1024 * 1024){
-
-        showMessage(
-          "profileMessage",
-          "Picha ni kubwa sana. Maximum ni 5MB."
-        );
-
-        return;
-
-      }
-
-      photo = await fileToDataURL(file);
-
-    }
-
-
-    try{
-
-      const data = await api(
-        "/api/profile",
-        {
-
-          method:"POST",
-
-          headers:{
-            "Content-Type":"application/json"
-          },
-
-          body:JSON.stringify({
-
-            name:$("profileName").value.trim(),
-
-            age:Number(
-              $("profileAge").value
-            ),
-
-            gender:$("profileGender").value,
-
-            city:$("profileCity").value.trim(),
-
-            bio:$("profileBio").value.trim(),
-
-            photo
-
-          })
-
-        }
-      );
-
-
-      if(data.ok){
-
-        currentUser = data.user;
-
-        currentProfilePhoto =
-          data.user.photo || "";
-
-        renderProfilePhoto();
-
-        $("profilePhoto").value = "";
-
-        showMessage(
-          "profileMessage",
-          "Profile imehifadhiwa vizuri.",
-          "success"
-        );
-
-      }
-
-    }catch(error){
-
-      showMessage(
-        "profileMessage",
-        error.message
-      );
-
-    }
-
-  }
-);
-
-
-/* =====================================================
-CHAT
-===================================================== */
-
-function openChat(userId,name){
-
-  currentChatUserId = Number(userId);
-
-  $("chatTitle").textContent =
-    "💬 Chat na " + name;
-
-  showPage("chat");
-
-}
-
-
-/* =====================================================
-LOAD MESSAGES
-===================================================== */
-
-async function loadMessages(){
-
-  if(!currentChatUserId) return;
-
-
-  const box = $("chatBox");
-
-  box.innerHTML = `
-    <div class="loading">
-      Inapakia messages...
-    </div>
-  `;
-
-
-  try{
-
-    const data = await api(
-      `/api/messages/${currentChatUserId}`
-    );
-
-
-    const messages =
-      Array.isArray(data.messages)
-        ? data.messages
-        : [];
-
-
-    if(messages.length === 0){
-
-      box.innerHTML = `
-        <div class="empty">
-          💬 Bado hakuna message.
-          Anza mazungumzo.
-        </div>
-      `;
-
-      return;
-
-    }
-
-
-    box.innerHTML = messages
-      .map(message=>{
-
-        const mine =
-          Number(message.sender_id) ===
-          Number(currentUser.id);
-
-
-        return `
-
-          <div class="message ${
-            mine ? "mine" : "theirs"
-          }">
-
-            ${escapeHtml(message.message)}
-
-            <div class="small"
-                 style="${
-                   mine
-                   ? "color:#fff"
-                   : ""
-                 }">
-
-              ${formatDate(message.created_at)}
-
-            </div>
-
-          </div>
-
-        `;
-
-      })
-      .join("");
-
-
-    box.scrollTop = box.scrollHeight;
-
-
-  }catch(error){
-
-    box.innerHTML = `
-      <div class="error">
-        ${escapeHtml(error.message)}
-      </div>
-    `;
-
-  }
-
-}
-
-
-/* =====================================================
-SEND MESSAGE
-===================================================== */
-
-$("messageForm").addEventListener(
-  "submit",
-  async function(e){
-
-    e.preventDefault();
-
-
-    if(!currentChatUserId) return;
-
-
-    const input =
-      $("messageInput");
-
-    const message =
-      input.value.trim();
-
-
-    if(!message) return;
-
-
-    try{
-
-      await api(
-        `/api/messages/${currentChatUserId}`,
-        {
-
-          method:"POST",
-
-          headers:{
-            "Content-Type":"application/json"
-          },
-
-          body:JSON.stringify({
-            message
-          })
-
-        }
-      );
-
-
-      input.value = "";
-
-      await loadMessages();
-
-    }catch(error){
-
-      alert(error.message);
-
-    }
-
-  }
-);
-
-
-/* =====================================================
-LOGOUT
-===================================================== */
-
-async function logout(){
-
-  try{
-
-    await api(
-      "/api/logout",
-      {
-        method:"POST"
-      }
-    );
-
-  }catch(error){
-
-    console.error(error);
-
-  }
-
-
-  currentUser = null;
-
-  currentChatUserId = null;
-
-  showAuthScreen();
-
-}
-
-
-/* =====================================================
-DATE
-===================================================== */
-
-function formatDate(date){
-
-  if(!date) return "";
-
-  try{
-
-    return new Date(date)
-      .toLocaleString("sw-TZ");
-
-  }catch(e){
-
-    return "";
-
-  }
-
-}
-
-
-/* =====================================================
-AUTO REFRESH
-===================================================== */
-
-setInterval(async()=>{
-
-  if(!currentUser) return;
-
-  try{
-
-    await loadNotifications();
-
-  }catch(e){}
-
-},30000);
-
-
-/* =====================================================
-START
-===================================================== */
-
-checkLogin();
-
-</script>
-
-</body>
-</html>
+    padding:12
