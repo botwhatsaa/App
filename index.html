@@ -1,536 +1,354 @@
 <!doctype html>
 <html lang="sw">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Tanzania Dating ❤️</title>
 
 <style>
 *{box-sizing:border-box}
-
 body{
   margin:0;
   font-family:Arial,sans-serif;
   background:#fff5f8;
-  color:#24131b;
+  color:#24131b
 }
-
-button,input,select,textarea{font:inherit}
-button{cursor:pointer}
-
 .hidden{display:none!important}
 
 header{
   background:linear-gradient(135deg,#ff174f,#e60046);
-  color:#fff;
-  padding:17px 20px;
-  display:flex;
-  justify-content:space-between;
-  align-items:center;
+  color:white;
+  padding:15px;
   position:sticky;
   top:0;
-  z-index:100;
-  box-shadow:0 3px 12px rgba(0,0,0,.15);
+  z-index:20
 }
-
-.logo{
-  font-size:22px;
-  font-weight:bold;
-}
-
-.logout-btn{
-  border:1px solid rgba(255,255,255,.7);
-  background:transparent;
-  color:#fff;
-  padding:8px 15px;
-  border-radius:20px;
-}
-
-.auth-page{
-  min-height:100vh;
+.header-inner{
+  max-width:900px;
+  margin:auto;
   display:flex;
-  justify-content:center;
   align-items:center;
-  padding:20px;
-  background:radial-gradient(circle at top right,#ffd0dc,transparent 35%),#fff5f8;
+  justify-content:space-between
+}
+.logo{font-size:21px;font-weight:bold}
+
+.notification-btn{
+  border:0;
+  background:rgba(255,255,255,.18);
+  color:white;
+  width:45px;
+  height:45px;
+  border-radius:50%;
+  font-size:23px;
+  cursor:pointer;
+  position:relative
+}
+.badge{
+  position:absolute;
+  top:-3px;
+  right:-3px;
+  background:#111;
+  color:white;
+  min-width:20px;
+  height:20px;
+  padding:2px 5px;
+  border-radius:20px;
+  font-size:12px;
+  display:flex;
+  align-items:center;
+  justify-content:center
 }
 
-.auth-card{
-  width:100%;
-  max-width:430px;
-  background:#fff;
-  border-radius:22px;
-  padding:28px;
-  box-shadow:0 10px 35px rgba(0,0,0,.1);
+.container{
+  max-width:900px;
+  margin:auto;
+  padding:20px
 }
 
-.auth-title{
-  text-align:center;
-  color:#e60046;
-  font-size:30px;
-  margin:0 0 8px;
+.auth-box,
+.profile-box,
+.chat-box,
+.notifications-box{
+  max-width:500px;
+  margin:35px auto;
+  background:white;
+  padding:25px;
+  border-radius:18px;
+  box-shadow:0 8px 30px rgba(0,0,0,.08)
 }
 
-.auth-subtitle{
-  text-align:center;
-  color:#777;
-  margin:0 0 25px;
-}
+h1,h2,h3{margin-top:0}
 
-.form-group{
-  margin-bottom:15px;
-}
+.form-group{margin-bottom:15px}
 
 label{
   display:block;
-  font-size:14px;
   font-weight:bold;
-  margin-bottom:7px;
+  margin-bottom:6px
 }
 
 input,select,textarea{
   width:100%;
   padding:13px;
   border:1px solid #ddd;
-  border-radius:12px;
-  outline:none;
-  background:#fff;
-}
-
-input:focus,select:focus,textarea:focus{
-  border-color:#ff174f;
-  box-shadow:0 0 0 3px rgba(255,23,79,.08);
+  border-radius:10px;
+  font-size:15px
 }
 
 textarea{
   min-height:100px;
-  resize:vertical;
+  resize:vertical
 }
+
+button{cursor:pointer}
 
 .primary-btn{
   width:100%;
   border:0;
   padding:14px;
-  border-radius:13px;
-  color:#fff;
-  font-weight:bold;
-  background:linear-gradient(135deg,#ff174f,#e60046);
-  margin-top:8px;
+  border-radius:10px;
+  background:#ff174f;
+  color:white;
+  font-size:16px;
+  font-weight:bold
 }
 
 .secondary-btn{
-  width:100%;
-  border:1px solid #ff174f;
-  padding:13px;
-  border-radius:13px;
-  color:#e60046;
-  background:#fff;
-  font-weight:bold;
-  margin-top:10px;
-}
-
-.switch{
-  text-align:center;
-  margin-top:18px;
-  color:#777;
-}
-
-.switch span{
-  color:#e60046;
-  font-weight:bold;
-  cursor:pointer;
+  border:0;
+  background:#eee;
+  padding:11px 15px;
+  border-radius:10px
 }
 
 .message{
-  padding:11px;
-  border-radius:10px;
-  margin-bottom:15px;
-  display:none;
-  font-size:14px;
+  margin:10px 0;
+  min-height:20px
+}
+.error{color:#d60039}
+.success{color:#008b45}
+
+.auth-link{
+  text-align:center;
+  margin-top:15px
+}
+.auth-link button{
+  background:none;
+  border:0;
+  color:#e60046;
+  font-weight:bold
 }
 
-.message.error{
-  display:block;
-  background:#ffe5ea;
-  color:#b00020;
-}
-
-.message.success{
-  display:block;
-  background:#e5f8ed;
-  color:#087a3b;
-}
-
-#app{
-  min-height:100vh;
-}
-
-.container{
-  max-width:1100px;
-  margin:auto;
-  padding:25px 18px 100px;
-}
-
-.welcome{
-  background:#fff;
-  padding:20px;
-  border-radius:18px;
-  margin-bottom:20px;
-  box-shadow:0 3px 15px rgba(0,0,0,.06);
-}
-
-.welcome h2{
-  margin:0 0 6px;
-}
-
-.welcome p{
-  margin:0;
-  color:#777;
-}
-
-.nav{
+nav{
   display:flex;
   gap:8px;
-  overflow-x:auto;
-  margin-bottom:20px;
+  max-width:900px;
+  margin:auto;
+  padding:12px 20px;
+  overflow-x:auto
 }
-
-.nav button{
-  white-space:nowrap;
+nav button{
   border:0;
-  background:#fff;
-  padding:11px 16px;
-  border-radius:22px;
-  color:#555;
+  padding:10px 14px;
+  border-radius:20px;
+  background:white;
+  white-space:nowrap
 }
-
-.nav button.active{
+nav button.active{
   background:#ff174f;
-  color:#fff;
-}
-
-.cards{
-  display:grid;
-  grid-template-columns:repeat(auto-fit,minmax(240px,1fr));
-  gap:18px;
+  color:white
 }
 
 .user-card{
-  background:#fff;
-  border-radius:20px;
+  background:white;
+  border-radius:18px;
   overflow:hidden;
-  box-shadow:0 5px 18px rgba(0,0,0,.08);
+  margin-bottom:20px;
+  box-shadow:0 5px 20px rgba(0,0,0,.08)
 }
 
 .user-photo{
   width:100%;
-  height:260px;
+  height:330px;
   object-fit:cover;
-  background:#ffd4df;
-  display:block;
+  display:block
 }
 
 .no-photo{
-  height:260px;
+  width:100%;
+  height:330px;
   display:flex;
-  justify-content:center;
   align-items:center;
-  font-size:75px;
-  background:linear-gradient(135deg,#ffd4df,#ffeef3);
+  justify-content:center;
+  background:#ffe0e9;
+  font-size:80px
 }
 
-.user-info{
-  padding:16px;
-}
-
-.user-info h3{
-  margin:0 0 6px;
-}
-
-.user-meta{
-  color:#777;
-  font-size:14px;
-  margin-bottom:10px;
-}
-
-.bio{
-  color:#555;
-  line-height:1.5;
-  min-height:45px;
-}
+.user-info{padding:18px}
+.user-meta{color:#777;margin:7px 0}
+.bio{margin:12px 0;line-height:1.5}
 
 .card-actions{
   display:flex;
-  gap:8px;
-  margin-top:15px;
+  gap:8px
 }
-
-.like-btn,.chat-btn,.report-btn{
+.card-actions button{
   flex:1;
+  padding:12px;
   border:0;
-  padding:11px;
-  border-radius:11px;
-  font-weight:bold;
+  border-radius:10px
 }
 
 .like-btn{
   background:#ff174f;
-  color:#fff;
+  color:white
 }
+.chat-btn{background:#eee}
+.report-btn{background:#fff0f0}
 
-.chat-btn{
-  background:#f3f3f3;
-  color:#333;
-}
-
-.report-btn{
-  background:#fff0f0;
-  color:#c40000;
-}
-
-.profile-box{
-  max-width:600px;
-  margin:auto;
-  background:#fff;
-  border-radius:20px;
-  padding:22px;
-  box-shadow:0 5px 18px rgba(0,0,0,.07);
-}
-
-.empty{
-  background:#fff;
-  padding:35px 20px;
-  text-align:center;
-  border-radius:18px;
-  color:#777;
+.matches-list{
+  display:grid;
+  gap:15px
 }
 
 .match-card{
+  background:white;
+  padding:15px;
+  border-radius:15px;
   display:flex;
   align-items:center;
-  gap:15px;
-  background:#fff;
-  padding:15px;
-  border-radius:16px;
-  margin-bottom:10px;
-  box-shadow:0 3px 12px rgba(0,0,0,.05);
+  gap:15px
 }
 
-.match-avatar{
-  width:60px;
-  height:60px;
+.match-photo{
+  width:65px;
+  height:65px;
+  object-fit:cover;
+  border-radius:50%;
+  background:#ffe0e9
+}
+
+.empty{
+  text-align:center;
+  background:white;
+  padding:35px 20px;
+  border-radius:15px
+}
+
+.profile-photo-preview{
+  width:130px;
+  height:130px;
   border-radius:50%;
   object-fit:cover;
-  background:#ffd4df;
-  flex-shrink:0;
+  display:block;
+  margin:10px auto 20px;
+  background:#ffe0e9
 }
 
-.match-info{
-  flex:1;
-}
-
-.match-info h3{
-  margin:0 0 4px;
-}
-
-.match-info p{
-  margin:0;
-  color:#777;
-  font-size:14px;
-}
-
-.small-btn{
-  border:0;
-  background:#ff174f;
-  color:#fff;
-  padding:9px 13px;
+.file-btn{
+  display:block;
+  background:#eee;
+  padding:13px;
+  text-align:center;
   border-radius:10px;
-}
-
-.chat-box{
-  max-width:700px;
-  margin:auto;
-  background:#fff;
-  border-radius:20px;
-  overflow:hidden;
-  box-shadow:0 5px 20px rgba(0,0,0,.08);
+  margin-bottom:10px
 }
 
 .chat-header{
-  background:#ff174f;
-  color:#fff;
-  padding:16px;
+  font-size:20px;
   font-weight:bold;
+  margin-bottom:15px
 }
 
 .messages{
-  height:430px;
+  height:400px;
   overflow-y:auto;
-  padding:18px;
-  background:#fff7f9;
+  background:#fff5f8;
+  padding:15px;
+  border-radius:12px;
+  margin-bottom:15px
 }
 
 .msg{
-  max-width:75%;
+  max-width:80%;
   padding:10px 13px;
   border-radius:15px;
-  margin-bottom:10px;
-  line-height:1.4;
-  word-wrap:break-word;
+  margin-bottom:10px
 }
 
 .msg.me{
   margin-left:auto;
   background:#ff174f;
-  color:#fff;
-  border-bottom-right-radius:4px;
+  color:white
 }
 
-.msg.other{
-  margin-right:auto;
-  background:#fff;
-  border:1px solid #eee;
-  border-bottom-left-radius:4px;
-}
+.msg.them{background:#eee}
 
 .chat-form{
   display:flex;
-  gap:8px;
-  padding:12px;
-  border-top:1px solid #eee;
+  gap:8px
 }
-
-.chat-form input{
-  flex:1;
-}
-
+.chat-form input{flex:1}
 .chat-form button{
-  width:90px;
   border:0;
-  border-radius:12px;
   background:#ff174f;
-  color:#fff;
-  font-weight:bold;
+  color:white;
+  padding:0 18px;
+  border-radius:10px
 }
 
-.back-btn{
-  border:0;
-  background:#fff;
-  padding:10px 15px;
-  border-radius:20px;
-  margin-bottom:15px;
-}
-
-/* PROFILE PHOTO */
-
-.photo-upload-box{
-  text-align:center;
-  margin-bottom:25px;
-}
-
-.profile-preview{
-  width:150px;
-  height:150px;
-  border-radius:50%;
-  object-fit:cover;
-  display:block;
-  margin:0 auto 15px;
-  background:linear-gradient(135deg,#ffd4df,#ffeef3);
-  border:4px solid #ff174f;
-}
-
-.profile-preview-placeholder{
-  width:150px;
-  height:150px;
-  border-radius:50%;
+.notification-item{
+  padding:14px;
+  border-bottom:1px solid #eee;
   display:flex;
-  justify-content:center;
-  align-items:center;
-  margin:0 auto 15px;
-  background:linear-gradient(135deg,#ffd4df,#ffeef3);
-  border:4px solid #ff174f;
-  font-size:55px;
+  gap:12px
 }
 
-.upload-label{
-  display:inline-block;
-  background:#ff174f;
-  color:#fff;
-  padding:11px 18px;
-  border-radius:12px;
-  font-weight:bold;
-  cursor:pointer;
+.notification-item.unread{
+  background:#fff0f4
 }
 
-.upload-label input{
-  display:none;
-}
+.notification-icon{font-size:25px}
 
-.photo-help{
+.notification-content{flex:1}
+
+.notification-title{font-weight:bold}
+
+.notification-time{
+  color:#888;
   font-size:12px;
-  color:#777;
-  margin-top:8px;
+  margin-top:5px
 }
 
-.remove-photo-btn{
+.notification-actions{
+  display:flex;
+  justify-content:flex-end;
+  margin-bottom:10px
+}
+
+.logout{
+  margin-left:auto;
+  display:block;
   border:0;
-  background:#fff0f0;
-  color:#c40000;
-  padding:8px 14px;
-  border-radius:10px;
-  margin-top:8px;
-  display:none;
-}
-
-.upload-status{
-  font-size:13px;
-  color:#777;
-  margin-top:8px;
-}
-
-@media(max-width:600px){
-
-  .auth-card{
-    padding:22px;
-  }
-
-  .user-photo,
-  .no-photo{
-    height:230px;
-  }
-
-  .messages{
-    height:55vh;
-  }
-
-  .logo{
-    font-size:18px;
-  }
-
-  .container{
-    padding:18px 12px 80px;
-  }
+  background:#222;
+  color:white;
+  padding:10px 15px;
+  border-radius:10px
 }
 </style>
 </head>
 
 <body>
 
-<!-- AUTH -->
+<!-- LOGIN / REGISTER -->
 
 <div id="auth">
 
-  <!-- LOGIN -->
+  <div id="loginPage">
 
-  <div id="loginPage" class="auth-page">
+    <div class="auth-box">
 
-    <div class="auth-card">
-
-      <h1 class="auth-title">❤️ Tanzania Dating</h1>
-
-      <p class="auth-subtitle">
-        Kutana na watu wapya Tanzania
-      </p>
+      <h1>❤️ Tanzania Dating</h1>
+      <p>Ingia kwenye account yako</p>
 
       <div id="loginMessage" class="message"></div>
 
@@ -538,33 +356,25 @@ textarea{
 
         <div class="form-group">
           <label>Email</label>
-          <input
-            type="email"
-            id="loginEmail"
-            placeholder="Email yako"
-            required
-          >
+          <input id="loginEmail" type="email" required>
         </div>
 
         <div class="form-group">
           <label>Password</label>
-          <input
-            type="password"
-            id="loginPassword"
-            placeholder="Password yako"
-            required
-          >
+          <input id="loginPassword" type="password" required>
         </div>
 
-        <button class="primary-btn" type="submit">
+        <button class="primary-btn">
           Ingia
         </button>
 
       </form>
 
-      <div class="switch">
+      <div class="auth-link">
         Huna account?
-        <span onclick="showRegister()">Jisajili</span>
+        <button onclick="showRegister()">
+          Jisajili
+        </button>
       </div>
 
     </div>
@@ -572,17 +382,11 @@ textarea{
   </div>
 
 
-  <!-- REGISTER -->
+  <div id="registerPage" class="hidden">
 
-  <div id="registerPage" class="auth-page hidden">
+    <div class="auth-box">
 
-    <div class="auth-card">
-
-      <h1 class="auth-title">❤️ Jisajili</h1>
-
-      <p class="auth-subtitle">
-        Tengenza profile yako
-      </p>
+      <h1>Jisajili ❤️</h1>
 
       <div id="registerMessage" class="message"></div>
 
@@ -590,31 +394,19 @@ textarea{
 
         <div class="form-group">
           <label>Jina</label>
-          <input
-            type="text"
-            id="regName"
-            placeholder="Jina lako"
-            maxlength="80"
-            required
-          >
+          <input id="regName" maxlength="80" required>
         </div>
 
         <div class="form-group">
           <label>Email</label>
-          <input
-            type="email"
-            id="regEmail"
-            placeholder="example@gmail.com"
-            required
-          >
+          <input id="regEmail" type="email" required>
         </div>
 
         <div class="form-group">
           <label>Password</label>
           <input
-            type="password"
             id="regPassword"
-            placeholder="Angalau characters 6"
+            type="password"
             minlength="6"
             required
           >
@@ -623,11 +415,10 @@ textarea{
         <div class="form-group">
           <label>Umri</label>
           <input
-            type="number"
             id="regAge"
+            type="number"
             min="18"
             max="100"
-            placeholder="18+"
             required
           >
         </div>
@@ -636,10 +427,230 @@ textarea{
           <label>Jinsia</label>
 
           <select id="regGender" required>
+            <option value="">Chagua jinsia</option>
+            <option value="Mwanaume">Mwanaume</option>
+            <option value="Mwanamke">Mwanamke</option>
+            <option value="Nyingine">Nyingine</option>
+          </select>
+        </div>
 
-            <option value="">
-              Chagua jinsia
-            </option>
+        <div class="form-group">
+          <label>Mji</label>
+          <input id="regCity" maxlength="80" required>
+        </div>
+
+        <div class="form-group">
+          <label>Bio</label>
+          <textarea id="regBio" maxlength="500"></textarea>
+        </div>
+
+        <div class="form-group">
+
+          <label>Picha yako</label>
+
+          <img
+            id="regPhotoPreview"
+            class="profile-photo-preview hidden"
+          >
+
+          <label class="file-btn">
+            📷 Chagua picha
+
+            <input
+              id="regPhoto"
+              type="file"
+              accept="image/jpeg,image/png,image/webp"
+              hidden
+            >
+          </label>
+
+          <small>
+            JPG, PNG au WEBP — maximum 5MB
+          </small>
+
+        </div>
+
+        <button class="primary-btn">
+          Jisajili
+        </button>
+
+      </form>
+
+      <div class="auth-link">
+        Una account?
+        <button onclick="showLogin()">
+          Ingia
+        </button>
+      </div>
+
+    </div>
+
+  </div>
+
+</div>
+
+
+<!-- APP -->
+
+<div id="app" class="hidden">
+
+<header>
+
+  <div class="header-inner">
+
+    <div class="logo">
+      Tanzania Dating ❤️
+    </div>
+
+    <button
+      class="notification-btn"
+      onclick="showNotifications()"
+      aria-label="Notifications"
+    >
+      🔔
+
+      <span
+        id="notificationBadge"
+        class="badge hidden"
+      >0</span>
+
+    </button>
+
+  </div>
+
+</header>
+
+
+<nav>
+
+  <button
+    id="navDiscover"
+    class="active"
+    onclick="showSection('discover')"
+  >
+    🔎 Discover
+  </button>
+
+  <button
+    id="navMatches"
+    onclick="showSection('matches')"
+  >
+    ❤️ Matches
+  </button>
+
+  <button
+    id="navProfile"
+    onclick="showSection('profile')"
+  >
+    👤 Profile
+  </button>
+
+  <button onclick="showNotifications()">
+    🔔 Notifications
+  </button>
+
+</nav>
+
+
+<div class="container">
+
+  <div style="
+    display:flex;
+    align-items:center;
+    margin-bottom:15px;
+  ">
+
+    <h2 style="margin:0">
+      Karibu,
+      <span id="welcomeName"></span>
+      ❤️
+    </h2>
+
+    <button
+      class="logout"
+      onclick="logout()"
+    >
+      Toka
+    </button>
+
+  </div>
+
+
+  <!-- DISCOVER -->
+
+  <section id="discoverSection">
+
+    <h2>Watu wapya</h2>
+
+    <div id="discoverList">
+      <div class="empty">
+        Inapakia...
+      </div>
+    </div>
+
+  </section>
+
+
+  <!-- MATCHES -->
+
+  <section id="matchesSection" class="hidden">
+
+    <h2>❤️ Matches zako</h2>
+
+    <div id="matchesList">
+      <div class="empty">
+        Inapakia...
+      </div>
+    </div>
+
+  </section>
+
+
+  <!-- PROFILE -->
+
+  <section id="profileSection" class="hidden">
+
+    <h2>👤 Profile yangu</h2>
+
+    <div class="profile-box">
+
+      <div
+        id="profileMessage"
+        class="message"
+      ></div>
+
+      <img
+        id="profilePreview"
+        class="profile-photo-preview"
+      >
+
+      <form id="profileForm">
+
+        <div class="form-group">
+          <label>Jina</label>
+          <input
+            id="profileName"
+            maxlength="80"
+            required
+          >
+        </div>
+
+        <div class="form-group">
+          <label>Umri</label>
+          <input
+            id="profileAge"
+            type="number"
+            min="18"
+            max="100"
+            required
+          >
+        </div>
+
+        <div class="form-group">
+
+          <label>Jinsia</label>
+
+          <select id="profileGender">
 
             <option value="Mwanaume">
               Mwanaume
@@ -662,9 +673,7 @@ textarea{
           <label>Mji</label>
 
           <input
-            type="text"
-            id="regCity"
-            placeholder="Mfano: Dar es Salaam"
+            id="profileCity"
             maxlength="80"
             required
           >
@@ -676,8 +685,7 @@ textarea{
           <label>Bio</label>
 
           <textarea
-            id="regBio"
-            placeholder="Jieleze kidogo..."
+            id="profileBio"
             maxlength="500"
           ></textarea>
 
@@ -685,370 +693,136 @@ textarea{
 
         <div class="form-group">
 
-          <label>
-            Picha
-            <small>(optional)</small>
-          </label>
+          <label>Badilisha picha</label>
 
-          <input
-            type="file"
-            id="regPhotoFile"
-            accept="image/jpeg,image/png,image/webp"
-          >
+          <label class="file-btn">
 
-          <div id="registerPhotoPreview"></div>
-
-        </div>
-
-        <button class="primary-btn" type="submit">
-          Jisajili
-        </button>
-
-      </form>
-
-      <div class="switch">
-
-        Tayari una account?
-
-        <span onclick="showLogin()">
-          Ingia
-        </span>
-
-      </div>
-
-    </div>
-
-  </div>
-
-</div>
-
-
-<!-- APP -->
-
-<div id="app" class="hidden">
-
-  <header>
-
-    <div class="logo">
-      ❤️ Tanzania Dating
-    </div>
-
-    <button
-      class="logout-btn"
-      onclick="logout()"
-    >
-      Toka
-    </button>
-
-  </header>
-
-
-  <div class="container">
-
-    <div class="welcome">
-
-      <h2>
-        Karibu,
-        <span id="welcomeName"></span>
-        ❤️
-      </h2>
-
-      <p>
-        Tafuta mtu anayekufaa na anza mazungumzo.
-      </p>
-
-    </div>
-
-
-    <!-- NAV -->
-
-    <div class="nav">
-
-      <button
-        id="navDiscover"
-        class="active"
-        onclick="showSection('discover')"
-      >
-        🔎 Discover
-      </button>
-
-      <button
-        id="navMatches"
-        onclick="showSection('matches')"
-      >
-        ❤️ Matches
-      </button>
-
-      <button
-        id="navProfile"
-        onclick="showSection('profile')"
-      >
-        👤 Profile
-      </button>
-
-    </div>
-
-
-    <!-- DISCOVER -->
-
-    <section id="discoverSection">
-
-      <h2>
-        Watu wapya
-      </h2>
-
-      <div
-        id="discoverList"
-        class="cards"
-      >
-        <div class="empty">
-          Inapakia...
-        </div>
-      </div>
-
-    </section>
-
-
-    <!-- MATCHES -->
-
-    <section
-      id="matchesSection"
-      class="hidden"
-    >
-
-      <h2>
-        ❤️ Matches zako
-      </h2>
-
-      <div id="matchesList">
-
-        <div class="empty">
-          Inapakia...
-        </div>
-
-      </div>
-
-    </section>
-
-
-    <!-- PROFILE -->
-
-    <section
-      id="profileSection"
-      class="hidden"
-    >
-
-      <h2>
-        👤 Profile yangu
-      </h2>
-
-      <div class="profile-box">
-
-        <div
-          id="profileMessage"
-          class="message"
-        ></div>
-
-
-        <!-- PHOTO UPLOAD -->
-
-        <div class="photo-upload-box">
-
-          <div id="profilePreviewContainer">
-
-            <div class="profile-preview-placeholder">
-              👤
-            </div>
-
-          </div>
-
-          <label class="upload-label">
-
-            📸 Chagua picha
+            📷 Chagua picha
 
             <input
-              type="file"
               id="profilePhotoFile"
+              type="file"
               accept="image/jpeg,image/png,image/webp"
+              hidden
             >
 
           </label>
 
-          <div class="photo-help">
-            JPG, PNG au WEBP • Maximum 5MB
-          </div>
-
           <button
             type="button"
-            id="removePhotoBtn"
-            class="remove-photo-btn"
+            class="secondary-btn"
+            onclick="removeProfilePhoto()"
           >
             🗑️ Ondoa picha
           </button>
 
-          <div
-            id="uploadStatus"
-            class="upload-status"
-          ></div>
+          <p id="photoStatus"></p>
 
         </div>
 
+        <button
+          class="primary-btn"
+          type="submit"
+        >
+          Hifadhi Profile
+        </button>
 
-        <form id="profileForm">
+      </form>
 
-          <div class="form-group">
+    </div>
 
-            <label>
-              Jina
-            </label>
-
-            <input
-              id="profileName"
-              required
-              maxlength="80"
-            >
-
-          </div>
+  </section>
 
 
-          <div class="form-group">
+  <!-- CHAT -->
 
-            <label>
-              Umri
-            </label>
+  <section id="chatSection" class="hidden">
 
-            <input
-              id="profileAge"
-              type="number"
-              min="18"
-              max="100"
-              required
-            >
-
-          </div>
-
-
-          <div class="form-group">
-
-            <label>
-              Jinsia
-            </label>
-
-            <select id="profileGender">
-
-              <option value="Mwanaume">
-                Mwanaume
-              </option>
-
-              <option value="Mwanamke">
-                Mwanamke
-              </option>
-
-              <option value="Nyingine">
-                Nyingine
-              </option>
-
-            </select>
-
-          </div>
-
-
-          <div class="form-group">
-
-            <label>
-              Mji
-            </label>
-
-            <input
-              id="profileCity"
-              required
-              maxlength="80"
-            >
-
-          </div>
-
-
-          <div class="form-group">
-
-            <label>
-              Bio
-            </label>
-
-            <textarea
-              id="profileBio"
-              maxlength="500"
-            ></textarea>
-
-          </div>
-
-
-          <button
-            class="primary-btn"
-            type="submit"
-          >
-            💾 Hifadhi Profile
-          </button>
-
-        </form>
-
-      </div>
-
-    </section>
-
-
-    <!-- CHAT -->
-
-    <section
-      id="chatSection"
-      class="hidden"
+    <button
+      class="secondary-btn"
+      onclick="backFromChat()"
     >
+      ← Rudi
+    </button>
 
-      <button
-        class="back-btn"
-        onclick="backFromChat()"
+    <div class="chat-box">
+
+      <div
+        class="chat-header"
+        id="chatHeader"
       >
-        ← Rudi
-      </button>
+        💬 Chat
+      </div>
 
-      <div class="chat-box">
+      <div
+        id="messages"
+        class="messages"
+      ></div>
 
-        <div
-          class="chat-header"
-          id="chatHeader"
+      <form
+        id="chatForm"
+        class="chat-form"
+      >
+
+        <input
+          id="messageInput"
+          type="text"
+          maxlength="2000"
+          placeholder="Andika ujumbe..."
+          required
         >
-          💬 Chat
-        </div>
 
-        <div
-          id="messages"
-          class="messages"
-        ></div>
+        <button>
+          Tuma
+        </button>
 
-        <form
-          id="chatForm"
-          class="chat-form"
+      </form>
+
+    </div>
+
+  </section>
+
+
+  <!-- NOTIFICATIONS -->
+
+  <section
+    id="notificationsSection"
+    class="hidden"
+  >
+
+    <div class="notifications-box">
+
+      <div style="
+        display:flex;
+        justify-content:space-between;
+        align-items:center;
+        gap:10px;
+      ">
+
+        <h2>🔔 Notifications</h2>
+
+        <button
+          class="secondary-btn"
+          onclick="markNotificationsRead()"
         >
-
-          <input
-            type="text"
-            id="messageInput"
-            placeholder="Andika ujumbe..."
-            autocomplete="off"
-            maxlength="2000"
-            required
-          >
-
-          <button type="submit">
-            Tuma
-          </button>
-
-        </form>
+          Soma zote
+        </button>
 
       </div>
 
-    </section>
+      <div id="notificationsList">
 
-  </div>
+        <div class="empty">
+          Inapakia...
+        </div>
+
+      </div>
+
+    </div>
+
+  </section>
+
+</div>
 
 </div>
 
@@ -1058,57 +832,56 @@ textarea{
 let currentUser = null;
 let chatUser = null;
 let previousSection = "discover";
-
 let selectedProfilePhoto = null;
 let removePhoto = false;
 
 
 /* API */
 
-async function api(url, options = {}) {
+async function api(url, options = {}){
 
-  const response = await fetch(url, {
-
+  const response = await fetch(url,{
     credentials:"same-origin",
-
     ...options,
-
     headers:{
       "Content-Type":"application/json",
       ...(options.headers || {})
     }
-
   });
 
-  const data = await response
-    .json()
-    .catch(() => ({}));
+  const data =
+    await response.json().catch(() => ({}));
 
   if(!response.ok){
-
     throw new Error(
       data.error ||
       "Kuna tatizo limetokea."
     );
-
   }
 
   return data;
 }
 
 
-/* MESSAGES */
+/* HELPERS */
 
-function showMessage(
-  id,
-  text,
-  type="error"
-){
+function escapeHtml(value){
+
+  return String(value ?? "")
+    .replace(/&/g,"&amp;")
+    .replace(/</g,"&lt;")
+    .replace(/>/g,"&gt;")
+    .replace(/"/g,"&quot;")
+    .replace(/'/g,"&#039;");
+}
+
+
+function showMessage(id,text,type="error"){
 
   const el =
     document.getElementById(id);
 
-  if(!el) return;
+  if(!el)return;
 
   el.className =
     "message " + type;
@@ -1123,10 +896,8 @@ function clearMessage(id){
     document.getElementById(id);
 
   if(el){
-
     el.className="message";
     el.textContent="";
-
   }
 
 }
@@ -1145,7 +916,6 @@ function showLogin(){
     .classList.add("hidden");
 
   clearMessage("loginMessage");
-
 }
 
 
@@ -1160,235 +930,208 @@ function showRegister(){
     .classList.remove("hidden");
 
   clearMessage("registerMessage");
-
 }
 
 
 /* LOGIN */
 
 document
-  .getElementById("loginForm")
-  .addEventListener(
-    "submit",
-    async e => {
+.getElementById("loginForm")
+.addEventListener("submit",async e=>{
 
-      e.preventDefault();
+  e.preventDefault();
 
-      clearMessage("loginMessage");
+  clearMessage("loginMessage");
 
-      try{
+  try{
 
-        const data =
-          await api(
-            "/api/login",
-            {
-              method:"POST",
+    const data =
+      await api("/api/login",{
+        method:"POST",
 
-              body:JSON.stringify({
+        body:JSON.stringify({
 
-                email:
-                  document
-                  .getElementById("loginEmail")
-                  .value,
+          email:
+            document
+            .getElementById("loginEmail")
+            .value,
 
-                password:
-                  document
-                  .getElementById("loginPassword")
-                  .value
+          password:
+            document
+            .getElementById("loginPassword")
+            .value
 
-              })
+        })
+      });
 
-            }
-          );
+    currentUser=data.user;
 
-        currentUser =
-          data.user;
+    enterApp();
 
-        enterApp();
+  }catch(err){
 
-      }catch(err){
+    showMessage(
+      "loginMessage",
+      err.message
+    );
 
-        showMessage(
-          "loginMessage",
-          err.message
-        );
+  }
 
-      }
-
-    }
-  );
+});
 
 
-/* REGISTER PHOTO PREVIEW */
+/* BASE64 */
+
+function fileToBase64(file){
+
+  return new Promise((resolve,reject)=>{
+
+    const reader =
+      new FileReader();
+
+    reader.onload =
+      ()=>resolve(reader.result);
+
+    reader.onerror =
+      reject;
+
+    reader.readAsDataURL(file);
+
+  });
+
+}
+
+
+/* REGISTER PHOTO */
 
 document
-  .getElementById("regPhotoFile")
-  .addEventListener(
-    "change",
-    async function(){
+.getElementById("regPhoto")
+.addEventListener("change",async e=>{
 
-      const file =
-        this.files[0];
+  const file=e.target.files[0];
 
-      if(!file) return;
+  if(!file)return;
 
-      if(file.size > 5 * 1024 * 1024){
+  if(file.size>5*1024*1024){
 
-        alert(
-          "Picha isiwe zaidi ya 5MB."
-        );
+    alert(
+      "Picha ni kubwa sana. Maximum 5MB."
+    );
 
-        this.value="";
-        return;
+    e.target.value="";
 
-      }
+    return;
+  }
 
-      if(!file.type.startsWith("image/")){
+  try{
 
-        alert(
-          "Tafadhali chagua picha."
-        );
+    const base64 =
+      await fileToBase64(file);
 
-        this.value="";
-        return;
+    const preview =
+      document.getElementById(
+        "regPhotoPreview"
+      );
 
-      }
+    preview.src=base64;
 
-      try{
+    preview.classList.remove(
+      "hidden"
+    );
 
-        const base64 =
-          await fileToBase64(file);
+    preview.dataset.photo=base64;
 
-        const preview =
-          document.getElementById(
-            "registerPhotoPreview"
-          );
+  }catch{
 
-        preview.innerHTML =
-          '<img class="profile-preview" src="' +
-          escapeAttr(base64) +
-          '" alt="Preview">';
+    alert(
+      "Imeshindikana kusoma picha."
+    );
 
-      }catch(err){
+  }
 
-        alert(
-          "Imeshindikana kusoma picha."
-        );
-
-      }
-
-    }
-  );
+});
 
 
 /* REGISTER */
 
 document
-  .getElementById("registerForm")
-  .addEventListener(
-    "submit",
-    async e => {
+.getElementById("registerForm")
+.addEventListener("submit",async e=>{
 
-      e.preventDefault();
+  e.preventDefault();
 
-      clearMessage(
-        "registerMessage"
+  clearMessage("registerMessage");
+
+  try{
+
+    const preview =
+      document.getElementById(
+        "regPhotoPreview"
       );
 
-      try{
+    const photo =
+      preview.dataset.photo || "";
 
-        let photo = "";
+    const data =
+      await api("/api/register",{
+        method:"POST",
 
-        const photoFile =
-          document
-          .getElementById("regPhotoFile")
-          .files[0];
+        body:JSON.stringify({
 
-        if(photoFile){
+          name:
+            document
+            .getElementById("regName")
+            .value,
 
-          if(photoFile.size >
-             5 * 1024 * 1024){
+          email:
+            document
+            .getElementById("regEmail")
+            .value,
 
-            throw new Error(
-              "Picha isiwe zaidi ya 5MB."
-            );
+          password:
+            document
+            .getElementById("regPassword")
+            .value,
 
-          }
+          age:
+            document
+            .getElementById("regAge")
+            .value,
 
-          photo =
-            await fileToBase64(
-              photoFile
-            );
+          gender:
+            document
+            .getElementById("regGender")
+            .value,
 
-        }
+          city:
+            document
+            .getElementById("regCity")
+            .value,
 
-        const data =
-          await api(
-            "/api/register",
-            {
+          bio:
+            document
+            .getElementById("regBio")
+            .value,
 
-              method:"POST",
+          photo
 
-              body:JSON.stringify({
+        })
+      });
 
-                name:
-                  document
-                  .getElementById("regName")
-                  .value,
+    currentUser=data.user;
 
-                email:
-                  document
-                  .getElementById("regEmail")
-                  .value,
+    enterApp();
 
-                password:
-                  document
-                  .getElementById("regPassword")
-                  .value,
+  }catch(err){
 
-                age:
-                  document
-                  .getElementById("regAge")
-                  .value,
+    showMessage(
+      "registerMessage",
+      err.message
+    );
 
-                gender:
-                  document
-                  .getElementById("regGender")
-                  .value,
+  }
 
-                city:
-                  document
-                  .getElementById("regCity")
-                  .value,
-
-                bio:
-                  document
-                  .getElementById("regBio")
-                  .value,
-
-                photo
-
-              })
-
-            }
-          );
-
-        currentUser =
-          data.user;
-
-        enterApp();
-
-      }catch(err){
-
-        showMessage(
-          "registerMessage",
-          err.message
-        );
-
-      }
-
-    }
-  );
+});
 
 
 /* SESSION */
@@ -1397,8 +1140,10 @@ async function checkSession(){
 
   try{
 
-    currentUser =
+    const data =
       await api("/api/me");
+
+    currentUser=data.user;
 
     enterApp();
 
@@ -1417,8 +1162,6 @@ async function checkSession(){
 }
 
 
-/* ENTER APP */
-
 function enterApp(){
 
   document
@@ -1431,28 +1174,24 @@ function enterApp(){
 
   document
     .getElementById("welcomeName")
-    .textContent =
-    currentUser.name;
+    .textContent=currentUser.name;
 
   fillProfile();
 
   showSection("discover");
 
+  loadNotificationCount();
+
 }
 
-
-/* LOGOUT */
 
 async function logout(){
 
   try{
 
-    await api(
-      "/api/logout",
-      {
-        method:"POST"
-      }
-    );
+    await api("/api/logout",{
+      method:"POST"
+    });
 
   }catch{}
 
@@ -1476,65 +1215,72 @@ async function logout(){
 
 function showSection(section){
 
-  if(section !== "chat"){
-
-    previousSection =
-      section;
-
+  if(section!=="chat"){
+    previousSection=section;
   }
 
   [
     "discover",
     "matches",
     "profile",
-    "chat"
-  ].forEach(s => {
+    "chat",
+    "notifications"
+  ].forEach(s=>{
 
-    document
-      .getElementById(
+    const el =
+      document.getElementById(
         s+"Section"
-      )
-      .classList
-      .toggle(
-        "hidden",
-        s !== section
       );
 
-  });
+    if(el){
+      el.classList.toggle(
+        "hidden",
+        s!==section
+      );
+    }
 
+  });
 
   [
     "Discover",
     "Matches",
     "Profile"
-  ].forEach(s => {
+  ].forEach(name=>{
 
     const btn =
       document.getElementById(
-        "nav"+s
+        "nav"+name
       );
 
     if(btn){
 
       btn.classList.toggle(
         "active",
-        s.toLowerCase() ===
-        section
+        name.toLowerCase()===section
       );
 
     }
 
   });
 
-
-  if(section === "discover")
+  if(section==="discover")
     loadDiscover();
 
-  if(section === "matches")
+  if(section==="matches")
     loadMatches();
 
-  if(section === "profile")
+  if(section==="profile")
     fillProfile();
+
+  if(section==="notifications")
+    loadNotifications();
+
+}
+
+
+function showNotifications(){
+
+  showSection("notifications");
 
 }
 
@@ -1554,950 +1300,78 @@ async function loadDiscover(){
   try{
 
     const users =
-      await api(
-        "/api/discover"
-      );
+      await api("/api/discover");
 
     if(!users.length){
 
-      box.innerHTML =
-        '<div class="empty">' +
-        '<h3>Hakuna users bado ❤️</h3>' +
-        '<p>Watu wapya wakijiunga wataonekana hapa.</p>' +
-        '</div>';
+      box.innerHTML=`
+        <div class="empty">
+          <h3>Hakuna users bado ❤️</h3>
+          <p>
+            Watu wapya wakijiunga
+            wataonekana hapa.
+          </p>
+        </div>
+      `;
 
       return;
-
     }
 
     box.innerHTML="";
 
-    users.forEach(user => {
-
+    users.forEach(user=>{
       box.appendChild(
         userCard(user)
       );
-
     });
 
   }catch(err){
 
-    box.innerHTML =
-      '<div class="empty">' +
-      escapeHtml(err.message) +
-      '</div>';
+    box.innerHTML=`
+      <div class="empty">
+        ${escapeHtml(err.message)}
+      </div>
+    `;
 
   }
 
 }
 
-
-/* USER CARD */
 
 function userCard(user){
 
   const card =
     document.createElement("div");
 
-  card.className =
-    "user-card";
-
-
-  const photo =
-    user.photo
-
-    ? '<img class="user-photo" src="' +
-      escapeAttr(user.photo) +
-      '" alt="Picha ya ' +
-      escapeAttr(user.name) +
-      '">'
-
-    : '<div class="no-photo">👤</div>';
-
-
-  card.innerHTML =
-    photo +
-
-    '<div class="user-info">' +
-
-      '<h3>' +
-        escapeHtml(user.name) +
-        ', ' +
-        Number(user.age) +
-      '</h3>' +
-
-      '<div class="user-meta">' +
-        '📍 ' +
-        escapeHtml(user.city) +
-        ' · ' +
-        escapeHtml(user.gender) +
-      '</div>' +
-
-      '<div class="bio">' +
-        escapeHtml(
-          user.bio ||
-          "Hakuna bio bado."
-        ) +
-      '</div>' +
-
-      '<div class="card-actions">' +
-
-        '<button class="like-btn">' +
-          '❤️ Like' +
-        '</button>' +
-
-        '<button class="chat-btn">' +
-          '💬 Chat' +
-        '</button>' +
-
-        '<button class="report-btn">' +
-          '⚠️' +
-        '</button>' +
-
-      '</div>' +
-
-    '</div>';
-
-
-  const image =
-    card.querySelector(
-      ".user-photo"
-    );
-
-  if(image){
-
-    image.onerror = function(){
-
-      const replacement =
-        document.createElement(
-          "div"
-        );
-
-      replacement.className =
-        "no-photo";
-
-      replacement.textContent =
-        "👤";
-
-      this.replaceWith(
-        replacement
-      );
-
-    };
-
-  }
-
-
-  card
-    .querySelector(".like-btn")
-    .onclick =
-    () => likeUser(user.id);
-
-
-  card
-    .querySelector(".chat-btn")
-    .onclick =
-    () => openChat(user);
-
-
-  card
-    .querySelector(".report-btn")
-    .onclick =
-    () => reportUser(user.id);
-
-
-  return card;
-
-}
-
-
-/* LIKE */
-
-async function likeUser(id){
-
-  try{
-
-    const data =
-      await api(
-        "/api/like",
-        {
-          method:"POST",
-
-          body:JSON.stringify({
-            userId:id
-          })
-
-        }
-      );
-
-    if(data.matched){
-
-      alert(
-        "❤️ Match! Mnaweza kuanza chat."
-      );
-
-    }else{
-
-      alert(
-        "❤️ Like imetumwa."
-      );
-
-    }
-
-    loadDiscover();
-
-  }catch(err){
-
-    alert(err.message);
-
-  }
-
-}
-
-
-/* MATCHES */
-
-async function loadMatches(){
-
-  const box =
-    document.getElementById(
-      "matchesList"
-    );
-
-  box.innerHTML =
-    '<div class="empty">Inapakia...</div>';
-
-  try{
-
-    const matches =
-      await api(
-        "/api/matches"
-      );
-
-    if(!matches.length){
-
-      box.innerHTML =
-        '<div class="empty">' +
-        '<h3>Hakuna matches bado ❤️</h3>' +
-        '<p>Like mtu na yeye akikulike, match itaonekana hapa.</p>' +
-        '</div>';
-
-      return;
-
-    }
-
-    box.innerHTML="";
-
-
-    matches.forEach(user => {
-
-      const row =
-        document.createElement(
-          "div"
-        );
-
-      row.className =
-        "match-card";
-
-
-      const avatar =
-        user.photo
-
-        ? '<img class="match-avatar" src="' +
-          escapeAttr(user.photo) +
-          '" alt="">'
-
-        : '<div class="match-avatar" style="display:flex;align-items:center;justify-content:center;font-size:28px">👤</div>';
-
-
-      row.innerHTML =
-        avatar +
-
-        '<div class="match-info">' +
-
-          '<h3>' +
-            escapeHtml(user.name) +
-            ', ' +
-            Number(user.age) +
-          '</h3>' +
-
-          '<p>📍 ' +
-            escapeHtml(user.city) +
-          '</p>' +
-
-        '</div>' +
-
-        '<button class="small-btn">' +
-          '💬 Chat' +
-        '</button>';
-
-
-      row
-        .querySelector(".small-btn")
-        .onclick =
-        () => openChat(user);
-
-
-      box.appendChild(row);
-
-    });
-
-
-  }catch(err){
-
-    box.innerHTML =
-      '<div class="empty">' +
-      escapeHtml(err.message) +
-      '</div>';
-
-  }
-
-}
-
-
-/* PROFILE */
-
-function fillProfile(){
-
-  if(!currentUser)
-    return;
-
-
-  document
-    .getElementById("profileName")
-    .value =
-    currentUser.name || "";
-
-
-  document
-    .getElementById("profileAge")
-    .value =
-    currentUser.age || "";
-
-
-  document
-    .getElementById("profileGender")
-    .value =
-    currentUser.gender ||
-    "Nyingine";
-
-
-  document
-    .getElementById("profileCity")
-    .value =
-    currentUser.city || "";
-
-
-  document
-    .getElementById("profileBio")
-    .value =
-    currentUser.bio || "";
-
-
-  selectedProfilePhoto =
-    currentUser.photo || null;
-
-  removePhoto=false;
-
-  renderProfilePhoto();
-
-}
-
-
-/* PROFILE PHOTO SELECT */
-
-document
-  .getElementById("profilePhotoFile")
-  .addEventListener(
-    "change",
-    async function(){
-
-      const file =
-        this.files[0];
-
-      if(!file)
-        return;
-
-
-      if(file.size >
-         5 * 1024 * 1024){
-
-        alert(
-          "Picha isiwe zaidi ya 5MB."
-        );
-
-        this.value="";
-        return;
-
-      }
-
-
-      if(!file.type.startsWith("image/")){
-
-        alert(
-          "Tafadhali chagua picha."
-        );
-
-        this.value="";
-        return;
-
-      }
-
-
-      try{
-
-        document
-          .getElementById(
-            "uploadStatus"
-          )
-          .textContent =
-          "Picha imechaguliwa. Bonyeza Hifadhi Profile.";
-
-
-        selectedProfilePhoto =
-          await fileToBase64(file);
-
-        removePhoto=false;
-
-        renderProfilePhoto();
-
-      }catch(err){
-
-        alert(
-          "Imeshindikana kusoma picha."
-        );
-
-      }
-
-    }
-  );
-
-
-/* RENDER PROFILE PHOTO */
-
-function renderProfilePhoto(){
-
-  const container =
-    document.getElementById(
-      "profilePreviewContainer"
-    );
-
-  const removeBtn =
-    document.getElementById(
-      "removePhotoBtn"
-    );
-
-
-  if(selectedProfilePhoto){
-
-    container.innerHTML =
-      '<img class="profile-preview" src="' +
-      escapeAttr(selectedProfilePhoto) +
-      '" alt="Profile photo">';
-
-    removeBtn.style.display =
-      "inline-block";
+  card.className="user-card";
+
+  let photo="";
+
+  if(user.photo){
+
+    photo=`
+      <img
+        class="user-photo"
+        src="${user.photo}"
+        alt="Picha"
+      >
+    `;
 
   }else{
 
-    container.innerHTML =
-      '<div class="profile-preview-placeholder">' +
-      '👤' +
-      '</div>';
-
-    removeBtn.style.display =
-      "none";
+    photo=`
+      <div class="no-photo">
+        👤
+      </div>
+    `;
 
   }
 
-}
+  card.innerHTML=`
 
+    ${photo}
 
-/* REMOVE PHOTO */
+    <div class="user-info">
 
-document
-  .getElementById(
-    "removePhotoBtn"
-  )
-  .addEventListener(
-    "click",
-    function(){
-
-      selectedProfilePhoto =
-        null;
-
-      removePhoto=true;
-
-      document
-        .getElementById(
-          "profilePhotoFile"
-        )
-        .value="";
-
-      document
-        .getElementById(
-          "uploadStatus"
-        )
-        .textContent =
-        "Picha itaondolewa ukihifadhi Profile.";
-
-      renderProfilePhoto();
-
-    }
-  );
-
-
-/* SAVE PROFILE */
-
-document
-  .getElementById("profileForm")
-  .addEventListener(
-    "submit",
-    async e => {
-
-      e.preventDefault();
-
-      clearMessage(
-        "profileMessage"
-      );
-
-
-      const button =
-        e.target.querySelector(
-          "button[type='submit']"
-        );
-
-
-      const oldText =
-        button.textContent;
-
-      button.disabled=true;
-
-      button.textContent =
-        "Inahifadhi...";
-
-
-      try{
-
-        const data =
-          await api(
-            "/api/profile",
-            {
-
-              method:"POST",
-
-              body:JSON.stringify({
-
-                name:
-                  document
-                  .getElementById(
-                    "profileName"
-                  )
-                  .value,
-
-                age:
-                  document
-                  .getElementById(
-                    "profileAge"
-                  )
-                  .value,
-
-                gender:
-                  document
-                  .getElementById(
-                    "profileGender"
-                  )
-                  .value,
-
-                city:
-                  document
-                  .getElementById(
-                    "profileCity"
-                  )
-                  .value,
-
-                bio:
-                  document
-                  .getElementById(
-                    "profileBio"
-                  )
-                  .value,
-
-                photo:
-                  removePhoto
-                  ? ""
-                  : (
-                    selectedProfilePhoto || ""
-                  )
-
-              })
-
-            }
-          );
-
-
-        currentUser =
-          data.user;
-
-
-        document
-          .getElementById(
-            "welcomeName"
-          )
-          .textContent =
-          currentUser.name;
-
-
-        selectedProfilePhoto =
-          currentUser.photo || null;
-
-        removePhoto=false;
-
-
-        document
-          .getElementById(
-            "uploadStatus"
-          )
-          .textContent =
-          "Picha imehifadhiwa ❤️";
-
-
-        renderProfilePhoto();
-
-
-        showMessage(
-          "profileMessage",
-          "Profile imehifadhiwa ❤️",
-          "success"
-        );
-
-
-      }catch(err){
-
-        showMessage(
-          "profileMessage",
-          err.message
-        );
-
-      }finally{
-
-        button.disabled=false;
-
-        button.textContent =
-          oldText;
-
-      }
-
-    }
-  );
-
-
-/* CHAT */
-
-function openChat(user){
-
-  chatUser=user;
-
-  document
-    .getElementById(
-      "chatHeader"
-    )
-    .textContent =
-    "💬 Chat na " +
-    user.name;
-
-
-  document
-    .getElementById(
-      "messageInput"
-    )
-    .value="";
-
-
-  showSection("chat");
-
-  loadMessages();
-
-}
-
-
-function backFromChat(){
-
-  chatUser=null;
-
-  showSection(
-    previousSection ||
-    "discover"
-  );
-
-}
-
-
-async function loadMessages(){
-
-  if(!chatUser)
-    return;
-
-
-  const box =
-    document.getElementById(
-      "messages"
-    );
-
-
-  box.innerHTML =
-    '<div class="empty">Inapakia...</div>';
-
-
-  try{
-
-    const messages =
-      await api(
-        "/api/messages/" +
-        encodeURIComponent(
-          chatUser.id
-        )
-      );
-
-
-    box.innerHTML="";
-
-
-    if(!messages.length){
-
-      box.innerHTML =
-        '<div class="empty">' +
-        'Hakuna ujumbe bado. ' +
-        'Anza mazungumzo ❤️' +
-        '</div>';
-
-      return;
-
-    }
-
-
-    messages.forEach(m => {
-
-      const div =
-        document.createElement(
-          "div"
-        );
-
-      div.className =
-        "msg " +
-        (
-          Number(m.sender) ===
-          Number(currentUser.id)
-          ? "me"
-          : "other"
-        );
-
-
-      div.textContent =
-        m.body;
-
-
-      box.appendChild(div);
-
-    });
-
-
-    box.scrollTop =
-      box.scrollHeight;
-
-
-  }catch(err){
-
-    box.innerHTML =
-      '<div class="empty">' +
-      escapeHtml(err.message) +
-      '</div>';
-
-  }
-
-}
-
-
-/* SEND MESSAGE */
-
-document
-  .getElementById("chatForm")
-  .addEventListener(
-    "submit",
-    async e => {
-
-      e.preventDefault();
-
-
-      if(!chatUser)
-        return;
-
-
-      const input =
-        document.getElementById(
-          "messageInput"
-        );
-
-
-      const body =
-        input.value.trim();
-
-
-      if(!body)
-        return;
-
-
-      try{
-
-        await api(
-          "/api/messages/" +
-          encodeURIComponent(
-            chatUser.id
-          ),
-          {
-
-            method:"POST",
-
-            body:JSON.stringify({
-              body
-            })
-
-          }
-        );
-
-
-        input.value="";
-
-        await loadMessages();
-
-
-      }catch(err){
-
-        alert(err.message);
-
-      }
-
-    }
-  );
-
-
-/* REPORT */
-
-async function reportUser(id){
-
-  const reason =
-    prompt(
-      "Andika sababu ya kumreport user huyu:"
-    );
-
-
-  if(!reason ||
-     !reason.trim())
-    return;
-
-
-  try{
-
-    await api(
-      "/api/report",
-      {
-
-        method:"POST",
-
-        body:JSON.stringify({
-
-          userId:id,
-
-          reason:
-            reason.trim()
-
-        })
-
-      }
-    );
-
-
-    alert(
-      "Report imetumwa kwa admin."
-    );
-
-
-  }catch(err){
-
-    alert(err.message);
-
-  }
-
-}
-
-
-/* FILE TO BASE64 */
-
-function fileToBase64(file){
-
-  return new Promise(
-    (resolve,reject) => {
-
-      const reader =
-        new FileReader();
-
-
-      reader.onload =
-        () => resolve(
-          reader.result
-        );
-
-
-      reader.onerror =
-        () => reject(
-          new Error(
-            "Failed to read file"
-          )
-        );
-
-
-      reader.readAsDataURL(file);
-
-    }
-  );
-
-}
-
-
-/* SECURITY */
-
-function escapeHtml(value){
-
-  return String(
-    value ?? ""
-  ).replace(
-    /[&<>"']/g,
-    c => ({
-
-      "&":"&amp;",
-      "<":"&lt;",
-      ">":"&gt;",
-      '"':"&quot;",
-      "'":"&#039;"
-
-    }[c])
-  );
-
-}
-
-
-function escapeAttr(value){
-
-  return escapeHtml(value);
-
-}
-
-
-/* START */
-
-checkSession();
-
-</script>
-
-</body>
-</html>
+      <h3>
+        ${
