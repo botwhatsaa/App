@@ -7,27 +7,18 @@ const app = express();
 const PORT = process.env.PORT || 10000;
 const DB_FILE = path.join(__dirname, "database.json");
 
-// ===============================
-// SETTINGS
-// ===============================
-
 const MAX_PHOTO_BYTES = 5 * 1024 * 1024;
 
-// Frontend inatuma picha kama Base64,
-// hivyo body limit lazima iwe kubwa kuliko 1MB.
 app.use(express.json({ limit: "10mb" }));
 app.use(express.urlencoded({ extended: true, limit: "10mb" }));
-
-// ===============================
-// DATABASE
-// ===============================
 
 function defaultDB() {
   return {
     users: [],
     likes: [],
     messages: [],
-    reports: []
+    reports: [],
+    notifications: []
   };
 }
 
@@ -40,10 +31,7 @@ function loadDB() {
     }
 
     const raw = fs.readFileSync(DB_FILE, "utf8");
-
-    if (!raw.trim()) {
-      return defaultDB();
-    }
+    if (!raw.trim()) return defaultDB();
 
     const data = JSON.parse(raw);
 
@@ -51,7 +39,10 @@ function loadDB() {
       users: Array.isArray(data.users) ? data.users : [],
       likes: Array.isArray(data.likes) ? data.likes : [],
       messages: Array.isArray(data.messages) ? data.messages : [],
-      reports: Array.isArray(data.reports) ? data.reports : []
+      reports: Array.isArray(data.reports) ? data.reports : [],
+      notifications: Array.isArray(data.notifications)
+        ? data.notifications
+        : []
     };
   } catch (err) {
     console.error("Database load error:", err);
@@ -61,25 +52,17 @@ function loadDB() {
 
 let db = loadDB();
 
-// ===============================
-// SAVE DATABASE
-// ===============================
-
 function saveDB() {
-  const tempFile = DB_FILE + ".tmp";
+  const temp = DB_FILE + ".tmp";
 
   fs.writeFileSync(
-    tempFile,
+    temp,
     JSON.stringify(db, null, 2),
     "utf8"
   );
 
-  fs.renameSync(tempFile, DB_FILE);
+  fs.renameSync(temp, DB_FILE);
 }
-
-// ===============================
-// HELPERS
-// ===============================
 
 function makeId() {
   return crypto.randomBytes(12).toString("hex");
@@ -88,6 +71,10 @@ function makeId() {
 function normalizeEmail(email) {
   return String(email || "").trim().toLowerCase();
 }
+
+/* =========================
+   PASSWORD
+========================= */
 
 function hashPassword(password) {
   const salt = crypto.randomBytes(16).toString("hex");
@@ -104,13 +91,10 @@ function hashPassword(password) {
 function verifyPassword(password, stored) {
   if (!stored) return false;
 
-  // New secure password format
-  if (stored.startsWith("scrypt:")) {
-    const parts = stored.split(":");
+  if (String(stored).startsWith("scrypt:")) {
+    const parts = String(stored).split(":");
 
-    if (parts.length !== 3) {
-      return false;
-    }
+    if (parts.length !== 3) return false;
 
     const salt = parts[1];
     const originalHash = parts[2];
@@ -131,13 +115,12 @@ function verifyPassword(password, stored) {
     }
   }
 
-  // Backward compatibility for old plaintext passwords
   return String(password) === String(stored);
 }
 
-// ===============================
-// PHOTO VALIDATION
-// ===============================
+/* =========================
+   PHOTO
+========================= */
 
 function validatePhoto(photo) {
   if (!photo) {
@@ -154,7 +137,6 @@ function validatePhoto(photo) {
     };
   }
 
-  // Only allow Base64 image Data URLs
   const match = photo.match(
     /^data:(image\/jpeg|image\/png|image\/webp);base64,([A-Za-z0-9+/=\s]+)$/
   );
@@ -200,9 +182,9 @@ function validatePhoto(photo) {
   };
 }
 
-// ===============================
-// PUBLIC USER
-// ===============================
+/* =========================
+   PUBLIC USER
+========================= */
 
 function publicUser(user) {
   if (!user) return null;
@@ -220,9 +202,9 @@ function publicUser(user) {
   };
 }
 
-// ===============================
-// SESSIONS
-// ===============================
+/* =========================
+   SESSIONS
+========================= */
 
 const sessions = new Map();
 
@@ -244,23 +226,16 @@ function getSessionUser(req) {
     /(?:^|;\s*)session=([^;]+)/
   );
 
-  if (!match) {
-    return null;
-  }
+  if (!match) return null;
 
   const token = decodeURIComponent(match[1]);
-
   const session = sessions.get(token);
 
-  if (!session) {
-    return null;
-  }
+  if (!session) return null;
 
-  const user = db.users.find(
+  return db.users.find(
     u => String(u.id) === String(session.userId)
-  );
-
-  return user || null;
+  ) || null;
 }
 
 function requireAuth(req, res, next) {
@@ -290,53 +265,34 @@ function clearSessionCookie(res) {
   );
 }
 
-// ===============================
-// ADMIN
-// ===============================
+/* =========================
+   NOTIFICATION HELPER
+========================= */
 
-function requireAdmin(req, res, next) {
-  const email = normalizeEmail(
-    process.env.ADMIN_EMAIL
-  );
-
-  const password = String(
-    process.env.ADMIN_PASSWORD || ""
-  );
-
-  if (!email || !password) {
-    return res.status(503).json({
-      error: "Admin bado haja-configurewa kwenye environment variables."
-    });
-  }
-
-  const cookie = req.headers.cookie || "";
-
-  const match = cookie.match(
-    /(?:^|;\s*)adminSession=([^;]+)/
-  );
-
-  if (!match) {
-    return res.status(401).json({
-      error: "Admin login inahitajika."
-    });
-  }
-
-  const token = decodeURIComponent(match[1]);
-
-  const session = sessions.get("admin:" + token);
-
-  if (!session || session.role !== "admin") {
-    return res.status(401).json({
-      error: "Admin session ime-expire."
-    });
-  }
-
-  next();
+function createNotification({
+  userId,
+  type,
+  title,
+  message,
+  fromUserId = null,
+  relatedId = null
+}) {
+  db.notifications.push({
+    id: makeId(),
+    userId,
+    type,
+    title,
+    message,
+    fromUserId,
+    relatedId,
+    read: false,
+    createdAt: new Date().toISOString()
+  });
 }
 
-// ===============================
-// STATIC FILE SECURITY
-// ===============================
+/* =========================
+   SECURITY
+========================= */
 
 app.use((req, res, next) => {
   const blocked = [
@@ -355,19 +311,15 @@ app.use((req, res, next) => {
 
 app.use(express.static(__dirname));
 
-// ===============================
-// HOME
-// ===============================
-
 app.get("/", (req, res) => {
   res.sendFile(
     path.join(__dirname, "index.html")
   );
 });
 
-// ===============================
-// REGISTER
-// ===============================
+/* =========================
+   REGISTER
+========================= */
 
 app.post("/api/register", (req, res) => {
   try {
@@ -383,12 +335,6 @@ app.post("/api/register", (req, res) => {
     if (!name) {
       return res.status(400).json({
         error: "Jina linahitajika."
-      });
-    }
-
-    if (name.length > 80) {
-      return res.status(400).json({
-        error: "Jina ni refu sana."
       });
     }
 
@@ -419,12 +365,6 @@ app.post("/api/register", (req, res) => {
     if (!city) {
       return res.status(400).json({
         error: "Mji unahitajika."
-      });
-    }
-
-    if (city.length > 80) {
-      return res.status(400).json({
-        error: "Jina la mji ni refu sana."
       });
     }
 
@@ -471,34 +411,28 @@ app.post("/api/register", (req, res) => {
     const token = createSession(user.id);
     setSessionCookie(res, token);
 
-    return res.json({
+    res.json({
       ok: true,
       user: publicUser(user)
     });
 
   } catch (err) {
-    console.error("Register error:", err);
+    console.error(err);
 
-    return res.status(500).json({
+    res.status(500).json({
       error: "Imeshindikana kusajili account."
     });
   }
 });
 
-// ===============================
-// LOGIN
-// ===============================
+/* =========================
+   LOGIN
+========================= */
 
 app.post("/api/login", (req, res) => {
   try {
     const email = normalizeEmail(req.body.email);
     const password = String(req.body.password || "");
-
-    if (!email || !password) {
-      return res.status(400).json({
-        error: "Weka email na password."
-      });
-    }
 
     const user = db.users.find(
       u => normalizeEmail(u.email) === email
@@ -510,18 +444,12 @@ app.post("/api/login", (req, res) => {
       });
     }
 
-    const valid = verifyPassword(
-      password,
-      user.password
-    );
-
-    if (!valid) {
+    if (!verifyPassword(password, user.password)) {
       return res.status(401).json({
         error: "Email au password sio sahihi."
       });
     }
 
-    // Upgrade old plaintext password to secure hash
     if (!String(user.password).startsWith("scrypt:")) {
       user.password = hashPassword(password);
       saveDB();
@@ -530,23 +458,23 @@ app.post("/api/login", (req, res) => {
     const token = createSession(user.id);
     setSessionCookie(res, token);
 
-    return res.json({
+    res.json({
       ok: true,
       user: publicUser(user)
     });
 
   } catch (err) {
-    console.error("Login error:", err);
+    console.error(err);
 
-    return res.status(500).json({
+    res.status(500).json({
       error: "Imeshindikana kuingia."
     });
   }
 });
 
-// ===============================
-// LOGOUT
-// ===============================
+/* =========================
+   LOGOUT
+========================= */
 
 app.post("/api/logout", (req, res) => {
   const cookie = req.headers.cookie || "";
@@ -556,8 +484,9 @@ app.post("/api/logout", (req, res) => {
   );
 
   if (match) {
-    const token = decodeURIComponent(match[1]);
-    sessions.delete(token);
+    sessions.delete(
+      decodeURIComponent(match[1])
+    );
   }
 
   clearSessionCookie(res);
@@ -567,9 +496,9 @@ app.post("/api/logout", (req, res) => {
   });
 });
 
-// ===============================
-// CURRENT USER
-// ===============================
+/* =========================
+   CURRENT USER
+========================= */
 
 app.get("/api/me", requireAuth, (req, res) => {
   res.json({
@@ -577,30 +506,30 @@ app.get("/api/me", requireAuth, (req, res) => {
   });
 });
 
-// ===============================
-// DISCOVER
-// ===============================
+/* =========================
+   DISCOVER
+========================= */
 
 app.get("/api/discover", requireAuth, (req, res) => {
-  const currentId = String(req.user.id);
+  const myId = String(req.user.id);
 
   const likedIds = new Set(
     db.likes
-      .filter(l => String(l.from) === currentId)
+      .filter(l => String(l.from) === myId)
       .map(l => String(l.to))
   );
 
   const users = db.users
-    .filter(u => String(u.id) !== currentId)
+    .filter(u => String(u.id) !== myId)
     .filter(u => !likedIds.has(String(u.id)))
     .map(publicUser);
 
   res.json(users);
 });
 
-// ===============================
-// LIKE
-// ===============================
+/* =========================
+   LIKE
+========================= */
 
 app.post("/api/like", requireAuth, (req, res) => {
   try {
@@ -636,20 +565,58 @@ app.post("/api/like", requireAuth, (req, res) => {
         String(l.to) === targetId
     );
 
-    if (!alreadyLiked) {
-      db.likes.push({
-        id: makeId(),
-        from: req.user.id,
-        to: targetId,
-        createdAt: new Date().toISOString()
+    if (alreadyLiked) {
+      return res.json({
+        ok: true,
+        matched: false
       });
     }
+
+    const likeId = makeId();
+
+    db.likes.push({
+      id: likeId,
+      from: req.user.id,
+      to: target.id,
+      createdAt: new Date().toISOString()
+    });
+
+    /* Notification ya Like */
+    createNotification({
+      userId: target.id,
+      type: "like",
+      title: "❤️ Umepewa Like",
+      message: `${req.user.name} amekupenda.`,
+      fromUserId: req.user.id,
+      relatedId: likeId
+    });
 
     const matched = db.likes.some(
       l =>
         String(l.from) === targetId &&
         String(l.to) === String(req.user.id)
     );
+
+    /* Notification ya Match */
+    if (matched) {
+      createNotification({
+        userId: target.id,
+        type: "match",
+        title: "❤️ Match mpya!",
+        message: `Wewe na ${req.user.name} mmekuwa Match.`,
+        fromUserId: req.user.id,
+        relatedId: target.id
+      });
+
+      createNotification({
+        userId: req.user.id,
+        type: "match",
+        title: "❤️ Match mpya!",
+        message: `Wewe na ${target.name} mmekuwa Match.`,
+        fromUserId: target.id,
+        relatedId: target.id
+      });
+    }
 
     saveDB();
 
@@ -659,7 +626,7 @@ app.post("/api/like", requireAuth, (req, res) => {
     });
 
   } catch (err) {
-    console.error("Like error:", err);
+    console.error(err);
 
     res.status(500).json({
       error: "Like imeshindikana."
@@ -667,9 +634,9 @@ app.post("/api/like", requireAuth, (req, res) => {
   }
 });
 
-// ===============================
-// MATCHES
-// ===============================
+/* =========================
+   MATCHES
+========================= */
 
 app.get("/api/matches", requireAuth, (req, res) => {
   const myId = String(req.user.id);
@@ -697,9 +664,9 @@ app.get("/api/matches", requireAuth, (req, res) => {
   );
 });
 
-// ===============================
-// PROFILE
-// ===============================
+/* =========================
+   PROFILE
+========================= */
 
 app.post("/api/profile", requireAuth, (req, res) => {
   try {
@@ -709,9 +676,6 @@ app.post("/api/profile", requireAuth, (req, res) => {
     const city = String(req.body.city || "").trim();
     const bio = String(req.body.bio || "").trim();
 
-    // Important:
-    // Frontend inaweza kutuma photo mpya,
-    // au "" ikiwa user ame-remove picha.
     const photo =
       typeof req.body.photo === "string"
         ? req.body.photo
@@ -723,27 +687,15 @@ app.post("/api/profile", requireAuth, (req, res) => {
       });
     }
 
-    if (name.length > 80) {
-      return res.status(400).json({
-        error: "Jina ni refu sana."
-      });
-    }
-
     if (!Number.isInteger(age) || age < 18 || age > 100) {
       return res.status(400).json({
         error: "Umri lazima uwe kati ya 18 na 100."
       });
     }
 
-    if (!gender) {
+    if (!gender || !city) {
       return res.status(400).json({
-        error: "Chagua jinsia."
-      });
-    }
-
-    if (!city) {
-      return res.status(400).json({
-        error: "Mji unahitajika."
+        error: "Jinsia na mji vinahitajika."
       });
     }
 
@@ -776,7 +728,7 @@ app.post("/api/profile", requireAuth, (req, res) => {
     });
 
   } catch (err) {
-    console.error("Profile error:", err);
+    console.error(err);
 
     res.status(500).json({
       error: "Profile haijahifadhiwa."
@@ -784,9 +736,63 @@ app.post("/api/profile", requireAuth, (req, res) => {
   }
 });
 
-// ===============================
-// MESSAGES
-// ===============================
+/* =========================
+   NOTIFICATIONS
+========================= */
+
+app.get(
+  "/api/notifications",
+  requireAuth,
+  (req, res) => {
+    const myId = String(req.user.id);
+
+    const notifications = db.notifications
+      .filter(n => String(n.userId) === myId)
+      .sort(
+        (a, b) =>
+          new Date(b.createdAt) -
+          new Date(a.createdAt)
+      )
+      .slice(0, 100);
+
+    const unread = notifications.filter(
+      n => !n.read
+    ).length;
+
+    res.json({
+      notifications,
+      unread
+    });
+  }
+);
+
+/* =========================
+   MARK NOTIFICATIONS READ
+========================= */
+
+app.post(
+  "/api/notifications/read-all",
+  requireAuth,
+  (req, res) => {
+    const myId = String(req.user.id);
+
+    db.notifications.forEach(n => {
+      if (String(n.userId) === myId) {
+        n.read = true;
+      }
+    });
+
+    saveDB();
+
+    res.json({
+      ok: true
+    });
+  }
+);
+
+/* =========================
+   MESSAGES
+========================= */
 
 app.get(
   "/api/messages/:id",
@@ -794,23 +800,6 @@ app.get(
   (req, res) => {
     const otherId = String(req.params.id);
     const myId = String(req.user.id);
-
-    const isMatch = db.likes.some(
-      l =>
-        String(l.from) === myId &&
-        String(l.to) === otherId
-    ) &&
-    db.likes.some(
-      l =>
-        String(l.from) === otherId &&
-        String(l.to) === myId
-    );
-
-    if (!isMatch) {
-      return res.status(403).json({
-        error: "Mnaweza kuchat baada ya kuwa match."
-      });
-    }
 
     const messages = db.messages
       .filter(m =>
@@ -870,26 +859,6 @@ app.post(
         });
       }
 
-      const myId = String(req.user.id);
-
-      const isMatch =
-        db.likes.some(
-          l =>
-            String(l.from) === myId &&
-            String(l.to) === receiverId
-        ) &&
-        db.likes.some(
-          l =>
-            String(l.from) === receiverId &&
-            String(l.to) === myId
-        );
-
-      if (!isMatch) {
-        return res.status(403).json({
-          error: "Mnaweza kuchat baada ya kuwa match."
-        });
-      }
-
       const message = {
         id: makeId(),
         sender: req.user.id,
@@ -899,6 +868,17 @@ app.post(
       };
 
       db.messages.push(message);
+
+      /* Notification ya ujumbe */
+      createNotification({
+        userId: receiver.id,
+        type: "message",
+        title: "💬 Ujumbe mpya",
+        message: `${req.user.name} amekutumia ujumbe.`,
+        fromUserId: req.user.id,
+        relatedId: message.id
+      });
+
       saveDB();
 
       res.json({
@@ -907,7 +887,7 @@ app.post(
       });
 
     } catch (err) {
-      console.error("Message error:", err);
+      console.error(err);
 
       res.status(500).json({
         error: "Ujumbe haujatumwa."
@@ -916,9 +896,9 @@ app.post(
   }
 );
 
-// ===============================
-// REPORT USER
-// ===============================
+/* =========================
+   REPORT
+========================= */
 
 app.post(
   "/api/report",
@@ -936,12 +916,6 @@ app.post(
       if (!userId || !reason) {
         return res.status(400).json({
           error: "User na sababu vinahitajika."
-        });
-      }
-
-      if (reason.length > 1000) {
-        return res.status(400).json({
-          error: "Sababu ni ndefu sana."
         });
       }
 
@@ -971,7 +945,7 @@ app.post(
       });
 
     } catch (err) {
-      console.error("Report error:", err);
+      console.error(err);
 
       res.status(500).json({
         error: "Report haijatumwa."
@@ -980,9 +954,35 @@ app.post(
   }
 );
 
-// ===============================
-// ADMIN LOGIN
-// ===============================
+/* =========================
+   ADMIN
+========================= */
+
+const adminSessions = new Map();
+
+function requireAdmin(req, res, next) {
+  const cookie = req.headers.cookie || "";
+
+  const match = cookie.match(
+    /(?:^|;\s*)adminSession=([^;]+)/
+  );
+
+  if (!match) {
+    return res.status(401).json({
+      error: "Admin login inahitajika."
+    });
+  }
+
+  const token = decodeURIComponent(match[1]);
+
+  if (!adminSessions.has(token)) {
+    return res.status(401).json({
+      error: "Admin session ime-expire."
+    });
+  }
+
+  next();
+}
 
 app.post("/admin/login", (req, res) => {
   const email = normalizeEmail(
@@ -1018,8 +1018,7 @@ app.post("/admin/login", (req, res) => {
 
   const token = crypto.randomBytes(32).toString("hex");
 
-  sessions.set("admin:" + token, {
-    role: "admin",
+  adminSessions.set(token, {
     createdAt: Date.now()
   });
 
@@ -1033,45 +1032,6 @@ app.post("/admin/login", (req, res) => {
   });
 });
 
-// ===============================
-// ADMIN LOGOUT
-// ===============================
-
-app.post(
-  "/admin/logout",
-  requireAdmin,
-  (req, res) => {
-    const cookie = req.headers.cookie || "";
-
-    const match = cookie.match(
-      /(?:^|;\s*)adminSession=([^;]+)/
-    );
-
-    if (match) {
-      const token = decodeURIComponent(
-        match[1]
-      );
-
-      sessions.delete(
-        "admin:" + token
-      );
-    }
-
-    res.setHeader(
-      "Set-Cookie",
-      "adminSession=; HttpOnly; Path=/; SameSite=Lax; Max-Age=0"
-    );
-
-    res.json({
-      ok: true
-    });
-  }
-);
-
-// ===============================
-// ADMIN STATS
-// ===============================
-
 app.get(
   "/admin/stats",
   requireAdmin,
@@ -1079,47 +1039,14 @@ app.get(
     res.json({
       users: db.users.length,
       likes: db.likes.length,
-      matches: countMatches(),
       messages: db.messages.length,
       reports: db.reports.filter(
         r => r.status === "open"
-      ).length
+      ).length,
+      notifications: db.notifications.length
     });
   }
 );
-
-function countMatches() {
-  let count = 0;
-  const seen = new Set();
-
-  for (const like of db.likes) {
-    const a = String(like.from);
-    const b = String(like.to);
-
-    const reverse = db.likes.some(
-      l =>
-        String(l.from) === b &&
-        String(l.to) === a
-    );
-
-    if (!reverse) continue;
-
-    const key = [a, b]
-      .sort()
-      .join(":");
-
-    if (!seen.has(key)) {
-      seen.add(key);
-      count++;
-    }
-  }
-
-  return count;
-}
-
-// ===============================
-// ADMIN USERS
-// ===============================
 
 app.get(
   "/admin/users",
@@ -1131,25 +1058,11 @@ app.get(
   }
 );
 
-// ===============================
-// ADMIN DELETE USER
-// ===============================
-
 app.delete(
   "/admin/users/:id",
   requireAdmin,
   (req, res) => {
     const id = String(req.params.id);
-
-    const exists = db.users.some(
-      u => String(u.id) === id
-    );
-
-    if (!exists) {
-      return res.status(404).json({
-        error: "User hakupatikana."
-      });
-    }
 
     db.users = db.users.filter(
       u => String(u.id) !== id
@@ -1167,6 +1080,13 @@ app.delete(
         String(m.receiver) !== id
     );
 
+    db.notifications =
+      db.notifications.filter(
+        n =>
+          String(n.userId) !== id &&
+          String(n.fromUserId) !== id
+      );
+
     db.reports = db.reports.filter(
       r =>
         String(r.reporter) !== id &&
@@ -1181,91 +1101,31 @@ app.delete(
   }
 );
 
-// ===============================
-// ADMIN REPORTS
-// ===============================
-
-app.get(
-  "/admin/reports",
-  requireAdmin,
-  (req, res) => {
-    const reports = db.reports.map(report => ({
-      ...report,
-      reporterUser:
-        publicUser(
-          db.users.find(
-            u =>
-              String(u.id) ===
-              String(report.reporter)
-          )
-        ),
-      reportedUser:
-        publicUser(
-          db.users.find(
-            u =>
-              String(u.id) ===
-              String(report.reportedUser)
-          )
-        )
-    }));
-
-    res.json(reports);
-  }
-);
-
-// ===============================
-// CLOSE REPORT
-// ===============================
-
-app.post(
-  "/admin/reports/:id/close",
-  requireAdmin,
-  (req, res) => {
-    const report = db.reports.find(
-      r =>
-        String(r.id) ===
-        String(req.params.id)
-    );
-
-    if (!report) {
-      return res.status(404).json({
-        error: "Report haikupatikana."
-      });
-    }
-
-    report.status = "closed";
-    report.closedAt =
-      new Date().toISOString();
-
-    saveDB();
-
-    res.json({
-      ok: true
-    });
-  }
-);
-
-// ===============================
-// 404
-// ===============================
+/* =========================
+   404
+========================= */
 
 app.use((req, res) => {
-  if (req.path.startsWith("/api/") ||
-      req.path.startsWith("/admin/")) {
+  if (
+    req.path.startsWith("/api/") ||
+    req.path.startsWith("/admin/")
+  ) {
     return res.status(404).json({
       error: "Endpoint haikupatikana."
     });
   }
 
-  res.status(404).send("Page haikupatikana.");
+  res.status(404).send(
+    "Page haikupatikana."
+  );
 });
 
-// ===============================
-// ERROR HANDLER
-// ===============================
+/* =========================
+   ERROR HANDLER
+========================= */
 
 app.use((err, req, res, next) => {
-  console.error("Server error:", err);
+  console.error(err);
 
   if (err.type === "entity.too.large") {
     return res.status(413).json({
@@ -1278,9 +1138,9 @@ app.use((err, req, res, next) => {
   });
 });
 
-// ===============================
-// START SERVER
-// ===============================
+/* =========================
+   START SERVER
+========================= */
 
 app.listen(
   PORT,
