@@ -4,36 +4,37 @@ const fs = require("fs");
 const crypto = require("crypto");
 
 const app = express();
-const PORT = process.env.PORT || 10000;
-const DB_FILE = path.join(__dirname, "database.json");
-
-const MAX_PHOTO_BYTES = 5 * 1024 * 1024;
+const PORT = process.env.PORT || 3000;
 
 app.use(express.json({ limit: "10mb" }));
 app.use(express.urlencoded({ extended: true, limit: "10mb" }));
 
-function defaultDB() {
+/* =========================
+   DATABASE
+========================= */
+
+const DB_FILE = path.join(__dirname, "database.json");
+
+function emptyDB() {
   return {
     users: [],
     likes: [],
     messages: [],
     reports: [],
-    notifications: []
+    notifications: [],
+    sessions: []
   };
 }
 
 function loadDB() {
+  if (!fs.existsSync(DB_FILE)) {
+    const db = emptyDB();
+    fs.writeFileSync(DB_FILE, JSON.stringify(db, null, 2));
+    return db;
+  }
+
   try {
-    if (!fs.existsSync(DB_FILE)) {
-      const fresh = defaultDB();
-      fs.writeFileSync(DB_FILE, JSON.stringify(fresh, null, 2));
-      return fresh;
-    }
-
-    const raw = fs.readFileSync(DB_FILE, "utf8");
-    if (!raw.trim()) return defaultDB();
-
-    const data = JSON.parse(raw);
+    const data = JSON.parse(fs.readFileSync(DB_FILE, "utf8"));
 
     return {
       users: Array.isArray(data.users) ? data.users : [],
@@ -42,34 +43,29 @@ function loadDB() {
       reports: Array.isArray(data.reports) ? data.reports : [],
       notifications: Array.isArray(data.notifications)
         ? data.notifications
+        : [],
+      sessions: Array.isArray(data.sessions)
+        ? data.sessions
         : []
     };
-  } catch (err) {
-    console.error("Database load error:", err);
-    return defaultDB();
+  } catch (error) {
+    console.error("Database error:", error);
+    return emptyDB();
   }
 }
 
 let db = loadDB();
 
 function saveDB() {
-  const temp = DB_FILE + ".tmp";
+  const tempFile = DB_FILE + ".tmp";
 
   fs.writeFileSync(
-    temp,
+    tempFile,
     JSON.stringify(db, null, 2),
     "utf8"
   );
 
-  fs.renameSync(temp, DB_FILE);
-}
-
-function makeId() {
-  return crypto.randomBytes(12).toString("hex");
-}
-
-function normalizeEmail(email) {
-  return String(email || "").trim().toLowerCase();
+  fs.renameSync(tempFile, DB_FILE);
 }
 
 /* =========================
@@ -79,219 +75,164 @@ function normalizeEmail(email) {
 function hashPassword(password) {
   const salt = crypto.randomBytes(16).toString("hex");
 
-  const hash = crypto.scryptSync(
-    String(password),
-    salt,
-    64
-  ).toString("hex");
+  const hash = crypto
+    .scryptSync(password, salt, 64)
+    .toString("hex");
 
   return `scrypt:${salt}:${hash}`;
 }
 
-function verifyPassword(password, stored) {
-  if (!stored) return false;
-
-  if (String(stored).startsWith("scrypt:")) {
-    const parts = String(stored).split(":");
-
-    if (parts.length !== 3) return false;
-
-    const salt = parts[1];
-    const originalHash = parts[2];
-
-    const newHash = crypto.scryptSync(
-      String(password),
-      salt,
-      64
-    ).toString("hex");
-
-    try {
-      return crypto.timingSafeEqual(
-        Buffer.from(originalHash, "hex"),
-        Buffer.from(newHash, "hex")
-      );
-    } catch {
-      return false;
-    }
+function verifyPassword(password, storedPassword) {
+  if (!String(storedPassword).startsWith("scrypt:")) {
+    return storedPassword === password;
   }
 
-  return String(password) === String(stored);
-}
+  const parts = String(storedPassword).split(":");
 
-/* =========================
-   PHOTO
-========================= */
-
-function validatePhoto(photo) {
-  if (!photo) {
-    return {
-      ok: true,
-      value: ""
-    };
+  if (parts.length !== 3) {
+    return false;
   }
 
-  if (typeof photo !== "string") {
-    return {
-      ok: false,
-      error: "Picha sio sahihi."
-    };
-  }
-
-  const match = photo.match(
-    /^data:(image\/jpeg|image\/png|image\/webp);base64,([A-Za-z0-9+/=\s]+)$/
-  );
-
-  if (!match) {
-    return {
-      ok: false,
-      error: "Picha lazima iwe JPG, PNG au WEBP."
-    };
-  }
-
-  const mime = match[1];
-  const base64 = match[2].replace(/\s/g, "");
-
-  let buffer;
+  const salt = parts[1];
+  const storedHash = parts[2];
 
   try {
-    buffer = Buffer.from(base64, "base64");
+    const hash = crypto
+      .scryptSync(password, salt, 64)
+      .toString("hex");
+
+    return crypto.timingSafeEqual(
+      Buffer.from(hash, "hex"),
+      Buffer.from(storedHash, "hex")
+    );
   } catch {
-    return {
-      ok: false,
-      error: "Picha haijasomeka."
-    };
+    return false;
   }
-
-  if (!buffer.length) {
-    return {
-      ok: false,
-      error: "Picha haina data."
-    };
-  }
-
-  if (buffer.length > MAX_PHOTO_BYTES) {
-    return {
-      ok: false,
-      error: "Picha ni kubwa sana. Maximum ni 5MB."
-    };
-  }
-
-  return {
-    ok: true,
-    value: `data:${mime};base64,${base64}`
-  };
 }
 
 /* =========================
-   PUBLIC USER
+   SESSION
 ========================= */
 
-function publicUser(user) {
-  if (!user) return null;
+const SESSION_DAYS = 30;
 
-  return {
-    id: user.id,
-    name: user.name,
-    email: user.email,
-    age: user.age,
-    gender: user.gender,
-    city: user.city,
-    bio: user.bio || "",
-    photo: user.photo || "",
-    createdAt: user.createdAt
-  };
-}
-
-/* =========================
-   SESSIONS
-========================= */
-
-const sessions = new Map();
-
-function createSession(userId) {
+function createSession(userId, admin = false) {
   const token = crypto.randomBytes(32).toString("hex");
 
-  sessions.set(token, {
+  const session = {
+    token,
     userId,
-    createdAt: Date.now()
-  });
+    admin,
+    createdAt: Date.now(),
+    expiresAt:
+      Date.now() +
+      SESSION_DAYS * 24 * 60 * 60 * 1000
+  };
+
+  db.sessions = db.sessions.filter(
+    s => !(String(s.userId) === String(userId) && s.admin === admin)
+  );
+
+  db.sessions.push(session);
+
+  saveDB();
 
   return token;
 }
 
-function getSessionUser(req) {
-  const cookie = req.headers.cookie || "";
+function getSession(req) {
+  const cookieHeader = req.headers.cookie || "";
 
-  const match = cookie.match(
+  const match = cookieHeader.match(
     /(?:^|;\s*)session=([^;]+)/
   );
 
-  if (!match) return null;
-
-  const token = decodeURIComponent(match[1]);
-  const session = sessions.get(token);
-
-  if (!session) return null;
-
-  return db.users.find(
-    u => String(u.id) === String(session.userId)
-  ) || null;
-}
-
-function requireAuth(req, res, next) {
-  const user = getSessionUser(req);
-
-  if (!user) {
-    return res.status(401).json({
-      error: "Tafadhali ingia kwanza."
-    });
+  if (!match) {
+    return null;
   }
 
-  req.user = user;
-  next();
+  const token = decodeURIComponent(match[1]);
+
+  const session = db.sessions.find(
+    s => s.token === token
+  );
+
+  if (!session) {
+    return null;
+  }
+
+  if (
+    session.expiresAt &&
+    Date.now() > session.expiresAt
+  ) {
+    db.sessions = db.sessions.filter(
+      s => s.token !== token
+    );
+
+    saveDB();
+
+    return null;
+  }
+
+  return session;
 }
 
 function setSessionCookie(res, token) {
   res.setHeader(
     "Set-Cookie",
-    `session=${encodeURIComponent(token)}; HttpOnly; Path=/; SameSite=Lax`
+    [
+      `session=${encodeURIComponent(token)}`,
+      "Path=/",
+      "HttpOnly",
+      "SameSite=Lax",
+      `Max-Age=${SESSION_DAYS * 24 * 60 * 60}`
+    ].join("; ")
   );
 }
 
 function clearSessionCookie(res) {
   res.setHeader(
     "Set-Cookie",
-    "session=; HttpOnly; Path=/; SameSite=Lax; Max-Age=0"
+    "session=; Path=/; HttpOnly; SameSite=Lax; Max-Age=0"
   );
 }
 
 /* =========================
-   NOTIFICATION HELPER
+   AUTH
 ========================= */
 
-function createNotification({
-  userId,
-  type,
-  title,
-  message,
-  fromUserId = null,
-  relatedId = null
-}) {
-  db.notifications.push({
-    id: makeId(),
-    userId,
-    type,
-    title,
-    message,
-    fromUserId,
-    relatedId,
-    read: false,
-    createdAt: new Date().toISOString()
-  });
+function requireLogin(req, res, next) {
+  const session = getSession(req);
+
+  if (
+    !session ||
+    !session.userId ||
+    session.admin
+  ) {
+    return res.status(401).json({
+      error: "Tafadhali ingia kwanza."
+    });
+  }
+
+  req.userId = Number(session.userId);
+
+  next();
+}
+
+function requireAdmin(req, res, next) {
+  const session = getSession(req);
+
+  if (!session || !session.admin) {
+    return res.status(401).json({
+      error: "Admin login required."
+    });
+  }
+
+  next();
 }
 
 /* =========================
-   SECURITY
+   SECURITY / STATIC FILES
 ========================= */
 
 app.use((req, res, next) => {
@@ -299,11 +240,11 @@ app.use((req, res, next) => {
     "/database.json",
     "/server.js",
     "/package.json",
-    "/.env"
+    "/package-lock.json"
   ];
 
   if (blocked.includes(req.path)) {
-    return res.status(403).send("Forbidden");
+    return res.status(404).end();
   }
 
   next();
@@ -323,104 +264,123 @@ app.get("/", (req, res) => {
 
 app.post("/api/register", (req, res) => {
   try {
-    const name = String(req.body.name || "").trim();
-    const email = normalizeEmail(req.body.email);
-    const password = String(req.body.password || "");
-    const age = Number(req.body.age);
-    const gender = String(req.body.gender || "").trim();
-    const city = String(req.body.city || "").trim();
-    const bio = String(req.body.bio || "").trim();
-    const photo = req.body.photo || "";
-
-    if (!name) {
-      return res.status(400).json({
-        error: "Jina linahitajika."
-      });
-    }
-
-    if (!email || !email.includes("@")) {
-      return res.status(400).json({
-        error: "Email sio sahihi."
-      });
-    }
-
-    if (password.length < 6) {
-      return res.status(400).json({
-        error: "Password lazima iwe na characters 6 au zaidi."
-      });
-    }
-
-    if (!Number.isInteger(age) || age < 18 || age > 100) {
-      return res.status(400).json({
-        error: "Umri lazima uwe kati ya 18 na 100."
-      });
-    }
-
-    if (!gender) {
-      return res.status(400).json({
-        error: "Chagua jinsia."
-      });
-    }
-
-    if (!city) {
-      return res.status(400).json({
-        error: "Mji unahitajika."
-      });
-    }
-
-    if (bio.length > 500) {
-      return res.status(400).json({
-        error: "Bio ni refu sana."
-      });
-    }
-
-    const existing = db.users.find(
-      u => normalizeEmail(u.email) === email
-    );
-
-    if (existing) {
-      return res.status(409).json({
-        error: "Email hii tayari imesajiliwa."
-      });
-    }
-
-    const photoResult = validatePhoto(photo);
-
-    if (!photoResult.ok) {
-      return res.status(400).json({
-        error: photoResult.error
-      });
-    }
-
-    const user = {
-      id: makeId(),
+    const {
       name,
       email,
-      password: hashPassword(password),
+      password,
       age,
       gender,
       city,
       bio,
-      photo: photoResult.value,
+      photo
+    } = req.body || {};
+
+    const cleanName = String(name || "").trim();
+    const cleanEmail = String(email || "")
+      .trim()
+      .toLowerCase();
+
+    const cleanPassword = String(password || "");
+
+    const cleanAge = Number(age);
+
+    const cleanGender = String(gender || "").trim();
+
+    const cleanCity = String(city || "").trim();
+
+    const cleanBio = String(bio || "").trim();
+
+    const cleanPhoto = String(photo || "").trim();
+
+    if (
+      !cleanName ||
+      !cleanEmail ||
+      !cleanPassword ||
+      !cleanAge ||
+      !cleanGender ||
+      !cleanCity
+    ) {
+      return res.status(400).json({
+        error: "Jaza taarifa zote zinazohitajika."
+      });
+    }
+
+    if (
+      !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(
+        cleanEmail
+      )
+    ) {
+      return res.status(400).json({
+        error: "Weka email sahihi."
+      });
+    }
+
+    if (
+      cleanPassword.length < 6
+    ) {
+      return res.status(400).json({
+        error:
+          "Password iwe na angalau characters 6."
+      });
+    }
+
+    if (
+      cleanAge < 18 ||
+      cleanAge > 100
+    ) {
+      return res.status(400).json({
+        error:
+          "Umri lazima uwe kati ya miaka 18 na 100."
+      });
+    }
+
+    const existingUser = db.users.find(
+      user =>
+        String(user.email)
+          .toLowerCase() === cleanEmail
+    );
+
+    if (existingUser) {
+      return res.status(400).json({
+        error:
+          "Email hii tayari imesajiliwa."
+      });
+    }
+
+    const user = {
+      id: Date.now(),
+      name: cleanName,
+      email: cleanEmail,
+      password: hashPassword(cleanPassword),
+      age: cleanAge,
+      gender: cleanGender,
+      city: cleanCity,
+      bio: cleanBio,
+      photo: cleanPhoto,
       createdAt: new Date().toISOString()
     };
 
     db.users.push(user);
+
     saveDB();
 
     const token = createSession(user.id);
+
     setSessionCookie(res, token);
 
-    res.json({
+    return res.json({
       ok: true,
       user: publicUser(user)
     });
+  } catch (error) {
+    console.error(
+      "REGISTER ERROR:",
+      error
+    );
 
-  } catch (err) {
-    console.error(err);
-
-    res.status(500).json({
-      error: "Imeshindikana kusajili account."
+    return res.status(500).json({
+      error:
+        "Imeshindikana kujisajili. Jaribu tena."
     });
   }
 });
@@ -431,43 +391,81 @@ app.post("/api/register", (req, res) => {
 
 app.post("/api/login", (req, res) => {
   try {
-    const email = normalizeEmail(req.body.email);
-    const password = String(req.body.password || "");
+    const email = String(
+      req.body?.email || ""
+    )
+      .trim()
+      .toLowerCase();
+
+    const password = String(
+      req.body?.password || ""
+    );
+
+    if (!email || !password) {
+      return res.status(400).json({
+        error:
+          "Weka email na password."
+      });
+    }
 
     const user = db.users.find(
-      u => normalizeEmail(u.email) === email
+      u =>
+        String(u.email)
+          .trim()
+          .toLowerCase() === email
     );
 
     if (!user) {
       return res.status(401).json({
-        error: "Email au password sio sahihi."
+        error:
+          "Email au password si sahihi."
       });
     }
 
-    if (!verifyPassword(password, user.password)) {
+    const passwordOK = verifyPassword(
+      password,
+      user.password
+    );
+
+    if (!passwordOK) {
       return res.status(401).json({
-        error: "Email au password sio sahihi."
+        error:
+          "Email au password si sahihi."
       });
     }
 
-    if (!String(user.password).startsWith("scrypt:")) {
-      user.password = hashPassword(password);
+    // Upgrade old plaintext password
+    if (
+      !String(user.password).startsWith(
+        "scrypt:"
+      )
+    ) {
+      user.password =
+        hashPassword(password);
+
       saveDB();
     }
 
-    const token = createSession(user.id);
+    const token = createSession(
+      user.id,
+      false
+    );
+
     setSessionCookie(res, token);
 
-    res.json({
+    return res.json({
       ok: true,
       user: publicUser(user)
     });
+  } catch (error) {
+    console.error(
+      "LOGIN ERROR:",
+      error
+    );
 
-  } catch (err) {
-    console.error(err);
-
-    res.status(500).json({
-      error: "Imeshindikana kuingia."
+    return res.status(500).json({
+      error:
+        "Imeshindikana kuingia. Jaribu tena."
     });
   }
 });
@@ -476,316 +474,297 @@ app.post("/api/login", (req, res) => {
    LOGOUT
 ========================= */
 
-app.post("/api/logout", (req, res) => {
-  const cookie = req.headers.cookie || "";
+app.post(
+  "/api/logout",
+  (req, res) => {
+    try {
+      const session = getSession(req);
 
-  const match = cookie.match(
-    /(?:^|;\s*)session=([^;]+)/
-  );
+      if (session) {
+        db.sessions =
+          db.sessions.filter(
+            s =>
+              s.token !== session.token
+          );
 
-  if (match) {
-    sessions.delete(
-      decodeURIComponent(match[1])
-    );
+        saveDB();
+      }
+
+      clearSessionCookie(res);
+
+      return res.json({
+        ok: true
+      });
+    } catch (error) {
+      console.error(
+        "LOGOUT ERROR:",
+        error
+      );
+
+      clearSessionCookie(res);
+
+      return res.json({
+        ok: true
+      });
+    }
   }
-
-  clearSessionCookie(res);
-
-  res.json({
-    ok: true
-  });
-});
+);
 
 /* =========================
    CURRENT USER
 ========================= */
 
-app.get("/api/me", requireAuth, (req, res) => {
-  res.json({
-    user: publicUser(req.user)
-  });
-});
+app.get(
+  "/api/me",
+  requireLogin,
+  (req, res) => {
+    const user = db.users.find(
+      u => Number(u.id) === Number(req.userId)
+    );
+
+    if (!user) {
+      return res.status(404).json({
+        error:
+          "User hajapatikana."
+      });
+    }
+
+    res.json(publicUser(user));
+  }
+);
 
 /* =========================
    DISCOVER
 ========================= */
 
-app.get("/api/discover", requireAuth, (req, res) => {
-  const myId = String(req.user.id);
+app.get(
+  "/api/discover",
+  requireLogin,
+  (req, res) => {
+    const users = db.users
+      .filter(
+        u =>
+          Number(u.id) !==
+          Number(req.userId)
+      )
+      .map(publicUser);
 
-  const likedIds = new Set(
-    db.likes
-      .filter(l => String(l.from) === myId)
-      .map(l => String(l.to))
-  );
-
-  const users = db.users
-    .filter(u => String(u.id) !== myId)
-    .filter(u => !likedIds.has(String(u.id)))
-    .map(publicUser);
-
-  res.json(users);
-});
+    res.json(users);
+  }
+);
 
 /* =========================
    LIKE
 ========================= */
 
-app.post("/api/like", requireAuth, (req, res) => {
-  try {
-    const targetId = String(
-      req.body.userId || ""
+app.post(
+  "/api/like",
+  requireLogin,
+  (req, res) => {
+    const targetId = Number(
+      req.body?.userId
     );
 
-    if (!targetId) {
+    if (!Number.isFinite(targetId)) {
       return res.status(400).json({
-        error: "User ID inahitajika."
+        error:
+          "User ID si sahihi."
       });
     }
 
-    if (targetId === String(req.user.id)) {
+    if (
+      targetId ===
+      Number(req.userId)
+    ) {
       return res.status(400).json({
-        error: "Huwezi kujilike mwenyewe."
+        error:
+          "Huwezi kujilike mwenyewe."
       });
     }
 
     const target = db.users.find(
-      u => String(u.id) === targetId
+      u => Number(u.id) === targetId
     );
 
     if (!target) {
       return res.status(404).json({
-        error: "User hakupatikana."
+        error:
+          "User hajapatikana."
       });
     }
 
-    const alreadyLiked = db.likes.some(
-      l =>
-        String(l.from) === String(req.user.id) &&
-        String(l.to) === targetId
-    );
+    const alreadyLiked =
+      db.likes.find(
+        l =>
+          Number(l.from) ===
+            Number(req.userId) &&
+          Number(l.to) === targetId
+      );
 
-    if (alreadyLiked) {
-      return res.json({
-        ok: true,
-        matched: false
+    if (!alreadyLiked) {
+      db.likes.push({
+        id: Date.now(),
+        from: Number(req.userId),
+        to: targetId,
+        createdAt:
+          new Date().toISOString()
       });
+
+      saveDB();
     }
 
-    const likeId = makeId();
+    const mutual =
+      db.likes.some(
+        l =>
+          Number(l.from) === targetId &&
+          Number(l.to) ===
+            Number(req.userId)
+      );
 
-    db.likes.push({
-      id: likeId,
-      from: req.user.id,
-      to: target.id,
-      createdAt: new Date().toISOString()
-    });
-
-    /* Notification ya Like */
-    createNotification({
-      userId: target.id,
-      type: "like",
-      title: "❤️ Umepewa Like",
-      message: `${req.user.name} amekupenda.`,
-      fromUserId: req.user.id,
-      relatedId: likeId
-    });
-
-    const matched = db.likes.some(
-      l =>
-        String(l.from) === targetId &&
-        String(l.to) === String(req.user.id)
-    );
-
-    /* Notification ya Match */
-    if (matched) {
+    if (mutual) {
       createNotification({
-        userId: target.id,
+        userId: targetId,
         type: "match",
         title: "❤️ Match mpya!",
-        message: `Wewe na ${req.user.name} mmekuwa Match.`,
-        fromUserId: req.user.id,
-        relatedId: target.id
+        message:
+          `${getUserName(req.userId)} amekumatch.`,
+        fromUserId:
+          Number(req.userId)
       });
-
+    } else {
       createNotification({
-        userId: req.user.id,
-        type: "match",
-        title: "❤️ Match mpya!",
-        message: `Wewe na ${target.name} mmekuwa Match.`,
-        fromUserId: target.id,
-        relatedId: target.id
+        userId: targetId,
+        type: "like",
+        title: "❤️ Like mpya",
+        message:
+          `${getUserName(req.userId)} amekulike.`,
+        fromUserId:
+          Number(req.userId)
       });
     }
-
-    saveDB();
 
     res.json({
       ok: true,
-      matched
-    });
-
-  } catch (err) {
-    console.error(err);
-
-    res.status(500).json({
-      error: "Like imeshindikana."
-    });
-  }
-});
-
-/* =========================
-   MATCHES
-========================= */
-
-app.get("/api/matches", requireAuth, (req, res) => {
-  const myId = String(req.user.id);
-
-  const matches = db.users.filter(user => {
-    const id = String(user.id);
-
-    const iLikedThem = db.likes.some(
-      l =>
-        String(l.from) === myId &&
-        String(l.to) === id
-    );
-
-    const theyLikedMe = db.likes.some(
-      l =>
-        String(l.from) === id &&
-        String(l.to) === myId
-    );
-
-    return iLikedThem && theyLikedMe;
-  });
-
-  res.json(
-    matches.map(publicUser)
-  );
-});
-
-/* =========================
-   PROFILE
-========================= */
-
-app.post("/api/profile", requireAuth, (req, res) => {
-  try {
-    const name = String(req.body.name || "").trim();
-    const age = Number(req.body.age);
-    const gender = String(req.body.gender || "").trim();
-    const city = String(req.body.city || "").trim();
-    const bio = String(req.body.bio || "").trim();
-
-    const photo =
-      typeof req.body.photo === "string"
-        ? req.body.photo
-        : req.user.photo || "";
-
-    if (!name) {
-      return res.status(400).json({
-        error: "Jina linahitajika."
-      });
-    }
-
-    if (!Number.isInteger(age) || age < 18 || age > 100) {
-      return res.status(400).json({
-        error: "Umri lazima uwe kati ya 18 na 100."
-      });
-    }
-
-    if (!gender || !city) {
-      return res.status(400).json({
-        error: "Jinsia na mji vinahitajika."
-      });
-    }
-
-    if (bio.length > 500) {
-      return res.status(400).json({
-        error: "Bio ni refu sana."
-      });
-    }
-
-    const photoResult = validatePhoto(photo);
-
-    if (!photoResult.ok) {
-      return res.status(400).json({
-        error: photoResult.error
-      });
-    }
-
-    req.user.name = name;
-    req.user.age = age;
-    req.user.gender = gender;
-    req.user.city = city;
-    req.user.bio = bio;
-    req.user.photo = photoResult.value;
-
-    saveDB();
-
-    res.json({
-      ok: true,
-      user: publicUser(req.user)
-    });
-
-  } catch (err) {
-    console.error(err);
-
-    res.status(500).json({
-      error: "Profile haijahifadhiwa."
-    });
-  }
-});
-
-/* =========================
-   NOTIFICATIONS
-========================= */
-
-app.get(
-  "/api/notifications",
-  requireAuth,
-  (req, res) => {
-    const myId = String(req.user.id);
-
-    const notifications = db.notifications
-      .filter(n => String(n.userId) === myId)
-      .sort(
-        (a, b) =>
-          new Date(b.createdAt) -
-          new Date(a.createdAt)
-      )
-      .slice(0, 100);
-
-    const unread = notifications.filter(
-      n => !n.read
-    ).length;
-
-    res.json({
-      notifications,
-      unread
+      matched: mutual
     });
   }
 );
 
 /* =========================
-   MARK NOTIFICATIONS READ
+   MATCHES
+========================= */
+
+app.get(
+  "/api/matches",
+  requireLogin,
+  (req, res) => {
+    const myId = Number(
+      req.userId
+    );
+
+    const myLikes =
+      db.likes
+        .filter(
+          l =>
+            Number(l.from) === myId
+        )
+        .map(l => Number(l.to));
+
+    const matches =
+      db.likes
+        .filter(
+          l =>
+            Number(l.to) === myId &&
+            myLikes.includes(
+              Number(l.from)
+            )
+        )
+        .map(l =>
+          db.users.find(
+            u =>
+              Number(u.id) ===
+              Number(l.from)
+          )
+        )
+        .filter(Boolean)
+        .map(publicUser);
+
+    res.json(matches);
+  }
+);
+
+/* =========================
+   PROFILE
 ========================= */
 
 app.post(
-  "/api/notifications/read-all",
-  requireAuth,
+  "/api/profile",
+  requireLogin,
   (req, res) => {
-    const myId = String(req.user.id);
+    const user = db.users.find(
+      u =>
+        Number(u.id) ===
+        Number(req.userId)
+    );
 
-    db.notifications.forEach(n => {
-      if (String(n.userId) === myId) {
-        n.read = true;
-      }
-    });
+    if (!user) {
+      return res.status(404).json({
+        error:
+          "User hajapatikana."
+      });
+    }
+
+    const name = String(
+      req.body?.name || ""
+    ).trim();
+
+    const age = Number(
+      req.body?.age
+    );
+
+    const gender = String(
+      req.body?.gender ||
+        user.gender ||
+        ""
+    ).trim();
+
+    const city = String(
+      req.body?.city || ""
+    ).trim();
+
+    const bio = String(
+      req.body?.bio || ""
+    ).trim();
+
+    const photo = String(
+      req.body?.photo || ""
+    ).trim();
+
+    if (
+      !name ||
+      !city ||
+      !Number.isFinite(age) ||
+      age < 18 ||
+      age > 100
+    ) {
+      return res.status(400).json({
+        error:
+          "Jina, umri na mji ni lazima ziwe sahihi."
+      });
+    }
+
+    user.name = name;
+    user.age = age;
+    user.gender = gender;
+    user.city = city;
+    user.bio = bio;
+    user.photo = photo;
 
     saveDB();
 
     res.json({
-      ok: true
+      ok: true,
+      user: publicUser(user)
     });
   }
 );
@@ -796,29 +775,41 @@ app.post(
 
 app.get(
   "/api/messages/:id",
-  requireAuth,
+  requireLogin,
   (req, res) => {
-    const otherId = String(req.params.id);
-    const myId = String(req.user.id);
+    const otherId = Number(
+      req.params.id
+    );
 
-    const messages = db.messages
-      .filter(m =>
-        (
-          String(m.sender) === myId &&
-          String(m.receiver) === otherId
-        ) ||
-        (
-          String(m.sender) === otherId &&
-          String(m.receiver) === myId
-        )
-      )
-      .map(m => ({
-        id: m.id,
-        sender: m.sender,
-        receiver: m.receiver,
-        body: m.body,
-        createdAt: m.createdAt
-      }));
+    const otherUser = db.users.find(
+      u =>
+        Number(u.id) ===
+        otherId
+    );
+
+    if (!otherUser) {
+      return res.status(404).json({
+        error:
+          "User hajapatikana."
+      });
+    }
+
+    const messages =
+      db.messages.filter(
+        m =>
+          (
+            Number(m.sender) ===
+              Number(req.userId) &&
+            Number(m.receiver) ===
+              otherId
+          ) ||
+          (
+            Number(m.sender) ===
+              otherId &&
+            Number(m.receiver) ===
+              Number(req.userId)
+          )
+      );
 
     res.json(messages);
   }
@@ -826,271 +817,169 @@ app.get(
 
 app.post(
   "/api/messages/:id",
-  requireAuth,
+  requireLogin,
   (req, res) => {
-    try {
-      const receiverId = String(
-        req.params.id
-      );
+    const receiver = Number(
+      req.params.id
+    );
 
-      const body = String(
-        req.body.body || ""
-      ).trim();
+    const body = String(
+      req.body?.body || ""
+    ).trim();
 
-      if (!body) {
-        return res.status(400).json({
-          error: "Ujumbe hauwezi kuwa empty."
-        });
-      }
-
-      if (body.length > 2000) {
-        return res.status(400).json({
-          error: "Ujumbe ni mrefu sana."
-        });
-      }
-
-      const receiver = db.users.find(
-        u => String(u.id) === receiverId
-      );
-
-      if (!receiver) {
-        return res.status(404).json({
-          error: "User hakupatikana."
-        });
-      }
-
-      const message = {
-        id: makeId(),
-        sender: req.user.id,
-        receiver: receiver.id,
-        body,
-        createdAt: new Date().toISOString()
-      };
-
-      db.messages.push(message);
-
-      /* Notification ya ujumbe */
-      createNotification({
-        userId: receiver.id,
-        type: "message",
-        title: "💬 Ujumbe mpya",
-        message: `${req.user.name} amekutumia ujumbe.`,
-        fromUserId: req.user.id,
-        relatedId: message.id
-      });
-
-      saveDB();
-
-      res.json({
-        ok: true,
-        message
-      });
-
-    } catch (err) {
-      console.error(err);
-
-      res.status(500).json({
-        error: "Ujumbe haujatumwa."
+    if (!body) {
+      return res.status(400).json({
+        error:
+          "Ujumbe hauwezi kuwa tupu."
       });
     }
+
+    if (body.length > 2000) {
+      return res.status(400).json({
+        error:
+          "Ujumbe ni mrefu sana."
+      });
+    }
+
+    if (
+      receiver ===
+      Number(req.userId)
+    ) {
+      return res.status(400).json({
+        error:
+          "Huwezi kujitumia ujumbe."
+      });
+    }
+
+    const target = db.users.find(
+      u =>
+        Number(u.id) ===
+        receiver
+    );
+
+    if (!target) {
+      return res.status(404).json({
+        error:
+          "User hajapatikana."
+      });
+    }
+
+    const message = {
+      id: Date.now(),
+      sender: Number(req.userId),
+      receiver,
+      body,
+      createdAt:
+        new Date().toISOString()
+    };
+
+    db.messages.push(message);
+
+    saveDB();
+
+    createNotification({
+      userId: receiver,
+      type: "message",
+      title: "💬 Ujumbe mpya",
+      message:
+        `${getUserName(req.userId)} amekutumia ujumbe.`,
+      fromUserId:
+        Number(req.userId),
+      relatedId: message.id
+    });
+
+    res.json({
+      ok: true,
+      message
+    });
   }
 );
 
 /* =========================
-   REPORT
+   NOTIFICATIONS
 ========================= */
 
-app.post(
-  "/api/report",
-  requireAuth,
-  (req, res) => {
-    try {
-      const userId = String(
-        req.body.userId || ""
-      );
+function createNotification({
+  userId,
+  type,
+  title,
+  message,
+  fromUserId = null,
+  relatedId = null
+}) {
+  db.notifications.push({
+    id: Date.now() + Math.floor(Math.random() * 1000),
+    userId: Number(userId),
+    type,
+    title,
+    message,
+    fromUserId:
+      fromUserId !== null
+        ? Number(fromUserId)
+        : null,
+    relatedId,
+    read: false,
+    createdAt:
+      new Date().toISOString()
+  });
 
-      const reason = String(
-        req.body.reason || ""
-      ).trim();
-
-      if (!userId || !reason) {
-        return res.status(400).json({
-          error: "User na sababu vinahitajika."
-        });
-      }
-
-      const user = db.users.find(
-        u => String(u.id) === userId
-      );
-
-      if (!user) {
-        return res.status(404).json({
-          error: "User hakupatikana."
-        });
-      }
-
-      db.reports.push({
-        id: makeId(),
-        reporter: req.user.id,
-        reportedUser: user.id,
-        reason,
-        status: "open",
-        createdAt: new Date().toISOString()
-      });
-
-      saveDB();
-
-      res.json({
-        ok: true
-      });
-
-    } catch (err) {
-      console.error(err);
-
-      res.status(500).json({
-        error: "Report haijatumwa."
-      });
-    }
-  }
-);
-
-/* =========================
-   ADMIN
-========================= */
-
-const adminSessions = new Map();
-
-function requireAdmin(req, res, next) {
-  const cookie = req.headers.cookie || "";
-
-  const match = cookie.match(
-    /(?:^|;\s*)adminSession=([^;]+)/
-  );
-
-  if (!match) {
-    return res.status(401).json({
-      error: "Admin login inahitajika."
-    });
-  }
-
-  const token = decodeURIComponent(match[1]);
-
-  if (!adminSessions.has(token)) {
-    return res.status(401).json({
-      error: "Admin session ime-expire."
-    });
-  }
-
-  next();
+  saveDB();
 }
 
-app.post("/admin/login", (req, res) => {
-  const email = normalizeEmail(
-    req.body.email
+function getUserName(userId) {
+  const user = db.users.find(
+    u =>
+      Number(u.id) ===
+      Number(userId)
   );
 
-  const password = String(
-    req.body.password || ""
-  );
-
-  const adminEmail = normalizeEmail(
-    process.env.ADMIN_EMAIL
-  );
-
-  const adminPassword = String(
-    process.env.ADMIN_PASSWORD || ""
-  );
-
-  if (!adminEmail || !adminPassword) {
-    return res.status(503).json({
-      error: "ADMIN_EMAIL na ADMIN_PASSWORD hazijawekwa."
-    });
-  }
-
-  if (
-    email !== adminEmail ||
-    password !== adminPassword
-  ) {
-    return res.status(401).json({
-      error: "Admin email au password sio sahihi."
-    });
-  }
-
-  const token = crypto.randomBytes(32).toString("hex");
-
-  adminSessions.set(token, {
-    createdAt: Date.now()
-  });
-
-  res.setHeader(
-    "Set-Cookie",
-    `adminSession=${encodeURIComponent(token)}; HttpOnly; Path=/; SameSite=Lax`
-  );
-
-  res.json({
-    ok: true
-  });
-});
+  return user
+    ? user.name
+    : "Mtu";
+}
 
 app.get(
-  "/admin/stats",
-  requireAdmin,
+  "/api/notifications",
+  requireLogin,
   (req, res) => {
+    const notifications =
+      db.notifications
+        .filter(
+          n =>
+            Number(n.userId) ===
+            Number(req.userId)
+        )
+        .sort(
+          (a, b) =>
+            new Date(b.createdAt) -
+            new Date(a.createdAt)
+        );
+
+    const unread =
+      notifications.filter(
+        n => !n.read
+      ).length;
+
     res.json({
-      users: db.users.length,
-      likes: db.likes.length,
-      messages: db.messages.length,
-      reports: db.reports.filter(
-        r => r.status === "open"
-      ).length,
-      notifications: db.notifications.length
+      notifications,
+      unread
     });
   }
 );
 
-app.get(
-  "/admin/users",
-  requireAdmin,
+app.post(
+  "/api/notifications/read-all",
+  requireLogin,
   (req, res) => {
-    res.json(
-      db.users.map(publicUser)
-    );
-  }
-);
-
-app.delete(
-  "/admin/users/:id",
-  requireAdmin,
-  (req, res) => {
-    const id = String(req.params.id);
-
-    db.users = db.users.filter(
-      u => String(u.id) !== id
-    );
-
-    db.likes = db.likes.filter(
-      l =>
-        String(l.from) !== id &&
-        String(l.to) !== id
-    );
-
-    db.messages = db.messages.filter(
-      m =>
-        String(m.sender) !== id &&
-        String(m.receiver) !== id
-    );
-
-    db.notifications =
-      db.notifications.filter(
-        n =>
-          String(n.userId) !== id &&
-          String(n.fromUserId) !== id
-      );
-
-    db.reports = db.reports.filter(
-      r =>
-        String(r.reporter) !== id &&
-        String(r.reportedUser) !== id
+    db.notifications.forEach(
+      n => {
+        if (
+          Number(n.userId) ===
+          Number(req.userId)
+        ) {
+          n.read = true;
+        }
+      }
     );
 
     saveDB();
@@ -1102,41 +991,398 @@ app.delete(
 );
 
 /* =========================
-   404
+   REPORT
 ========================= */
 
-app.use((req, res) => {
-  if (
-    req.path.startsWith("/api/") ||
-    req.path.startsWith("/admin/")
-  ) {
-    return res.status(404).json({
-      error: "Endpoint haikupatikana."
+app.post(
+  "/api/report",
+  requireLogin,
+  (req, res) => {
+    const userId = Number(
+      req.body?.userId
+    );
+
+    const reason = String(
+      req.body?.reason || ""
+    ).trim();
+
+    if (!reason) {
+      return res.status(400).json({
+        error:
+          "Andika sababu ya ripoti."
+      });
+    }
+
+    if (
+      userId ===
+      Number(req.userId)
+    ) {
+      return res.status(400).json({
+        error:
+          "Huwezi kujireport mwenyewe."
+      });
+    }
+
+    const reportedUser =
+      db.users.find(
+        u =>
+          Number(u.id) ===
+          userId
+      );
+
+    if (!reportedUser) {
+      return res.status(404).json({
+        error:
+          "User hajapatikana."
+      });
+    }
+
+    db.reports.push({
+      id: Date.now(),
+      reporter:
+        Number(req.userId),
+      reported: userId,
+      reason,
+      status: "open",
+      createdAt:
+        new Date().toISOString()
+    });
+
+    saveDB();
+
+    res.json({
+      ok: true
     });
   }
+);
 
-  res.status(404).send(
-    "Page haikupatikana."
-  );
-});
+/* =========================
+   ADMIN LOGIN
+========================= */
+
+app.post(
+  "/api/admin/login",
+  (req, res) => {
+    const adminEmail =
+      process.env.ADMIN_EMAIL;
+
+    const adminPassword =
+      process.env.ADMIN_PASSWORD;
+
+    if (
+      !adminEmail ||
+      !adminPassword
+    ) {
+      return res.status(503).json({
+        error:
+          "Admin credentials hazijawekwa kwenye Environment Variables."
+      });
+    }
+
+    const email = String(
+      req.body?.email || ""
+    ).trim();
+
+    const password = String(
+      req.body?.password || ""
+    );
+
+    if (
+      email !== adminEmail ||
+      password !== adminPassword
+    ) {
+      return res.status(401).json({
+        error:
+          "Admin email au password si sahihi."
+      });
+    }
+
+    const token =
+      createSession(
+        "admin",
+        true
+      );
+
+    setSessionCookie(
+      res,
+      token
+    );
+
+    res.json({
+      ok: true
+    });
+  }
+);
+
+/* =========================
+   ADMIN STATS
+========================= */
+
+app.get(
+  "/api/admin/stats",
+  requireAdmin,
+  (req, res) => {
+    const pairs = new Set();
+
+    for (const like of db.likes) {
+      const mutual =
+        db.likes.some(
+          other =>
+            Number(other.from) ===
+              Number(like.to) &&
+            Number(other.to) ===
+              Number(like.from)
+        );
+
+      if (mutual) {
+        pairs.add(
+          [
+            Number(like.from),
+            Number(like.to)
+          ]
+            .sort((a, b) => a - b)
+            .join(":")
+        );
+      }
+    }
+
+    res.json({
+      users: db.users.length,
+      matches: pairs.size,
+      messages:
+        db.messages.length,
+      reports:
+        db.reports.filter(
+          r => r.status === "open"
+        ).length
+    });
+  }
+);
+
+/* =========================
+   ADMIN USERS
+========================= */
+
+app.get(
+  "/api/admin/users",
+  requireAdmin,
+  (req, res) => {
+    res.json(
+      db.users.map(publicUser)
+    );
+  }
+);
+
+app.delete(
+  "/api/admin/users/:id",
+  requireAdmin,
+  (req, res) => {
+    const id = Number(
+      req.params.id
+    );
+
+    if (
+      !db.users.some(
+        u =>
+          Number(u.id) === id
+      )
+    ) {
+      return res.status(404).json({
+        error:
+          "User hajapatikana."
+      });
+    }
+
+    db.users =
+      db.users.filter(
+        u =>
+          Number(u.id) !== id
+      );
+
+    db.likes =
+      db.likes.filter(
+        l =>
+          Number(l.from) !== id &&
+          Number(l.to) !== id
+      );
+
+    db.messages =
+      db.messages.filter(
+        m =>
+          Number(m.sender) !== id &&
+          Number(m.receiver) !== id
+      );
+
+    db.reports =
+      db.reports.filter(
+        r =>
+          Number(r.reporter) !== id &&
+          Number(r.reported) !== id
+      );
+
+    db.notifications =
+      db.notifications.filter(
+        n =>
+          Number(n.userId) !== id &&
+          Number(n.fromUserId) !== id
+      );
+
+    db.sessions =
+      db.sessions.filter(
+        s =>
+          String(s.userId) !==
+          String(id)
+      );
+
+    saveDB();
+
+    res.json({
+      ok: true
+    });
+  }
+);
+
+/* =========================
+   ADMIN REPORTS
+========================= */
+
+app.get(
+  "/api/admin/reports",
+  requireAdmin,
+  (req, res) => {
+    const reports =
+      db.reports.map(
+        report => {
+          const reported =
+            db.users.find(
+              u =>
+                Number(u.id) ===
+                Number(report.reported)
+            );
+
+          const reporter =
+            db.users.find(
+              u =>
+                Number(u.id) ===
+                Number(report.reporter)
+            );
+
+          return {
+            id: report.id,
+            reporter_name:
+              reporter
+                ? reporter.name
+                : "Deleted user",
+            reported_name:
+              reported
+                ? reported.name
+                : "Deleted user",
+            reason:
+              report.reason,
+            status:
+              report.status,
+            createdAt:
+              report.createdAt
+          };
+        }
+      );
+
+    res.json(reports);
+  }
+);
+
+/* =========================
+   ADMIN REPORT STATUS
+========================= */
+
+app.patch(
+  "/api/admin/reports/:id",
+  requireAdmin,
+  (req, res) => {
+    const id = Number(
+      req.params.id
+    );
+
+    const report =
+      db.reports.find(
+        r =>
+          Number(r.id) === id
+      );
+
+    if (!report) {
+      return res.status(404).json({
+        error:
+          "Report haijapatikana."
+      });
+    }
+
+    const status = String(
+      req.body?.status ||
+        "closed"
+    );
+
+    report.status =
+      status === "open"
+        ? "open"
+        : "closed";
+
+    saveDB();
+
+    res.json({
+      ok: true
+    });
+  }
+);
+
+/* =========================
+   PUBLIC USER
+========================= */
+
+function publicUser(user) {
+  return {
+    id: user.id,
+    name: user.name,
+    email: user.email,
+    age: user.age,
+    gender: user.gender,
+    city: user.city,
+    bio: user.bio,
+    photo: user.photo,
+    createdAt: user.createdAt
+  };
+}
+
+/* =========================
+   API 404
+========================= */
+
+app.use(
+  "/api",
+  (req, res) => {
+    res.status(404).json({
+      error:
+        "API endpoint haijapatikana."
+    });
+  }
+);
 
 /* =========================
    ERROR HANDLER
 ========================= */
 
-app.use((err, req, res, next) => {
-  console.error(err);
+app.use(
+  (err, req, res, next) => {
+    console.error(
+      "SERVER ERROR:",
+      err
+    );
 
-  if (err.type === "entity.too.large") {
-    return res.status(413).json({
-      error: "Data ni kubwa sana."
+    res.status(500).json({
+      error:
+        "Server error."
     });
   }
-
-  res.status(500).json({
-    error: "Server error."
-  });
-});
+);
 
 /* =========================
    START SERVER
@@ -1147,7 +1393,7 @@ app.listen(
   "0.0.0.0",
   () => {
     console.log(
-      `Tanzania Dating server running on port ${PORT}`
+      `Tanzania Dating running on port ${PORT}`
     );
   }
 );
