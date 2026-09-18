@@ -6,9 +6,7 @@
 <title>Tanzania Dating ❤️</title>
 
 <style>
-*{
-  box-sizing:border-box;
-}
+*{box-sizing:border-box}
 
 body{
   margin:0;
@@ -54,9 +52,7 @@ header{
   box-shadow:0 4px 15px #00000012;
 }
 
-input,
-select,
-textarea{
+input,select,textarea{
   width:100%;
   padding:13px;
   border:1px solid #ddd;
@@ -174,16 +170,6 @@ button.danger{
   margin-bottom:25px;
 }
 
-.photo-preview{
-  width:120px;
-  height:120px;
-  border-radius:50%;
-  object-fit:cover;
-  display:block;
-  margin:10px auto;
-  background:#eee;
-}
-
 /* DISCOVER */
 
 .profile-card{
@@ -272,7 +258,7 @@ button.danger{
   color:#999;
 }
 
-/* CHAT WINDOW */
+/* CHAT */
 
 .chat-window{
   background:white;
@@ -409,9 +395,2133 @@ button.danger{
   padding:30px;
 }
 
-/* MOBILE */
+.toast{
+  position:fixed;
+  bottom:20px;
+  left:50%;
+  transform:translateX(-50%);
+  background:#222;
+  color:white;
+  padding:12px 18px;
+  border-radius:12px;
+  z-index:9999;
+  display:none;
+  max-width:90%;
+  text-align:center;
+}
 
 @media(max-width:600px){
 
   .container{
-    padding:12
+    padding:12px;
+  }
+
+  .profile-card{
+    flex-direction:column;
+    align-items:center;
+    text-align:center;
+  }
+
+  .profile-info{
+    width:100%;
+  }
+
+  .profile-photo{
+    width:130px;
+    height:130px;
+  }
+
+  .tabs{
+    top:59px;
+  }
+
+  .auth-box{
+    margin:20px auto;
+  }
+
+  .actions button{
+    min-width:110px;
+  }
+
+  .chat-messages{
+    min-height:300px;
+  }
+
+  .logo{
+    font-size:18px;
+  }
+}
+</style>
+</head>
+
+<body>
+
+<header id="mainHeader" class="hidden">
+
+  <div class="header-row">
+
+    <div class="logo">
+      Tanzania Dating ❤️
+    </div>
+
+    <div>
+
+      <button onclick="showPage('notifications')">
+        🔔
+        <span id="notifyBadge" class="badge hidden">0</span>
+      </button>
+
+      <button
+        class="secondary"
+        onclick="logout()">
+        Toka
+      </button>
+
+    </div>
+
+  </div>
+
+</header>
+
+
+<main class="container">
+
+<!-- ================= AUTH ================= -->
+
+<section id="authPage">
+
+  <div class="auth-box">
+
+    <div class="card">
+
+      <h1 class="auth-title">
+        Tanzania Dating ❤️
+      </h1>
+
+      <p class="auth-sub">
+        Kutana na watu wapya Tanzania.
+      </p>
+
+
+      <!-- LOGIN -->
+
+      <div id="loginBox">
+
+        <h2>Ingia</h2>
+
+        <form id="loginForm">
+
+          <label>Email</label>
+
+          <input
+            id="loginEmail"
+            type="email"
+            required
+          >
+
+          <label>Password</label>
+
+          <input
+            id="loginPassword"
+            type="password"
+            required
+          >
+
+          <button
+            type="submit"
+            style="width:100%">
+            🔐 Ingia
+          </button>
+
+        </form>
+
+        <p class="center muted">
+          Huna account?
+        </p>
+
+        <button
+          class="secondary"
+          style="width:100%"
+          onclick="toggleAuth(false)">
+          📝 Jisajili
+        </button>
+
+      </div>
+
+
+      <!-- REGISTER -->
+
+      <div id="registerBox" class="hidden">
+
+        <h2>Jisajili</h2>
+
+        <form id="registerForm">
+
+          <label>Jina</label>
+
+          <input
+            id="regName"
+            required
+          >
+
+
+          <label>Email</label>
+
+          <input
+            id="regEmail"
+            type="email"
+            required
+          >
+
+
+          <label>Password</label>
+
+          <input
+            id="regPassword"
+            type="password"
+            minlength="6"
+            required
+          >
+
+
+          <label>Umri</label>
+
+          <input
+            id="regAge"
+            type="number"
+            min="18"
+            max="100"
+            required
+          >
+
+
+          <label>Jinsia</label>
+
+          <select
+            id="regGender"
+            required>
+
+            <option value="">
+              Chagua
+            </option>
+
+            <option value="Mwanaume">
+              Mwanaume
+            </option>
+
+            <option value="Mwanamke">
+              Mwanamke
+            </option>
+
+            <option value="Nyingine">
+              Nyingine
+            </option>
+
+          </select>
+
+
+          <label>Mji</label>
+
+          <input
+            id="regCity"
+            placeholder="Mfano: Dar es Salaam"
+            required
+          >
+
+
+          <label>Bio</label>
+
+          <textarea
+            id="regBio"
+            maxlength="500"
+            placeholder="Jieleze kidogo...">
+          </textarea>
+
+
+          <label>
+            Link ya picha (optional)
+          </label>
+
+          <input
+            id="regPhoto"
+            type="url"
+            placeholder="https://..."
+          >
+
+
+          <button
+            type="submit"
+            style="width:100%">
+            ❤️ Fungua Account
+          </button>
+
+        </form>
+
+
+        <p class="center muted">
+          Tayari una account?
+        </p>
+
+        <button
+          class="secondary"
+          style="width:100%"
+          onclick="toggleAuth(true)">
+          🔐 Ingia
+        </button>
+
+      </div>
+
+    </div>
+
+  </div>
+
+</section>
+
+
+<!-- ================= APP ================= -->
+
+<section
+  id="appPage"
+  class="hidden">
+
+  <div class="tabs">
+
+    <button onclick="showPage('discover')">
+      ❤️ Tafuta
+    </button>
+
+    <button onclick="showPage('matches')">
+      💞 Matches
+    </button>
+
+    <button onclick="showPage('chats')">
+      💬 Chats
+    </button>
+
+    <button onclick="showPage('notifications')">
+      🔔 Arifa
+
+      <span
+        id="tabBadge"
+        class="badge hidden">
+        0
+      </span>
+
+    </button>
+
+    <button onclick="showPage('profile')">
+      👤 Profile
+    </button>
+
+  </div>
+
+
+  <!-- DISCOVER -->
+
+  <section
+    id="discoverPage"
+    class="page">
+
+    <div class="card">
+
+      <h2>
+        Tafuta watu ❤️
+      </h2>
+
+      <p class="muted small">
+        Watu ambao bado hujawapenda wataonekana hapa.
+      </p>
+
+      <button onclick="loadDiscover()">
+        🔄 Refresh
+      </button>
+
+    </div>
+
+    <div id="discoverList">
+
+      <div class="loading">
+        Inapakia...
+      </div>
+
+    </div>
+
+  </section>
+
+
+  <!-- MATCHES -->
+
+  <section
+    id="matchesPage"
+    class="page hidden">
+
+    <div class="card">
+
+      <h2>
+        💞 Matches zako
+      </h2>
+
+    </div>
+
+    <div id="matchesList">
+
+      <div class="loading">
+        Inapakia...
+      </div>
+
+    </div>
+
+  </section>
+
+
+  <!-- CHATS -->
+
+  <section
+    id="chatsPage"
+    class="page hidden">
+
+    <div id="chatListView">
+
+      <div class="card">
+
+        <h2>
+          💬 Chats
+        </h2>
+
+      </div>
+
+      <div class="card">
+
+        <div
+          id="chatsList"
+          class="chat-list">
+
+          <div class="loading">
+            Inapakia...
+          </div>
+
+        </div>
+
+      </div>
+
+    </div>
+
+
+    <div
+      id="chatView"
+      class="hidden">
+
+      <div class="chat-window">
+
+        <div class="chat-header">
+
+          <button
+            onclick="closeChat()"
+            style="background:#ffffff22">
+            ←
+          </button>
+
+          <img
+            id="chatPhoto"
+            src=""
+            onerror="this.src=avatarFallback()"
+          >
+
+          <div class="chat-header-info">
+
+            <strong id="chatName">
+              Chat
+            </strong>
+
+            <div class="small">
+              💬 Ujumbe
+            </div>
+
+          </div>
+
+        </div>
+
+
+        <div
+          id="chatMessages"
+          class="chat-messages">
+        </div>
+
+
+        <form
+          id="messageForm"
+          class="chat-input">
+
+          <input
+            id="messageInput"
+            placeholder="Andika ujumbe..."
+            maxlength="5000"
+            autocomplete="off"
+          >
+
+          <button type="submit">
+            Tuma
+          </button>
+
+        </form>
+
+      </div>
+
+    </div>
+
+  </section>
+
+
+  <!-- NOTIFICATIONS -->
+
+  <section
+    id="notificationsPage"
+    class="page hidden">
+
+    <div class="card">
+
+      <h2>
+        🔔 Notifications
+      </h2>
+
+      <button
+        class="secondary"
+        onclick="markAllRead()">
+        ✓ Soma zote
+      </button>
+
+    </div>
+
+    <div
+      class="card"
+      id="notificationsList">
+
+      <div class="loading">
+        Inapakia...
+      </div>
+
+    </div>
+
+  </section>
+
+
+  <!-- PROFILE -->
+
+  <section
+    id="profilePage"
+    class="page hidden">
+
+    <div class="card my-profile">
+
+      <h2>
+        👤 Profile yangu
+      </h2>
+
+      <img
+        id="myPhoto"
+        src=""
+        onerror="this.src=avatarFallback()"
+      >
+
+      <h2 id="myName">
+        -
+      </h2>
+
+      <p
+        id="myBasic"
+        class="muted">
+      </p>
+
+    </div>
+
+
+    <div class="card">
+
+      <h3>
+        ✏️ Hariri profile
+      </h3>
+
+      <form id="profileForm">
+
+        <label>Jina</label>
+
+        <input
+          id="pName"
+          required
+        >
+
+
+        <label>Umri</label>
+
+        <input
+          id="pAge"
+          type="number"
+          min="18"
+          max="100"
+          required
+        >
+
+
+        <label>Jinsia</label>
+
+        <select
+          id="pGender"
+          required>
+
+          <option value="Mwanaume">
+            Mwanaume
+          </option>
+
+          <option value="Mwanamke">
+            Mwanamke
+          </option>
+
+          <option value="Nyingine">
+            Nyingine
+          </option>
+
+        </select>
+
+
+        <label>Mji</label>
+
+        <input
+          id="pCity"
+          required
+        >
+
+
+        <label>Bio</label>
+
+        <textarea
+          id="pBio"
+          maxlength="500">
+        </textarea>
+
+
+        <label>
+          Link ya picha
+        </label>
+
+        <input
+          id="pPhoto"
+          type="url"
+        >
+
+
+        <button type="submit">
+          💾 Hifadhi
+        </button>
+
+      </form>
+
+    </div>
+
+  </section>
+
+</section>
+
+</main>
+
+
+<div
+  id="toast"
+  class="toast">
+</div>
+
+
+<script>
+
+const state = {
+  user:null,
+  currentChat:null,
+  toastTimer:null
+};
+
+
+/* =========================
+   FALLBACK IMAGE
+========================= */
+
+function avatarFallback(){
+
+  return "data:image/svg+xml;charset=UTF-8," +
+    encodeURIComponent(
+      '<svg xmlns="http://www.w3.org/2000/svg" width="200" height="200">' +
+      '<rect width="100%" height="100%" fill="#eee"/>' +
+      '<text x="50%" y="54%" dominant-baseline="middle" text-anchor="middle" font-size="80">👤</text>' +
+      '</svg>'
+    );
+
+}
+
+
+/* =========================
+   SECURITY ESCAPE
+========================= */
+
+function esc(value){
+
+  return String(value ?? "")
+    .replace(/[&<>"']/g, function(m){
+
+      return {
+        "&":"&amp;",
+        "<":"&lt;",
+        ">":"&gt;",
+        '"':"&quot;",
+        "'":"&#039;"
+      }[m];
+
+    });
+
+}
+
+
+/* =========================
+   IMAGE
+========================= */
+
+function img(url){
+
+  return url
+    ? esc(url)
+    : avatarFallback();
+
+}
+
+
+/* =========================
+   TOAST
+========================= */
+
+function showToast(message){
+
+  const toast =
+    document.getElementById("toast");
+
+  toast.textContent = message;
+
+  toast.style.display = "block";
+
+  clearTimeout(state.toastTimer);
+
+  state.toastTimer =
+    setTimeout(function(){
+
+      toast.style.display = "none";
+
+    },3000);
+
+}
+
+
+/* =========================
+   API
+========================= */
+
+async function api(url, options = {}){
+
+  const opts = {
+    ...options,
+
+    headers:{
+      "Content-Type":"application/json",
+      ...(options.headers || {})
+    }
+  };
+
+  const response =
+    await fetch(url, opts);
+
+  let data = {};
+
+  try{
+
+    data = await response.json();
+
+  }catch(error){}
+
+  if(!response.ok){
+
+    throw new Error(
+      data.message ||
+      "Kuna tatizo kwenye server."
+    );
+
+  }
+
+  return data;
+
+}
+
+
+/* =========================
+   AUTH SWITCH
+========================= */
+
+function toggleAuth(login){
+
+  document
+    .getElementById("loginBox")
+    .classList
+    .toggle("hidden", !login);
+
+  document
+    .getElementById("registerBox")
+    .classList
+    .toggle("hidden", login);
+
+}
+
+
+/* =========================
+   PAGE NAVIGATION
+========================= */
+
+function showPage(page){
+
+  document
+    .querySelectorAll(".page")
+    .forEach(function(element){
+
+      element.classList.add("hidden");
+
+    });
+
+
+  const pageElement =
+    document.getElementById(
+      page + "Page"
+    );
+
+
+  if(pageElement){
+
+    pageElement.classList.remove(
+      "hidden"
+    );
+
+  }
+
+
+  if(page === "discover"){
+    loadDiscover();
+  }
+
+  if(page === "matches"){
+    loadMatches();
+  }
+
+  if(page === "chats"){
+    loadChats();
+  }
+
+  if(page === "notifications"){
+    loadNotifications();
+  }
+
+  if(page === "profile"){
+    renderProfile();
+  }
+
+}
+
+
+/* =========================
+   ENTER APP
+========================= */
+
+function enterApp(){
+
+  document
+    .getElementById("authPage")
+    .classList
+    .add("hidden");
+
+
+  document
+    .getElementById("appPage")
+    .classList
+    .remove("hidden");
+
+
+  document
+    .getElementById("mainHeader")
+    .classList
+    .remove("hidden");
+
+
+  showPage("discover");
+
+  refreshNotifications();
+
+}
+
+
+/* =========================
+   LEAVE APP
+========================= */
+
+function leaveApp(){
+
+  document
+    .getElementById("authPage")
+    .classList
+    .remove("hidden");
+
+
+  document
+    .getElementById("appPage")
+    .classList
+    .add("hidden");
+
+
+  document
+    .getElementById("mainHeader")
+    .classList
+    .add("hidden");
+
+}
+
+
+/* =========================
+   CHECK SESSION
+========================= */
+
+async function checkSession(){
+
+  try{
+
+    const data =
+      await api("/api/me");
+
+    state.user =
+      data.user;
+
+    enterApp();
+
+  }catch(error){
+
+    leaveApp();
+
+  }
+
+}
+
+
+/* =========================
+   LOGIN
+========================= */
+
+document
+  .getElementById("loginForm")
+  .addEventListener(
+    "submit",
+    async function(event){
+
+      event.preventDefault();
+
+      try{
+
+        const data =
+          await api(
+            "/api/login",
+            {
+              method:"POST",
+
+              body:JSON.stringify({
+
+                email:
+                  document
+                    .getElementById("loginEmail")
+                    .value,
+
+                password:
+                  document
+                    .getElementById("loginPassword")
+                    .value
+
+              })
+
+            }
+          );
+
+
+        state.user =
+          data.user;
+
+        showToast(
+          "Umeingia vizuri ❤️"
+        );
+
+        enterApp();
+
+        event.target.reset();
+
+      }catch(error){
+
+        showToast(
+          error.message
+        );
+
+      }
+
+    }
+  );
+
+
+/* =========================
+   REGISTER
+========================= */
+
+document
+  .getElementById("registerForm")
+  .addEventListener(
+    "submit",
+    async function(event){
+
+      event.preventDefault();
+
+      try{
+
+        const data =
+          await api(
+            "/api/register",
+            {
+              method:"POST",
+
+              body:JSON.stringify({
+
+                name:
+                  document
+                    .getElementById("regName")
+                    .value,
+
+                email:
+                  document
+                    .getElementById("regEmail")
+                    .value,
+
+                password:
+                  document
+                    .getElementById("regPassword")
+                    .value,
+
+                age:
+                  document
+                    .getElementById("regAge")
+                    .value,
+
+                gender:
+                  document
+                    .getElementById("regGender")
+                    .value,
+
+                city:
+                  document
+                    .getElementById("regCity")
+                    .value,
+
+                bio:
+                  document
+                    .getElementById("regBio")
+                    .value,
+
+                photo:
+                  document
+                    .getElementById("regPhoto")
+                    .value
+
+              })
+
+            }
+          );
+
+
+        state.user =
+          data.user;
+
+        showToast(
+          "Account imefunguliwa ❤️"
+        );
+
+        enterApp();
+
+        event.target.reset();
+
+      }catch(error){
+
+        showToast(
+          error.message
+        );
+
+      }
+
+    }
+  );
+
+
+/* =========================
+   LOGOUT
+========================= */
+
+async function logout(){
+
+  try{
+
+    await api(
+      "/api/logout",
+      {
+        method:"POST"
+      }
+    );
+
+  }catch(error){}
+
+
+  state.user = null;
+
+  state.currentChat = null;
+
+  leaveApp();
+
+  toggleAuth(true);
+
+  showToast(
+    "Umetoka."
+  );
+
+}
+
+
+/* =========================
+   DISCOVER
+========================= */
+
+async function loadDiscover(){
+
+  const box =
+    document.getElementById(
+      "discoverList"
+    );
+
+
+  box.innerHTML =
+    '<div class="card loading">Inapakia...</div>';
+
+
+  try{
+
+    const data =
+      await api(
+        "/api/discover"
+      );
+
+
+    if(!data.users.length){
+
+      box.innerHTML =
+        '<div class="card empty">' +
+        'Hakuna profiles mpya kwa sasa. ❤️' +
+        '</div>';
+
+      return;
+
+    }
+
+
+    box.innerHTML =
+      data.users.map(function(user){
+
+        return `
+
+          <div class="card profile-card">
+
+            <img
+              class="profile-photo"
+              src="${img(user.photo)}"
+              onerror="this.src=avatarFallback()"
+            >
+
+            <div class="profile-info">
+
+              <div class="profile-name">
+                ${esc(user.name)}, ${esc(user.age)}
+              </div>
+
+              <div class="muted">
+                📍 ${esc(user.city)}
+                ·
+                ${esc(user.gender)}
+              </div>
+
+              <p>
+                ${esc(user.bio || "Hakuna bio.")}
+              </p>
+
+              <div class="actions">
+
+                <button
+                  onclick="likeUser(${user.id})">
+                  ❤️ Like
+                </button>
+
+                <button
+                  class="green"
+                  onclick='openChat(
+                    ${user.id},
+                    ${JSON.stringify(user.name)},
+                    ${JSON.stringify(user.photo || "")}
+                  )'>
+                  💬 Tuma ujumbe
+                </button>
+
+                <button
+                  class="danger"
+                  onclick="reportUser(${user.id})">
+                  🚩 Ripoti
+                </button>
+
+              </div>
+
+            </div>
+
+          </div>
+
+        `;
+
+      }).join("");
+
+
+  }catch(error){
+
+    box.innerHTML =
+      `<div class="card empty">
+        ${esc(error.message)}
+      </div>`;
+
+  }
+
+}
+
+
+/* =========================
+   LIKE
+========================= */
+
+async function likeUser(id){
+
+  try{
+
+    const data =
+      await api(
+        "/api/like",
+        {
+          method:"POST",
+
+          body:JSON.stringify({
+            userId:id
+          })
+
+        }
+      );
+
+
+    showToast(
+      data.match
+        ? "❤️ Mme-match!"
+        : "❤️ Like imetumwa."
+    );
+
+
+    loadDiscover();
+
+    refreshNotifications();
+
+
+  }catch(error){
+
+    showToast(
+      error.message
+    );
+
+  }
+
+}
+
+
+/* =========================
+   MATCHES
+========================= */
+
+async function loadMatches(){
+
+  const box =
+    document.getElementById(
+      "matchesList"
+    );
+
+
+  box.innerHTML =
+    '<div class="card loading">Inapakia...</div>';
+
+
+  try{
+
+    const data =
+      await api(
+        "/api/matches"
+      );
+
+
+    if(!data.users.length){
+
+      box.innerHTML =
+        '<div class="card empty">' +
+        'Bado huna match. Endelea kutafuta ❤️' +
+        '</div>';
+
+      return;
+
+    }
+
+
+    box.innerHTML =
+      data.users.map(function(user){
+
+        return `
+
+          <div class="card profile-card">
+
+            <img
+              class="profile-photo"
+              src="${img(user.photo)}"
+              onerror="this.src=avatarFallback()"
+            >
+
+            <div class="profile-info">
+
+              <div class="profile-name">
+                ${esc(user.name)}, ${esc(user.age)}
+              </div>
+
+              <div class="muted">
+                📍 ${esc(user.city)}
+              </div>
+
+              <p>
+                ${esc(user.bio || "")}
+              </p>
+
+              <div class="actions">
+
+                <button
+                  class="green"
+                  onclick='openChat(
+                    ${user.id},
+                    ${JSON.stringify(user.name)},
+                    ${JSON.stringify(user.photo || "")}
+                  )'>
+                  💬 Chat
+                </button>
+
+              </div>
+
+            </div>
+
+          </div>
+
+        `;
+
+      }).join("");
+
+
+  }catch(error){
+
+    box.innerHTML =
+      `<div class="card empty">
+        ${esc(error.message)}
+      </div>`;
+
+  }
+
+}
+
+
+/* =========================
+   CHATS
+========================= */
+
+async function loadChats(){
+
+  const box =
+    document.getElementById(
+      "chatsList"
+    );
+
+
+  box.innerHTML =
+    '<div class="loading">Inapakia...</div>';
+
+
+  document
+    .getElementById("chatListView")
+    .classList
+    .remove("hidden");
+
+
+  document
+    .getElementById("chatView")
+    .classList
+    .add("hidden");
+
+
+  try{
+
+    const data =
+      await api(
+        "/api/chats"
+      );
+
+
+    if(!data.chats.length){
+
+      box.innerHTML =
+        '<div class="empty">' +
+        'Bado hakuna mazungumzo.' +
+        '</div>';
+
+      return;
+
+    }
+
+
+    box.innerHTML =
+      data.chats.map(function(chat){
+
+        return `
+
+          <div
+            class="chat-item"
+            onclick='openChat(
+              ${chat.id},
+              ${JSON.stringify(chat.name)},
+              ${JSON.stringify(chat.photo || "")}
+            )'>
+
+            <img
+              class="chat-avatar"
+              src="${img(chat.photo)}"
+              onerror="this.src=avatarFallback()"
+            >
+
+            <div class="chat-info">
+
+              <div class="chat-name">
+                ${esc(chat.name)}
+              </div>
+
+              <div class="last-message">
+                ${esc(chat.last_message)}
+              </div>
+
+            </div>
+
+            <div class="chat-time">
+              ${formatDate(chat.last_message_at)}
+            </div>
+
+          </div>
+
+        `;
+
+      }).join("");
+
+
+  }catch(error){
+
+    box.innerHTML =
+      `<div class="empty">
+        ${esc(error.message)}
+      </div>`;
+
+  }
+
+}
+
+
+/* =========================
+   OPEN CHAT
+========================= */
+
+async function openChat(
+  id,
+  name,
+  photo
+){
+
+  state.currentChat = {
+    id:id,
+    name:name,
+    photo:photo
+  };
+
+
+  showPage("chats");
+
+
+  document
+    .getElementById("chatListView")
+    .classList
+    .add("hidden");
+
+
+  document
+    .getElementById("chatView")
+    .classList
+    .remove("hidden");
+
+
+  document
+    .getElementById("chatName")
+    .textContent = name;
+
+
+  document
+    .getElementById("chatPhoto")
+    .src =
+      photo || avatarFallback();
+
+
+  await loadMessages();
+
+}
+
+
+/* =========================
+   CLOSE CHAT
+========================= */
+
+function closeChat(){
+
+  state.currentChat = null;
+
+  document
+    .getElementById("chatView")
+    .classList
+    .add("hidden");
+
+
+  document
+    .getElementById("chatListView")
+    .classList
+    .remove("hidden");
+
+
+  loadChats();
+
+}
+
+
+/* =========================
+   LOAD MESSAGES
+========================= */
+
+async function loadMessages(){
+
+  if(!state.currentChat){
+    return;
+  }
+
+
+  const box =
+    document.getElementById(
+      "chatMessages"
+    );
+
+
+  box.innerHTML =
+    '<div class="loading">Inapakia...</div>';
+
+
+  try{
+
+    const data =
+      await api(
+        "/api/messages/" +
+        state.currentChat.id
+      );
+
+
+    if(!data.messages.length){
+
+      box.innerHTML =
+        '<div class="empty">' +
+        'Anza mazungumzo hapa 👋' +
+        '</div>';
+
+      return;
+
+    }
+
+
+    box.innerHTML =
+      data.messages.map(function(message){
+
+        return `
+
+          <div
+            class="message-row ${
+              message.from_user === state.user.id
+                ? "mine"
+                : ""
+            }">
+
+            <div class="message">
+
+              ${esc(message.message)}
+
+              <span class="message-time">
+                ${formatDate(message.created_at)}
+              </span>
+
+            </div>
+
+          </div>
+
+        `;
+
+      }).join("");
+
+
+    box.scrollTop =
+      box.scrollHeight;
+
+
+  }catch(error){
+
+    box.innerHTML =
+      `<div class="empty">
+        ${esc(error.message)}
+      </div>`;
+
+  }
+
+}
+
+
+/* =========================
+   SEND MESSAGE
+========================= */
+
+document
+  .getElementById("messageForm")
+  .addEventListener(
+    "submit",
+    async function(event){
+
+      event.preventDefault();
+
+
+      if(!state.currentChat){
+        return;
+      }
+
+
+      const input =
+        document.getElementById(
+          "messageInput"
+        );
+
+
+      const message =
+        input.value.trim();
+
+
+      if(!message){
+        return;
+      }
+
+
+      try{
+
+        await api(
+          "/api/messages/" +
+          state.currentChat.id,
+          {
+            method:"POST",
+
+            body:JSON.stringify({
+              message:message
+            })
+
+          }
+        );
+
+
+        input.value = "";
+
+        await loadMessages();
+
+
+      }catch(error){
+
+        showToast(
+          error.message
+        );
+
+      }
+
+    }
+  );
+
+
+/* =========================
+   NOTIFICATIONS
+========================= */
+
+async function loadNotifications(){
+
+  const box =
+    document.getElementById(
+      "notificationsList"
+    );
+
+
+  box.innerHTML =
+    '<div class="loading">Inapakia...</div>';
+
+
+  try{
+
+    const data =
+      await api(
+        "/api/notifications"
+      );
+
+
+    if(!data.notifications.length){
+
+      box.innerHTML =
+        '<div class="empty">' +
+        'Hakuna notifications.' +
+        '</div>';
+
+      return;
+
+    }
+
+
+    box.innerHTML =
+      data.notifications.map(function(notification){
+
+        return `
+
+          <div
+            class="notification ${
+              notification.is_read
+                ? ""
+                : "unread"
+            }">
+
+            <div class="notification-title">
+              ${esc(notification.title)}
+            </div>
+
+            <div>
+              ${esc(notification.message)}
+            </div>
+
+            <div class="notification-time">
+              ${formatDate(notification.created_at)}
+            </div>
+
+          </div>
+
+        `;
+
+      }).join("");
+
+
+  }catch(error){
+
+    box.innerHTML =
+      `<div class="empty">
+        ${esc(error.message)}
+      </div>`;
+
+  }
+
+}
+
+
+/* =========================
+   REFRESH NOTIFICATIONS
+========================= */
+
+async function refreshNotifications(){
+
+  try{
+
+    const data =
+      await api(
+        "/api/notifications"
+      );
+
+
+    const count =
+      data.notifications
+        .filter(
+          function(notification){
+            return !notification.is_read;
+          }
+        )
+        .length;
+
+
+    [
+      "notifyBadge",
+      "tabBadge"
+    ].forEach(function(id){
+
+      const element =
+        document.getElementById(id);
+
+      element.textContent =
+        count;
+
+      element.classList.toggle(
+        "hidden",
+        count === 0
+      );
+
+    });
+
+
+  }catch(error){}
+
+}
+
+
+/* =========================
+   MARK ALL READ
+========================= */
+
+async function markAllRead(){
+
+  try{
+
+    await api(
+      "/api/notifications/read",
+      {
+        method:"POST",
+        body:JSON.stringify({})
+      }
+    );
+
+
+    showToast(
+      "Notifications zimesomwa."
+    );
+
+
+    loadNotifications();
+
+    refreshNotifications();
+
+
+  }catch(error){
+
+    showToast(
+      error.message
+    );
+
+  }
+
+}
+
+
+/* =========================
+   PROFILE
+========================= */
+
+function renderProfile(){
+
+  const user =
+    state.user;
+
+
+  if(!user){
+    return;
+  }
+
+
+  document
+    .getElementById("myPhoto")
+    .src =
+      user.photo ||
+      avatarFallback();
+
+
+  document
+    .getElementById("myName")
+    .textContent =
+      user.name;
+
+
+  document
+    .getElementById("myBasic")
+    .textContent =
+      `${user.age} · ${user.gender} · 📍 ${user.city}`;
+
+
+  document
+    .getElementById("pName")
+    .value =
+      user.name;
+
+
+  document
+    .getElementById("pAge")
+    .value =
+      user.age;
+
+
+  document
+    .getElementById("pGender")
+    .value =
+      user.gender;
+
+
+  document
+    .getElementById("pCity")
+    .value =
+      user.city;
+
+
+  document
+    .getElementById("pBio")
+    .value =
+      user.bio || "";
+
+
+  document
+    .getElementById("pPhoto")
+    .value =
+      user.photo || "";
+
+}
+
+
+/* =========================
+   UPDATE PROFILE
+========================= */
+
+document
+  .getElementById("profileForm")
+  .addEventListener(
+    "submit",
+    async function(event){
+
+      event.preventDefault();
+
+
+      try{
+
+        const data =
+          await api(
+            "/api/profile",
+            {
+              method:"PUT",
+
+              body:JSON.stringify({
+
+                name:
+                  document
+                    .getElementById("pName")
+                    .value,
+
+                age:
+                  document
+                    .getElementById("pAge")
+                    .value,
+
+                gender:
+                  document
+                    .getElementById("pGender")
+                    .value,
+
+                city:
+                  document
+                    .getElementById("pCity")
+                    .value,
+
+                bio:
+                  document
+                    .getElementById("pBio")
+                    .value,
+
+                photo:
+                  document
+                    .getElementById("pPhoto")
+                    .value
+
+              })
+
+            }
+          );
+
+
+        state.user =
+          data.user;
+
+
+        renderProfile();
+
+
+        showToast(
+          "Profile imehifadhiwa ❤️"
+        );
+
+
+      }catch(error){
+
+        showToast(
+          error.message
+        );
+
+      }
+
+    }
+  );
+
+
+/* =========================
+   REPORT USER
+========================= */
+
+async function reportUser(id){
+
+  const reason =
+    prompt(
+      "Sababu ya kuripoti user huyu:"
+    );
+
+
+  if(reason === null){
+    return;
+  }
+
+
+  try{
+
+    const data =
+      await api(
+        "/api/report",
+        {
+          method:"POST",
+
+          body:JSON.stringify({
+
+            userId:id,
+            reason:reason
+
+          })
+
+        }
+      );
+
+
+    showToast(
+      data.message ||
+      "Ripoti imetumwa."
+    );
+
+
+  }catch(error){
+
+    showToast(
+      error.message
+    );
+
+  }
+
+}
+
+
+/* =========================
+   DATE
+========================= */
+
+function formatDate(value){
+
+  if(!value){
+    return "";
+  }
+
+
+  const date =
+    new Date(value);
+
+
+  if(
+    Number.isNaN(
+      date.getTime()
+    )
+  ){
+
+    return "";
+
+  }
+
+
+  return date.toLocaleString(
+    "sw-TZ",
+    {
+      day:"2-digit",
+      month:"short",
+      hour:"2-digit",
+      minute:"2-digit"
+    }
+  );
+
+}
+
+
+/* =========================
+   AUTO REFRESH
+========================= */
+
+setInterval(
+  function(){
+
+    if(!state.user){
+      return;
+    }
+
+
+    refreshNotifications();
+
+
+    if(state.currentChat){
+
+      loadMessages();
+
+    }
+
+  },
+  15000
+);
+
+
+/* =========================
+   START
+========================= */
+
+checkSession();
+
+</script>
+
+</body>
+</html>
