@@ -777,4 +777,4 @@ app.post("/api/messages/:id", auth, async (req, res) => {
     if (!toUser) {
       return res.status(400).json({
         ok: false,
-        message: "User sio sah
+        message: "User sio sahihi."
