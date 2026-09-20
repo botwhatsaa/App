@@ -1,505 +1,674 @@
-<!doctype html>
-<html lang="sw">
-<head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
-
-<title>Tanzania Dating ❤️</title>
-
-<style>
-
-*{
-  box-sizing:border-box;
-}
-
-body{
-  margin:0;
-  font-family:Arial,sans-serif;
-  background:#fff5f8;
-  color:#24131b;
-}
-
-header{
-  background:linear-gradient(135deg,#ff174f,#e60046);
-  color:white;
-  padding:14px;
-  position:sticky;
-  top:0;
-  z-index:100;
-  box-shadow:0 2px 10px #0002;
-}
-
-.header-row{
-  max-width:900px;
-  margin:auto;
-  display:flex;
-  align-items:center;
-  justify-content:space-between;
-  gap:10px;
-}
-
-.logo{
-  font-size:20px;
-  font-weight:bold;
-}
-
-.container{
-  max-width:900px;
-  margin:auto;
-  padding:15px;
-}
-
-.card{
-  background:white;
-  border-radius:18px;
-  padding:18px;
-  margin-bottom:15px;
-  box-shadow:0 4px 15px #00000012;
-}
-
-.auth-box{
-  max-width:450px;
-  margin:35px auto;
-}
-
-.auth-title{
-  text-align:center;
-  font-size:30px;
-  margin-bottom:5px;
-}
-
-.auth-sub{
-  text-align:center;
-  color:#777;
-  margin-bottom:25px;
-}
-
-input,
-select,
-textarea{
-  width:100%;
-  padding:14px;
-  border:1px solid #ddd;
-  border-radius:12px;
-  margin-top:7px;
-  margin-bottom:13px;
-  font-size:16px;
-  outline:none;
-  background:white;
-}
-
-input:focus,
-select:focus,
-textarea:focus{
-  border-color:#ff174f;
-}
-
-textarea{
-  min-height:100px;
-  resize:vertical;
-}
-
-button{
-  border:0;
-  border-radius:12px;
-  padding:12px 15px;
-  background:#ff174f;
-  color:white;
-  font-size:15px;
-  font-weight:bold;
-  cursor:pointer;
-}
-
-button:hover{
-  opacity:.92;
-}
-
-button.secondary{
-  background:#eee;
-  color:#333;
-}
-
-button.green{
-  background:#19a974;
-}
-
-button.dark{
-  background:#333;
-}
-
-button.danger{
-  background:#d60035;
-}
-
-button.blue{
-  background:#1976d2;
-}
-
-.hidden{
-  display:none!important;
-}
-
-.center{
-  text-align:center;
-}
-
-.muted{
-  color:#777;
-}
-
-.small{
-  font-size:13px;
-}
-
-.tabs{
-  display:flex;
-  gap:7px;
-  overflow-x:auto;
-  padding:12px 0;
-  position:sticky;
-  top:59px;
-  background:#fff5f8;
-  z-index:50;
-}
-
-.tabs button{
-  white-space:nowrap;
-  padding:10px 13px;
-}
-
-.badge{
-  display:inline-flex;
-  min-width:20px;
-  height:20px;
-  align-items:center;
-  justify-content:center;
-  background:white;
-  color:#e60046;
-  border-radius:20px;
-  font-size:11px;
-  margin-left:4px;
-}
-
-.profile-card{
-  display:flex;
-  gap:15px;
-  align-items:flex-start;
-}
-
-.profile-photo{
-  width:105px;
-  height:105px;
-  border-radius:50%;
-  object-fit:cover;
-  background:#eee;
-  flex-shrink:0;
-}
-
-.profile-info{
-  flex:1;
-}
-
-.profile-name{
-  font-size:20px;
-  font-weight:bold;
-}
-
-.actions{
-  display:flex;
-  gap:8px;
-  flex-wrap:wrap;
-  margin-top:14px;
-}
-
-.actions button{
-  flex:1;
-  min-width:110px;
-}
-
-.distance{
-  display:inline-block;
-  background:#fff0f4;
-  color:#e60046;
-  padding:5px 9px;
-  border-radius:20px;
-  font-size:12px;
-  margin-top:5px;
-}
-
-.nearby-box{
-  background:linear-gradient(135deg,#fff,#fff0f4);
-  border:1px solid #ffd0dc;
-}
-
-.location-status{
-  padding:12px;
-  border-radius:12px;
-  background:#f5f5f5;
-  margin:10px 0;
-}
-
-.chat-list{
-  display:flex;
-  flex-direction:column;
-}
-
-.chat-item{
-  display:flex;
-  align-items:center;
-  gap:12px;
-  padding:13px 5px;
-  border-bottom:1px solid #eee;
-  cursor:pointer;
-}
-
-.chat-item:last-child{
-  border-bottom:0;
-}
-
-.chat-avatar{
-  width:55px;
-  height:55px;
-  border-radius:50%;
-  object-fit:cover;
-  background:#eee;
-}
-
-.chat-info{
-  flex:1;
-  min-width:0;
-}
-
-.chat-name{
-  font-weight:bold;
-  margin-bottom:5px;
-}
-
-.last-message{
-  color:#777;
-  white-space:nowrap;
-  overflow:hidden;
-  text-overflow:ellipsis;
-}
-
-.chat-time{
-  font-size:11px;
-  color:#999;
-}
-
-.chat-window{
-  background:white;
-  border-radius:18px;
-  overflow:hidden;
-  box-shadow:0 4px 15px #00000012;
-}
-
-.chat-header{
-  display:flex;
-  align-items:center;
-  gap:10px;
-  padding:13px;
-  background:#ff174f;
-  color:white;
-}
-
-.chat-header img{
-  width:45px;
-  height:45px;
-  border-radius:50%;
-  object-fit:cover;
-  background:white;
-}
-
-.chat-header-info{
-  flex:1;
-}
-
-.chat-messages{
-  height:55vh;
-  min-height:300px;
-  max-height:600px;
-  overflow-y:auto;
-  padding:15px;
-  background:#fff8fa;
-}
-
-.message-row{
-  display:flex;
-  margin-bottom:9px;
-}
-
-.message-row.mine{
-  justify-content:flex-end;
-}
-
-.message{
-  max-width:78%;
-  padding:10px 13px;
-  border-radius:15px;
-  background:#eee;
-  word-wrap:break-word;
-}
-
-.message-row.mine .message{
-  background:#ff174f;
-  color:white;
-  border-bottom-right-radius:4px;
-}
-
-.message-row:not(.mine) .message{
-  border-bottom-left-radius:4px;
-}
-
-.message-time{
-  display:block;
-  font-size:10px;
-  opacity:.65;
-  margin-top:4px;
-}
-
-.chat-input{
-  display:flex;
-  gap:8px;
-  padding:10px;
-  background:white;
-  border-top:1px solid #eee;
-}
-
-.chat-input input{
-  margin:0;
-  flex:1;
-}
-
-.chat-input button{
-  width:75px;
-}
-
-.notification{
-  padding:13px;
-  border-bottom:1px solid #eee;
-}
-
-.notification.unread{
-  background:#fff0f4;
-}
-
-.notification-title{
-  font-weight:bold;
-}
-
-.notification-time{
-  color:#999;
-  font-size:11px;
-}
-
-.my-profile{
-  text-align:center;
-}
-
-.my-profile img{
-  width:140px;
-  height:140px;
-  border-radius:50%;
-  object-fit:cover;
-  background:#eee;
-}
-
-.empty{
-  text-align:center;
-  padding:35px 15px;
-  color:#777;
-}
-
-.loading{
-  text-align:center;
-  padding:30px;
-  color:#777;
-}
-
-.toast{
-  position:fixed;
-  bottom:20px;
-  left:50%;
-  transform:translateX(-50%);
-  background:#222;
-  color:white;
-  padding:12px 18px;
-  border-radius:12px;
-  z-index:9999;
-  display:none;
-  max-width:90%;
-  text-align:center;
-}
-
-.nearby-icon{
-  font-size:45px;
-  text-align:center;
-  margin-bottom:10px;
-}
-
-@media(max-width:600px){
-
-  .container{
-    padding:10px;
-  }
-
-  .profile-card{
-    flex-direction:column;
-    align-items:center;
-    text-align:center;
-  }
-
-  .profile-info{
-    width:100%;
-  }
-
-  .profile-photo{
-    width:130px;
-    height:130px;
-  }
-
-  .actions button{
-    min-width:100px;
-  }
-
-  .logo{
-    font-size:17px;
-  }
-
-  .chat-messages{
-    min-height:300px;
+// ============================================================
+// TANZANIA DATING - SERVER.JS
+// Node.js + Express + PostgreSQL
+// ============================================================
+
+const express = require("express");
+const path = require("path");
+const bcrypt = require("bcryptjs");
+const jwt = require("jsonwebtoken");
+const { Pool } = require("pg");
+
+const app = express();
+
+const PORT = process.env.PORT || 10000;
+
+// ============================================================
+// ENVIRONMENT
+// ============================================================
+
+const DATABASE_URL = process.env.DATABASE_URL;
+
+const JWT_SECRET =
+  process.env.JWT_SECRET || "tanzania-dating-secret-change-this";
+
+// ============================================================
+// DATABASE
+// ============================================================
+
+if (!DATABASE_URL) {
+  console.error("ERROR: DATABASE_URL haijawekwa kwenye Environment.");
+  process.exit(1);
+}
+
+const pool = new Pool({
+  connectionString: DATABASE_URL,
+  ssl: {
+    rejectUnauthorized: false,
+  },
+});
+
+// Test database connection
+pool
+  .connect()
+  .then((client) => {
+    console.log("PostgreSQL connected successfully");
+    client.release();
+  })
+  .catch((error) => {
+    console.error("PostgreSQL connection error:", error.message);
+  });
+
+// ============================================================
+// EXPRESS SETTINGS
+// ============================================================
+
+app.use(express.json({ limit: "10mb" }));
+app.use(express.urlencoded({ extended: true, limit: "10mb" }));
+
+// Serve frontend
+app.use(express.static(path.join(__dirname, "public")));
+
+// ============================================================
+// DATABASE TABLES
+// ============================================================
+
+async function initializeDatabase() {
+  try {
+    await pool.query(`
+      CREATE TABLE IF NOT EXISTS users (
+        id SERIAL PRIMARY KEY,
+        name VARCHAR(100) NOT NULL,
+        email VARCHAR(255) UNIQUE NOT NULL,
+        password TEXT NOT NULL,
+        age INTEGER,
+        gender VARCHAR(30),
+        city VARCHAR(100),
+        bio TEXT,
+        photo TEXT,
+        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+      );
+    `);
+
+    console.log("Users table ready");
+
+    await pool.query(`
+      CREATE TABLE IF NOT EXISTS messages (
+        id SERIAL PRIMARY KEY,
+        sender_id INTEGER NOT NULL,
+        receiver_id INTEGER NOT NULL,
+        message TEXT NOT NULL,
+        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+      );
+    `);
+
+    console.log("Messages table ready");
+
+    await pool.query(`
+      CREATE TABLE IF NOT EXISTS likes (
+        id SERIAL PRIMARY KEY,
+        user_id INTEGER NOT NULL,
+        liked_user_id INTEGER NOT NULL,
+        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+        UNIQUE(user_id, liked_user_id)
+      );
+    `);
+
+    console.log("Likes table ready");
+
+  } catch (error) {
+    console.error("Database initialization error:");
+    console.error(error);
   }
 }
 
-</style>
-</head>
+// ============================================================
+// HEALTH CHECK
+// ============================================================
 
-<body>
+app.get("/", (req, res) => {
+  res.sendFile(path.join(__dirname, "public", "index.html"));
+});
 
+app.get("/api", (req, res) => {
+  res.json({
+    success: true,
+    message: "Tanzania Dating API is running",
+    status: "online",
+  });
+});
 
-<!-- =====================================================
-     HEADER
-====================================================== -->
+app.get("/health", async (req, res) => {
+  try {
+    await pool.query("SELECT 1");
 
-<header id="mainHeader" class="hidden">
+    res.json({
+      success: true,
+      database: "connected",
+      server: "online",
+    });
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      database: "disconnected",
+      error: error.message,
+    });
+  }
+});
 
-  <div class="header-row">
+// ============================================================
+// REGISTER
+// ============================================================
 
-    <div class="logo">
-      Tanzania Dating ❤️
-    </div>
+app.post("/api/register", async (req, res) => {
+  try {
+    const {
+      name,
+      email,
+      password,
+      age,
+      gender,
+      city,
+      bio,
+      photo,
+    } = req.body;
 
-    <div>
+    // Validation
+    if (!name || !email || !password) {
+      return res.status(400).json({
+        success: false,
+        message: "Jina, email na password vinahitajika.",
+      });
+    }
 
-      <button onclick="showPage('notifications')">
-        🔔
-        <span id="notifyBadge" class="badge hidden">0</span>
-      </button>
+    if (password.length < 6) {
+      return res.status(400).json({
+        success: false,
+        message: "Password lazima iwe na angalau characters 6.",
+      });
+    }
 
-      <button
-        class="secondary"
-        onclick="logout()">
-        Toka
-      </button>
+    const cleanEmail = email.trim().toLowerCase();
 
-    </
+    // Check existing email
+    const existingUser = await pool.query(
+      "SELECT id FROM users WHERE email = $1",
+      [cleanEmail]
+    );
+
+    if (existingUser.rows.length > 0) {
+      return res.status(409).json({
+        success: false,
+        message: "Email hii tayari imesajiliwa.",
+      });
+    }
+
+    // Hash password
+    const hashedPassword = await bcrypt.hash(password, 12);
+
+    // Insert user
+    const result = await pool.query(
+      `
+      INSERT INTO users
+      (name, email, password, age, gender, city, bio, photo)
+      VALUES ($1,$2,$3,$4,$5,$6,$7,$8)
+      RETURNING id, name, email, age, gender, city, bio, photo, created_at
+      `,
+      [
+        name.trim(),
+        cleanEmail,
+        hashedPassword,
+        age || null,
+        gender || null,
+        city || null,
+        bio || null,
+        photo || null,
+      ]
+    );
+
+    const user = result.rows[0];
+
+    // Create token
+    const token = jwt.sign(
+      {
+        id: user.id,
+        email: user.email,
+      },
+      JWT_SECRET,
+      {
+        expiresIn: "30d",
+      }
+    );
+
+    res.status(201).json({
+      success: true,
+      message: "Usajili umefanikiwa.",
+      token,
+      user,
+    });
+
+  } catch (error) {
+    console.error("REGISTER ERROR:", error);
+
+    res.status(500).json({
+      success: false,
+      message: "Imeshindikana kusajili account.",
+      error: error.message,
+    });
+  }
+});
+
+// ============================================================
+// LOGIN
+// ============================================================
+
+app.post("/api/login", async (req, res) => {
+  try {
+    const { email, password } = req.body;
+
+    if (!email || !password) {
+      return res.status(400).json({
+        success: false,
+        message: "Email na password vinahitajika.",
+      });
+    }
+
+    const cleanEmail = email.trim().toLowerCase();
+
+    const result = await pool.query(
+      "SELECT * FROM users WHERE email = $1",
+      [cleanEmail]
+    );
+
+    if (result.rows.length === 0) {
+      return res.status(401).json({
+        success: false,
+        message: "Email au password sio sahihi.",
+      });
+    }
+
+    const user = result.rows[0];
+
+    // Compare password
+    const passwordCorrect = await bcrypt.compare(
+      password,
+      user.password
+    );
+
+    if (!passwordCorrect) {
+      return res.status(401).json({
+        success: false,
+        message: "Email au password sio sahihi.",
+      });
+    }
+
+    // Token
+    const token = jwt.sign(
+      {
+        id: user.id,
+        email: user.email,
+      },
+      JWT_SECRET,
+      {
+        expiresIn: "30d",
+      }
+    );
+
+    // Never send password to frontend
+    delete user.password;
+
+    res.json({
+      success: true,
+      message: "Login imefanikiwa.",
+      token,
+      user,
+    });
+
+  } catch (error) {
+    console.error("LOGIN ERROR:", error);
+
+    res.status(500).json({
+      success: false,
+      message: "Tatizo limetokea wakati wa login.",
+      error: error.message,
+    });
+  }
+});
+
+// ============================================================
+// AUTH MIDDLEWARE
+// ============================================================
+
+function authenticateToken(req, res, next) {
+  const authHeader = req.headers.authorization;
+
+  if (!authHeader) {
+    return res.status(401).json({
+      success: false,
+      message: "Token haipo.",
+    });
+  }
+
+  const parts = authHeader.split(" ");
+
+  if (parts.length !== 2 || parts[0] !== "Bearer") {
+    return res.status(401).json({
+      success: false,
+      message: "Authorization format sio sahihi.",
+    });
+  }
+
+  const token = parts[1];
+
+  try {
+    const decoded = jwt.verify(token, JWT_SECRET);
+
+    req.user = decoded;
+
+    next();
+
+  } catch (error) {
+    return res.status(401).json({
+      success: false,
+      message: "Token ime-expire au sio sahihi.",
+    });
+  }
+}
+
+// ============================================================
+// CURRENT USER
+// ============================================================
+
+app.get("/api/me", authenticateToken, async (req, res) => {
+  try {
+    const result = await pool.query(
+      `
+      SELECT id, name, email, age, gender, city, bio, photo, created_at
+      FROM users
+      WHERE id = $1
+      `,
+      [req.user.id]
+    );
+
+    if (result.rows.length === 0) {
+      return res.status(404).json({
+        success: false,
+        message: "User hakupatikana.",
+      });
+    }
+
+    res.json({
+      success: true,
+      user: result.rows[0],
+    });
+
+  } catch (error) {
+    console.error("ME ERROR:", error);
+
+    res.status(500).json({
+      success: false,
+      message: "Server error.",
+    });
+  }
+});
+
+// ============================================================
+// GET USERS / DISCOVER
+// ============================================================
+
+app.get("/api/users", authenticateToken, async (req, res) => {
+  try {
+    const result = await pool.query(
+      `
+      SELECT
+        id,
+        name,
+        age,
+        gender,
+        city,
+        bio,
+        photo,
+        created_at
+      FROM users
+      WHERE id != $1
+      ORDER BY created_at DESC
+      LIMIT 100
+      `,
+      [req.user.id]
+    );
+
+    res.json({
+      success: true,
+      users: result.rows,
+    });
+
+  } catch (error) {
+    console.error("USERS ERROR:", error);
+
+    res.status(500).json({
+      success: false,
+      message: "Imeshindikana kupata users.",
+    });
+  }
+});
+
+// ============================================================
+// GET USER PROFILE
+// ============================================================
+
+app.get("/api/users/:id", authenticateToken, async (req, res) => {
+  try {
+    const userId = parseInt(req.params.id);
+
+    if (isNaN(userId)) {
+      return res.status(400).json({
+        success: false,
+        message: "User ID sio sahihi.",
+      });
+    }
+
+    const result = await pool.query(
+      `
+      SELECT
+        id,
+        name,
+        email,
+        age,
+        gender,
+        city,
+        bio,
+        photo,
+        created_at
+      FROM users
+      WHERE id = $1
+      `,
+      [userId]
+    );
+
+    if (result.rows.length === 0) {
+      return res.status(404).json({
+        success: false,
+        message: "User hakupatikana.",
+      });
+    }
+
+    res.json({
+      success: true,
+      user: result.rows[0],
+    });
+
+  } catch (error) {
+    console.error("PROFILE ERROR:", error);
+
+    res.status(500).json({
+      success: false,
+      message: "Server error.",
+    });
+  }
+});
+
+// ============================================================
+// UPDATE PROFILE
+// ============================================================
+
+app.put("/api/profile", authenticateToken, async (req, res) => {
+  try {
+    const {
+      name,
+      age,
+      gender,
+      city,
+      bio,
+      photo,
+    } = req.body;
+
+    const result = await pool.query(
+      `
+      UPDATE users
+      SET
+        name = COALESCE($1, name),
+        age = COALESCE($2, age),
+        gender = COALESCE($3, gender),
+        city = COALESCE($4, city),
+        bio = COALESCE($5, bio),
+        photo = COALESCE($6, photo)
+      WHERE id = $7
+      RETURNING id, name, email, age, gender, city, bio, photo
+      `,
+      [
+        name || null,
+        age || null,
+        gender || null,
+        city || null,
+        bio || null,
+        photo || null,
+        req.user.id,
+      ]
+    );
+
+    if (result.rows.length === 0) {
+      return res.status(404).json({
+        success: false,
+        message: "User hakupatikana.",
+      });
+    }
+
+    res.json({
+      success: true,
+      message: "Profile imebadilishwa.",
+      user: result.rows[0],
+    });
+
+  } catch (error) {
+    console.error("UPDATE PROFILE ERROR:", error);
+
+    res.status(500).json({
+      success: false,
+      message: "Imeshindikana kubadilisha profile.",
+    });
+  }
+});
+
+// ============================================================
+// LIKE USER
+// ============================================================
+
+app.post("/api/like", authenticateToken, async (req, res) => {
+  try {
+    const likedUserId = parseInt(req.body.userId);
+
+    if (isNaN(likedUserId)) {
+      return res.status(400).json({
+        success: false,
+        message: "User ID sio sahihi.",
+      });
+    }
+
+    if (likedUserId === req.user.id) {
+      return res.status(400).json({
+        success: false,
+        message: "Huwezi kujilike mwenyewe.",
+      });
+    }
+
+    await pool.query(
+      `
+      INSERT INTO likes (user_id, liked_user_id)
+      VALUES ($1, $2)
+      ON CONFLICT (user_id, liked_user_id)
+      DO NOTHING
+      `,
+      [req.user.id, likedUserId]
+    );
+
+    res.json({
+      success: true,
+      message: "Like imehifadhiwa.",
+    });
+
+  } catch (error) {
+    console.error("LIKE ERROR:", error);
+
+    res.status(500).json({
+      success: false,
+      message: "Imeshindikana kuhifadhi like.",
+    });
+  }
+});
+
+// ============================================================
+// SEND MESSAGE
+// ============================================================
+
+app.post("/api/messages", authenticateToken, async (req, res) => {
+  try {
+    const {
+      receiverId,
+      message,
+    } = req.body;
+
+    if (!receiverId || !message) {
+      return res.status(400).json({
+        success: false,
+        message: "Receiver na message vinahitajika.",
+      });
+    }
+
+    const receiver = await pool.query(
+      "SELECT id FROM users WHERE id = $1",
+      [receiverId]
+    );
+
+    if (receiver.rows.length === 0) {
+      return res.status(404).json({
+        success: false,
+        message: "Receiver hakupatikana.",
+      });
+    }
+
+    const result = await pool.query(
+      `
+      INSERT INTO messages
+      (sender_id, receiver_id, message)
+      VALUES ($1,$2,$3)
+      RETURNING id, sender_id, receiver_id, message, created_at
+      `,
+      [
+        req.user.id,
+        receiverId,
+        message.trim(),
+      ]
+    );
+
+    res.status(201).json({
+      success: true,
+      message: "Ujumbe umetumwa.",
+      data: result.rows[0],
+    });
+
+  } catch (error) {
+    console.error("MESSAGE ERROR:", error);
+
+    res.status(500).json({
+      success: false,
+      message: "Imeshindikana kutuma ujumbe.",
+    });
+  }
+});
+
+// ============================================================
+// GET CHAT
+// ============================================================
+
+app.get(
+ 
