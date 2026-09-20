@@ -1,2527 +1,2172 @@
-<!doctype html>
-<html lang="sw">
-<head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Tanzania Dating ❤️</title>
-
-<style>
-*{box-sizing:border-box}
-
-body{
-  margin:0;
-  font-family:Arial,sans-serif;
-  background:#fff5f8;
-  color:#24131b;
-}
-
-header{
-  background:linear-gradient(135deg,#ff174f,#e60046);
-  color:white;
-  padding:16px;
-  position:sticky;
-  top:0;
-  z-index:100;
-  box-shadow:0 2px 10px #0002;
-}
-
-.header-row{
-  max-width:900px;
-  margin:auto;
-  display:flex;
-  align-items:center;
-  justify-content:space-between;
-}
-
-.logo{
-  font-size:21px;
-  font-weight:bold;
-}
-
-.container{
-  max-width:900px;
-  margin:auto;
-  padding:18px;
-}
-
-.card{
-  background:white;
-  border-radius:18px;
-  padding:18px;
-  margin-bottom:16px;
-  box-shadow:0 4px 15px #00000012;
-}
-
-input,select,textarea{
-  width:100%;
-  padding:13px;
-  border:1px solid #ddd;
-  border-radius:12px;
-  margin-top:7px;
-  margin-bottom:12px;
-  font-size:15px;
-  outline:none;
-}
-
-input:focus,
-select:focus,
-textarea:focus{
-  border-color:#ff174f;
-}
-
-textarea{
-  min-height:100px;
-  resize:vertical;
-}
-
-button{
-  border:0;
-  border-radius:12px;
-  padding:12px 16px;
-  background:#ff174f;
-  color:white;
-  font-size:15px;
-  font-weight:bold;
-  cursor:pointer;
-}
-
-button:hover{
-  opacity:.92;
-}
-
-button.secondary{
-  background:#eee;
-  color:#333;
-}
-
-button.green{
-  background:#19a974;
-}
-
-button.dark{
-  background:#333;
-}
-
-button.danger{
-  background:#d60035;
-}
-
-.hidden{
-  display:none!important;
-}
-
-.center{
-  text-align:center;
-}
-
-.muted{
-  color:#777;
-}
-
-.small{
-  font-size:13px;
-}
-
-.tabs{
-  display:flex;
-  gap:8px;
-  overflow-x:auto;
-  padding:12px 0;
-  position:sticky;
-  top:65px;
-  background:#fff5f8;
-  z-index:50;
-}
-
-.tabs button{
-  white-space:nowrap;
-  padding:10px 14px;
-}
-
-.badge{
-  display:inline-flex;
-  min-width:20px;
-  height:20px;
-  align-items:center;
-  justify-content:center;
-  background:white;
-  color:#e60046;
-  border-radius:20px;
-  font-size:11px;
-  margin-left:5px;
-}
-
-/* AUTH */
-
-.auth-box{
-  max-width:430px;
-  margin:40px auto;
-}
-
-.auth-title{
-  text-align:center;
-  font-size:30px;
-  margin-bottom:5px;
-}
-
-.auth-sub{
-  text-align:center;
-  color:#777;
-  margin-bottom:25px;
-}
-
-/* DISCOVER */
-
-.profile-card{
-  display:flex;
-  gap:15px;
-  align-items:flex-start;
-}
-
-.profile-photo{
-  width:105px;
-  height:105px;
-  border-radius:50%;
-  object-fit:cover;
-  background:#eee;
-  flex-shrink:0;
-}
-
-.profile-info{
-  flex:1;
-}
-
-.profile-name{
-  font-size:20px;
-  font-weight:bold;
-}
-
-.actions{
-  display:flex;
-  gap:8px;
-  flex-wrap:wrap;
-  margin-top:14px;
-}
-
-.actions button{
-  flex:1;
-  min-width:130px;
-}
-
-/* CHATS */
-
-.chat-list{
-  display:flex;
-  flex-direction:column;
-}
-
-.chat-item{
-  display:flex;
-  align-items:center;
-  gap:12px;
-  padding:13px 5px;
-  border-bottom:1px solid #eee;
-  cursor:pointer;
-}
-
-.chat-item:last-child{
-  border-bottom:0;
-}
-
-.chat-avatar{
-  width:55px;
-  height:55px;
-  border-radius:50%;
-  object-fit:cover;
-  background:#eee;
-}
-
-.chat-info{
-  flex:1;
-  min-width:0;
-}
-
-.chat-name{
-  font-weight:bold;
-  margin-bottom:5px;
-}
-
-.last-message{
-  color:#777;
-  white-space:nowrap;
-  overflow:hidden;
-  text-overflow:ellipsis;
-}
-
-.chat-time{
-  font-size:11px;
-  color:#999;
-}
-
-/* CHAT */
-
-.chat-window{
-  background:white;
-  border-radius:18px;
-  overflow:hidden;
-  box-shadow:0 4px 15px #00000012;
-}
-
-.chat-header{
-  display:flex;
-  align-items:center;
-  gap:10px;
-  padding:13px;
-  background:#ff174f;
-  color:white;
-}
-
-.chat-header img{
-  width:45px;
-  height:45px;
-  border-radius:50%;
-  object-fit:cover;
-  background:white;
-}
-
-.chat-header-info{
-  flex:1;
-}
-
-.chat-messages{
-  height:55vh;
-  min-height:350px;
-  max-height:600px;
-  overflow-y:auto;
-  padding:15px;
-  background:#fff8fa;
-}
-
-.message-row{
-  display:flex;
-  margin-bottom:9px;
-}
-
-.message-row.mine{
-  justify-content:flex-end;
-}
-
-.message{
-  max-width:78%;
-  padding:10px 13px;
-  border-radius:15px;
-  background:#eee;
-  word-wrap:break-word;
-}
-
-.message-row.mine .message{
-  background:#ff174f;
-  color:white;
-  border-bottom-right-radius:4px;
-}
-
-.message-row:not(.mine) .message{
-  border-bottom-left-radius:4px;
-}
-
-.message-time{
-  display:block;
-  font-size:10px;
-  opacity:.65;
-  margin-top:4px;
-}
-
-.chat-input{
-  display:flex;
-  gap:8px;
-  padding:10px;
-  background:white;
-  border-top:1px solid #eee;
-}
-
-.chat-input input{
-  margin:0;
-  flex:1;
-}
-
-.chat-input button{
-  width:75px;
-}
-
-/* NOTIFICATIONS */
-
-.notification{
-  padding:13px;
-  border-bottom:1px solid #eee;
-}
-
-.notification.unread{
-  background:#fff0f4;
-}
-
-.notification-title{
-  font-weight:bold;
-}
-
-.notification-time{
-  color:#999;
-  font-size:11px;
-}
-
-/* PROFILE */
-
-.my-profile{
-  text-align:center;
-}
-
-.my-profile img{
-  width:140px;
-  height:140px;
-  border-radius:50%;
-  object-fit:cover;
-  background:#eee;
-}
-
-/* EMPTY */
-
-.empty{
-  text-align:center;
-  padding:35px 15px;
-  color:#777;
-}
-
-.loading{
-  text-align:center;
-  padding:30px;
-}
-
-.toast{
-  position:fixed;
-  bottom:20px;
-  left:50%;
-  transform:translateX(-50%);
-  background:#222;
-  color:white;
-  padding:12px 18px;
-  border-radius:12px;
-  z-index:9999;
-  display:none;
-  max-width:90%;
-  text-align:center;
-}
-
-@media(max-width:600px){
-
-  .container{
-    padding:12px;
-  }
-
-  .profile-card{
-    flex-direction:column;
-    align-items:center;
-    text-align:center;
-  }
-
-  .profile-info{
-    width:100%;
-  }
-
-  .profile-photo{
-    width:130px;
-    height:130px;
-  }
-
-  .tabs{
-    top:59px;
-  }
-
-  .auth-box{
-    margin:20px auto;
-  }
-
-  .actions button{
-    min-width:110px;
-  }
-
-  .chat-messages{
-    min-height:300px;
-  }
-
-  .logo{
-    font-size:18px;
-  }
-}
-</style>
-</head>
-
-<body>
-
-<header id="mainHeader" class="hidden">
-
-  <div class="header-row">
-
-    <div class="logo">
-      Tanzania Dating ❤️
-    </div>
-
-    <div>
-
-      <button onclick="showPage('notifications')">
-        🔔
-        <span id="notifyBadge" class="badge hidden">0</span>
-      </button>
-
-      <button
-        class="secondary"
-        onclick="logout()">
-        Toka
-      </button>
-
-    </div>
-
-  </div>
-
-</header>
-
-
-<main class="container">
-
-<!-- ================= AUTH ================= -->
-
-<section id="authPage">
-
-  <div class="auth-box">
-
-    <div class="card">
-
-      <h1 class="auth-title">
-        Tanzania Dating ❤️
-      </h1>
-
-      <p class="auth-sub">
-        Kutana na watu wapya Tanzania.
-      </p>
-
-
-      <!-- LOGIN -->
-
-      <div id="loginBox">
-
-        <h2>Ingia</h2>
-
-        <form id="loginForm">
-
-          <label>Email</label>
-
-          <input
-            id="loginEmail"
-            type="email"
-            required
-          >
-
-          <label>Password</label>
-
-          <input
-            id="loginPassword"
-            type="password"
-            required
-          >
-
-          <button
-            type="submit"
-            style="width:100%">
-            🔐 Ingia
-          </button>
-
-        </form>
-
-        <p class="center muted">
-          Huna account?
-        </p>
-
-        <button
-          class="secondary"
-          style="width:100%"
-          onclick="toggleAuth(false)">
-          📝 Jisajili
-        </button>
-
-      </div>
-
-
-      <!-- REGISTER -->
-
-      <div id="registerBox" class="hidden">
-
-        <h2>Jisajili</h2>
-
-        <form id="registerForm">
-
-          <label>Jina</label>
-
-          <input
-            id="regName"
-            required
-          >
-
-
-          <label>Email</label>
-
-          <input
-            id="regEmail"
-            type="email"
-            required
-          >
-
-
-          <label>Password</label>
-
-          <input
-            id="regPassword"
-            type="password"
-            minlength="6"
-            required
-          >
-
-
-          <label>Umri</label>
-
-          <input
-            id="regAge"
-            type="number"
-            min="18"
-            max="100"
-            required
-          >
-
-
-          <label>Jinsia</label>
-
-          <select
-            id="regGender"
-            required>
-
-            <option value="">
-              Chagua
-            </option>
-
-            <option value="Mwanaume">
-              Mwanaume
-            </option>
-
-            <option value="Mwanamke">
-              Mwanamke
-            </option>
-
-            <option value="Nyingine">
-              Nyingine
-            </option>
-
-          </select>
-
-
-          <label>Mji</label>
-
-          <input
-            id="regCity"
-            placeholder="Mfano: Dar es Salaam"
-            required
-          >
-
-
-          <label>Bio</label>
-
-          <textarea
-            id="regBio"
-            maxlength="500"
-            placeholder="Jieleze kidogo...">
-          </textarea>
-
-
-          <label>
-            Link ya picha (optional)
-          </label>
-
-          <input
-            id="regPhoto"
-            type="url"
-            placeholder="https://..."
-          >
-
-
-          <button
-            type="submit"
-            style="width:100%">
-            ❤️ Fungua Account
-          </button>
-
-        </form>
-
-
-        <p class="center muted">
-          Tayari una account?
-        </p>
-
-        <button
-          class="secondary"
-          style="width:100%"
-          onclick="toggleAuth(true)">
-          🔐 Ingia
-        </button>
-
-      </div>
-
-    </div>
-
-  </div>
-
-</section>
-
-
-<!-- ================= APP ================= -->
-
-<section
-  id="appPage"
-  class="hidden">
-
-  <div class="tabs">
-
-    <button onclick="showPage('discover')">
-      ❤️ Tafuta
-    </button>
-
-    <button onclick="showPage('matches')">
-      💞 Matches
-    </button>
-
-    <button onclick="showPage('chats')">
-      💬 Chats
-    </button>
-
-    <button onclick="showPage('notifications')">
-      🔔 Arifa
-
-      <span
-        id="tabBadge"
-        class="badge hidden">
-        0
-      </span>
-
-    </button>
-
-    <button onclick="showPage('profile')">
-      👤 Profile
-    </button>
-
-  </div>
-
-
-  <!-- DISCOVER -->
-
-  <section
-    id="discoverPage"
-    class="page">
-
-    <div class="card">
-
-      <h2>
-        Tafuta watu ❤️
-      </h2>
-
-      <p class="muted small">
-        Watu ambao bado hujawapenda wataonekana hapa.
-      </p>
-
-      <button onclick="loadDiscover()">
-        🔄 Refresh
-      </button>
-
-    </div>
-
-    <div id="discoverList">
-
-      <div class="loading">
-        Inapakia...
-      </div>
-
-    </div>
-
-  </section>
-
-
-  <!-- MATCHES -->
-
-  <section
-    id="matchesPage"
-    class="page hidden">
-
-    <div class="card">
-
-      <h2>
-        💞 Matches zako
-      </h2>
-
-    </div>
-
-    <div id="matchesList">
-
-      <div class="loading">
-        Inapakia...
-      </div>
-
-    </div>
-
-  </section>
-
-
-  <!-- CHATS -->
-
-  <section
-    id="chatsPage"
-    class="page hidden">
-
-    <div id="chatListView">
-
-      <div class="card">
-
-        <h2>
-          💬 Chats
-        </h2>
-
-      </div>
-
-      <div class="card">
-
-        <div
-          id="chatsList"
-          class="chat-list">
-
-          <div class="loading">
-            Inapakia...
-          </div>
-
-        </div>
-
-      </div>
-
-    </div>
-
-
-    <div
-      id="chatView"
-      class="hidden">
-
-      <div class="chat-window">
-
-        <div class="chat-header">
-
-          <button
-            onclick="closeChat()"
-            style="background:#ffffff22">
-            ←
-          </button>
-
-          <img
-            id="chatPhoto"
-            src=""
-            onerror="this.src=avatarFallback()"
-          >
-
-          <div class="chat-header-info">
-
-            <strong id="chatName">
-              Chat
-            </strong>
-
-            <div class="small">
-              💬 Ujumbe
-            </div>
-
-          </div>
-
-        </div>
-
-
-        <div
-          id="chatMessages"
-          class="chat-messages">
-        </div>
-
-
-        <form
-          id="messageForm"
-          class="chat-input">
-
-          <input
-            id="messageInput"
-            placeholder="Andika ujumbe..."
-            maxlength="5000"
-            autocomplete="off"
-          >
-
-          <button type="submit">
-            Tuma
-          </button>
-
-        </form>
-
-      </div>
-
-    </div>
-
-  </section>
-
-
-  <!-- NOTIFICATIONS -->
-
-  <section
-    id="notificationsPage"
-    class="page hidden">
-
-    <div class="card">
-
-      <h2>
-        🔔 Notifications
-      </h2>
-
-      <button
-        class="secondary"
-        onclick="markAllRead()">
-        ✓ Soma zote
-      </button>
-
-    </div>
-
-    <div
-      class="card"
-      id="notificationsList">
-
-      <div class="loading">
-        Inapakia...
-      </div>
-
-    </div>
-
-  </section>
-
-
-  <!-- PROFILE -->
-
-  <section
-    id="profilePage"
-    class="page hidden">
-
-    <div class="card my-profile">
-
-      <h2>
-        👤 Profile yangu
-      </h2>
-
-      <img
-        id="myPhoto"
-        src=""
-        onerror="this.src=avatarFallback()"
-      >
-
-      <h2 id="myName">
-        -
-      </h2>
-
-      <p
-        id="myBasic"
-        class="muted">
-      </p>
-
-    </div>
-
-
-    <div class="card">
-
-      <h3>
-        ✏️ Hariri profile
-      </h3>
-
-      <form id="profileForm">
-
-        <label>Jina</label>
-
-        <input
-          id="pName"
-          required
-        >
-
-
-        <label>Umri</label>
-
-        <input
-          id="pAge"
-          type="number"
-          min="18"
-          max="100"
-          required
-        >
-
-
-        <label>Jinsia</label>
-
-        <select
-          id="pGender"
-          required>
-
-          <option value="Mwanaume">
-            Mwanaume
-          </option>
-
-          <option value="Mwanamke">
-            Mwanamke
-          </option>
-
-          <option value="Nyingine">
-            Nyingine
-          </option>
-
-        </select>
-
-
-        <label>Mji</label>
-
-        <input
-          id="pCity"
-          required
-        >
-
-
-        <label>Bio</label>
-
-        <textarea
-          id="pBio"
-          maxlength="500">
-        </textarea>
-
-
-        <label>
-          Link ya picha
-        </label>
-
-        <input
-          id="pPhoto"
-          type="url"
-        >
-
-
-        <button type="submit">
-          💾 Hifadhi
-        </button>
-
-      </form>
-
-    </div>
-
-  </section>
-
-</section>
-
-</main>
-
-
-<div
-  id="toast"
-  class="toast">
-</div>
-
-
-<script>
-
-const state = {
-  user:null,
-  currentChat:null,
-  toastTimer:null
-};
-
-
-/* =========================
-   FALLBACK IMAGE
-========================= */
-
-function avatarFallback(){
-
-  return "data:image/svg+xml;charset=UTF-8," +
-    encodeURIComponent(
-      '<svg xmlns="http://www.w3.org/2000/svg" width="200" height="200">' +
-      '<rect width="100%" height="100%" fill="#eee"/>' +
-      '<text x="50%" y="54%" dominant-baseline="middle" text-anchor="middle" font-size="80">👤</text>' +
-      '</svg>'
-    );
-
-}
-
-
-/* =========================
-   SECURITY ESCAPE
-========================= */
-
-function esc(value){
-
-  return String(value ?? "")
-    .replace(/[&<>"']/g, function(m){
-
-      return {
-        "&":"&amp;",
-        "<":"&lt;",
-        ">":"&gt;",
-        '"':"&quot;",
-        "'":"&#039;"
-      }[m];
-
-    });
-
-}
-
-
-/* =========================
-   IMAGE
-========================= */
-
-function img(url){
-
-  return url
-    ? esc(url)
-    : avatarFallback();
-
-}
-
-
-/* =========================
-   TOAST
-========================= */
-
-function showToast(message){
-
-  const toast =
-    document.getElementById("toast");
-
-  toast.textContent = message;
-
-  toast.style.display = "block";
-
-  clearTimeout(state.toastTimer);
-
-  state.toastTimer =
-    setTimeout(function(){
-
-      toast.style.display = "none";
-
-    },3000);
-
-}
-
-
-/* =========================
-   API
-========================= */
-
-async function api(url, options = {}){
-
-  const opts = {
-    ...options,
-
-    headers:{
-      "Content-Type":"application/json",
-      ...(options.headers || {})
-    }
-  };
-
-  const response =
-    await fetch(url, opts);
-
-  let data = {};
-
-  try{
-
-    data = await response.json();
-
-  }catch(error){}
-
-  if(!response.ok){
-
-    throw new Error(
-      data.message ||
-      "Kuna tatizo kwenye server."
-    );
-
-  }
-
-  return data;
-
-}
-
-
-/* =========================
-   AUTH SWITCH
-========================= */
-
-function toggleAuth(login){
-
-  document
-    .getElementById("loginBox")
-    .classList
-    .toggle("hidden", !login);
-
-  document
-    .getElementById("registerBox")
-    .classList
-    .toggle("hidden", login);
-
-}
-
-
-/* =========================
-   PAGE NAVIGATION
-========================= */
-
-function showPage(page){
-
-  document
-    .querySelectorAll(".page")
-    .forEach(function(element){
-
-      element.classList.add("hidden");
-
-    });
-
-
-  const pageElement =
-    document.getElementById(
-      page + "Page"
-    );
-
-
-  if(pageElement){
-
-    pageElement.classList.remove(
-      "hidden"
-    );
-
-  }
-
-
-  if(page === "discover"){
-    loadDiscover();
-  }
-
-  if(page === "matches"){
-    loadMatches();
-  }
-
-  if(page === "chats"){
-    loadChats();
-  }
-
-  if(page === "notifications"){
-    loadNotifications();
-  }
-
-  if(page === "profile"){
-    renderProfile();
-  }
-
-}
-
-
-/* =========================
-   ENTER APP
-========================= */
-
-function enterApp(){
-
-  document
-    .getElementById("authPage")
-    .classList
-    .add("hidden");
-
-
-  document
-    .getElementById("appPage")
-    .classList
-    .remove("hidden");
-
-
-  document
-    .getElementById("mainHeader")
-    .classList
-    .remove("hidden");
-
-
-  showPage("discover");
-
-  refreshNotifications();
-
-}
-
-
-/* =========================
-   LEAVE APP
-========================= */
-
-function leaveApp(){
-
-  document
-    .getElementById("authPage")
-    .classList
-    .remove("hidden");
-
-
-  document
-    .getElementById("appPage")
-    .classList
-    .add("hidden");
-
-
-  document
-    .getElementById("mainHeader")
-    .classList
-    .add("hidden");
-
-}
-
-
-/* =========================
-   CHECK SESSION
-========================= */
-
-async function checkSession(){
-
-  try{
-
-    const data =
-      await api("/api/me");
-
-    state.user =
-      data.user;
-
-    enterApp();
-
-  }catch(error){
-
-    leaveApp();
-
-  }
-
-}
-
-
-/* =========================
-   LOGIN
-========================= */
-
-document
-  .getElementById("loginForm")
-  .addEventListener(
-    "submit",
-    async function(event){
-
-      event.preventDefault();
-
-      try{
-
-        const data =
-          await api(
-            "/api/login",
-            {
-              method:"POST",
-
-              body:JSON.stringify({
-
-                email:
-                  document
-                    .getElementById("loginEmail")
-                    .value,
-
-                password:
-                  document
-                    .getElementById("loginPassword")
-                    .value
-
-              })
-
-            }
-          );
-
-
-        state.user =
-          data.user;
-
-        showToast(
-          "Umeingia vizuri ❤️"
-        );
-
-        enterApp();
-
-        event.target.reset();
-
-      }catch(error){
-
-        showToast(
-          error.message
-        );
-
-      }
-
-    }
+const express = require("express");
+const path = require("path");
+const crypto = require("crypto");
+const { Pool } = require("pg");
+
+const app = express();
+const PORT = process.env.PORT || 10000;
+
+/* =========================================================
+   DATABASE
+========================================================= */
+
+if (!process.env.DATABASE_URL) {
+  console.error("ERROR: DATABASE_URL haijawekwa kwenye Render.");
+}
+
+const pool = new Pool({
+  connectionString: process.env.DATABASE_URL,
+  ssl: process.env.DATABASE_URL
+    ? { rejectUnauthorized: false }
+    : false
+});
+
+pool.on("error", (err) => {
+  console.error("POSTGRES ERROR:", err);
+});
+
+/* =========================================================
+   MIDDLEWARE
+========================================================= */
+
+app.use(express.json({ limit: "10mb" }));
+app.use(express.urlencoded({ extended: true, limit: "10mb" }));
+
+app.use((req, res, next) => {
+  res.setHeader("Access-Control-Allow-Origin", "*");
+  res.setHeader(
+    "Access-Control-Allow-Methods",
+    "GET,POST,PUT,PATCH,DELETE,OPTIONS"
+  );
+  res.setHeader(
+    "Access-Control-Allow-Headers",
+    "Content-Type, Authorization, X-Session-Token"
   );
 
-
-/* =========================
-   REGISTER
-========================= */
-
-document
-  .getElementById("registerForm")
-  .addEventListener(
-    "submit",
-    async function(event){
-
-      event.preventDefault();
-
-      try{
-
-        const data =
-          await api(
-            "/api/register",
-            {
-              method:"POST",
-
-              body:JSON.stringify({
-
-                name:
-                  document
-                    .getElementById("regName")
-                    .value,
-
-                email:
-                  document
-                    .getElementById("regEmail")
-                    .value,
-
-                password:
-                  document
-                    .getElementById("regPassword")
-                    .value,
-
-                age:
-                  document
-                    .getElementById("regAge")
-                    .value,
-
-                gender:
-                  document
-                    .getElementById("regGender")
-                    .value,
-
-                city:
-                  document
-                    .getElementById("regCity")
-                    .value,
-
-                bio:
-                  document
-                    .getElementById("regBio")
-                    .value,
-
-                photo:
-                  document
-                    .getElementById("regPhoto")
-                    .value
-
-              })
-
-            }
-          );
-
-
-        state.user =
-          data.user;
-
-        showToast(
-          "Account imefunguliwa ❤️"
-        );
-
-        enterApp();
-
-        event.target.reset();
-
-      }catch(error){
-
-        showToast(
-          error.message
-        );
-
-      }
-
-    }
-  );
-
-
-/* =========================
-   LOGOUT
-========================= */
-
-async function logout(){
-
-  try{
-
-    await api(
-      "/api/logout",
-      {
-        method:"POST"
-      }
-    );
-
-  }catch(error){}
-
-
-  state.user = null;
-
-  state.currentChat = null;
-
-  leaveApp();
-
-  toggleAuth(true);
-
-  showToast(
-    "Umetoka."
-  );
-
-}
-
-
-/* =========================
-   DISCOVER
-========================= */
-
-async function loadDiscover(){
-
-  const box =
-    document.getElementById(
-      "discoverList"
-    );
-
-
-  box.innerHTML =
-    '<div class="card loading">Inapakia...</div>';
-
-
-  try{
-
-    const data =
-      await api(
-        "/api/discover"
-      );
-
-
-    if(!data.users.length){
-
-      box.innerHTML =
-        '<div class="card empty">' +
-        'Hakuna profiles mpya kwa sasa. ❤️' +
-        '</div>';
-
-      return;
-
-    }
-
-
-    box.innerHTML =
-      data.users.map(function(user){
-
-        return `
-
-          <div class="card profile-card">
-
-            <img
-              class="profile-photo"
-              src="${img(user.photo)}"
-              onerror="this.src=avatarFallback()"
-            >
-
-            <div class="profile-info">
-
-              <div class="profile-name">
-                ${esc(user.name)}, ${esc(user.age)}
-              </div>
-
-              <div class="muted">
-                📍 ${esc(user.city)}
-                ·
-                ${esc(user.gender)}
-              </div>
-
-              <p>
-                ${esc(user.bio || "Hakuna bio.")}
-              </p>
-
-              <div class="actions">
-
-                <button
-                  onclick="likeUser(${user.id})">
-                  ❤️ Like
-                </button>
-
-                <button
-                  class="green"
-                  onclick='openChat(
-                    ${user.id},
-                    ${JSON.stringify(user.name)},
-                    ${JSON.stringify(user.photo || "")}
-                  )'>
-                  💬 Tuma ujumbe
-                </button>
-
-                <button
-                  class="danger"
-                  onclick="reportUser(${user.id})">
-                  🚩 Ripoti
-                </button>
-
-              </div>
-
-            </div>
-
-          </div>
-
-        `;
-
-      }).join("");
-
-
-  }catch(error){
-
-    box.innerHTML =
-      `<div class="card empty">
-        ${esc(error.message)}
-      </div>`;
-
+  if (req.method === "OPTIONS") {
+    return res.sendStatus(204);
   }
 
+  next();
+});
+
+/* =========================================================
+   SESSIONS
+========================================================= */
+
+const sessions = new Map();
+
+function createSession(userId) {
+  const token = crypto.randomBytes(32).toString("hex");
+
+  sessions.set(token, {
+    userId: Number(userId),
+    createdAt: Date.now()
+  });
+
+  return token;
 }
 
+function getToken(req) {
+  const authorization = req.headers.authorization || "";
 
-/* =========================
-   LIKE
-========================= */
-
-async function likeUser(id){
-
-  try{
-
-    const data =
-      await api(
-        "/api/like",
-        {
-          method:"POST",
-
-          body:JSON.stringify({
-            userId:id
-          })
-
-        }
-      );
-
-
-    showToast(
-      data.match
-        ? "❤️ Mme-match!"
-        : "❤️ Like imetumwa."
-    );
-
-
-    loadDiscover();
-
-    refreshNotifications();
-
-
-  }catch(error){
-
-    showToast(
-      error.message
-    );
-
+  if (authorization.startsWith("Bearer ")) {
+    return authorization.substring(7).trim();
   }
 
-}
-
-
-/* =========================
-   MATCHES
-========================= */
-
-async function loadMatches(){
-
-  const box =
-    document.getElementById(
-      "matchesList"
-    );
-
-
-  box.innerHTML =
-    '<div class="card loading">Inapakia...</div>';
-
-
-  try{
-
-    const data =
-      await api(
-        "/api/matches"
-      );
-
-
-    if(!data.users.length){
-
-      box.innerHTML =
-        '<div class="card empty">' +
-        'Bado huna match. Endelea kutafuta ❤️' +
-        '</div>';
-
-      return;
-
-    }
-
-
-    box.innerHTML =
-      data.users.map(function(user){
-
-        return `
-
-          <div class="card profile-card">
-
-            <img
-              class="profile-photo"
-              src="${img(user.photo)}"
-              onerror="this.src=avatarFallback()"
-            >
-
-            <div class="profile-info">
-
-              <div class="profile-name">
-                ${esc(user.name)}, ${esc(user.age)}
-              </div>
-
-              <div class="muted">
-                📍 ${esc(user.city)}
-              </div>
-
-              <p>
-                ${esc(user.bio || "")}
-              </p>
-
-              <div class="actions">
-
-                <button
-                  class="green"
-                  onclick='openChat(
-                    ${user.id},
-                    ${JSON.stringify(user.name)},
-                    ${JSON.stringify(user.photo || "")}
-                  )'>
-                  💬 Chat
-                </button>
-
-              </div>
-
-            </div>
-
-          </div>
-
-        `;
-
-      }).join("");
-
-
-  }catch(error){
-
-    box.innerHTML =
-      `<div class="card empty">
-        ${esc(error.message)}
-      </div>`;
-
+  if (req.headers["x-session-token"]) {
+    return String(req.headers["x-session-token"]);
   }
 
+  return null;
 }
 
-
-/* =========================
-   CHATS
-========================= */
-
-async function loadChats(){
-
-  const box =
-    document.getElementById(
-      "chatsList"
-    );
-
-
-  box.innerHTML =
-    '<div class="loading">Inapakia...</div>';
-
-
-  document
-    .getElementById("chatListView")
-    .classList
-    .remove("hidden");
-
-
-  document
-    .getElementById("chatView")
-    .classList
-    .add("hidden");
-
-
-  try{
-
-    const data =
-      await api(
-        "/api/chats"
-      );
-
-
-    if(!data.chats.length){
-
-      box.innerHTML =
-        '<div class="empty">' +
-        'Bado hakuna mazungumzo.' +
-        '</div>';
-
-      return;
-
-    }
-
-
-    box.innerHTML =
-      data.chats.map(function(chat){
-
-        return `
-
-          <div
-            class="chat-item"
-            onclick='openChat(
-              ${chat.id},
-              ${JSON.stringify(chat.name)},
-              ${JSON.stringify(chat.photo || "")}
-            )'>
-
-            <img
-              class="chat-avatar"
-              src="${img(chat.photo)}"
-              onerror="this.src=avatarFallback()"
-            >
-
-            <div class="chat-info">
-
-              <div class="chat-name">
-                ${esc(chat.name)}
-              </div>
-
-              <div class="last-message">
-                ${esc(chat.last_message)}
-              </div>
-
-            </div>
-
-            <div class="chat-time">
-              ${formatDate(chat.last_message_at)}
-            </div>
-
-          </div>
-
-        `;
-
-      }).join("");
-
-
-  }catch(error){
-
-    box.innerHTML =
-      `<div class="empty">
-        ${esc(error.message)}
-      </div>`;
-
-  }
-
-}
-
-
-/* =========================
-   OPEN CHAT
-========================= */
-
-async function openChat(
-  id,
-  name,
-  photo
-){
-
-  state.currentChat = {
-    id:id,
-    name:name,
-    photo:photo
-  };
-
-
-  showPage("chats");
-
-
-  document
-    .getElementById("chatListView")
-    .classList
-    .add("hidden");
-
-
-  document
-    .getElementById("chatView")
-    .classList
-    .remove("hidden");
-
-
-  document
-    .getElementById("chatName")
-    .textContent = name;
-
-
-  document
-    .getElementById("chatPhoto")
-    .src =
-      photo || avatarFallback();
-
-
-  await loadMessages();
-
-}
-
-
-/* =========================
-   CLOSE CHAT
-========================= */
-
-function closeChat(){
-
-  state.currentChat = null;
-
-  document
-    .getElementById("chatView")
-    .classList
-    .add("hidden");
-
-
-  document
-    .getElementById("chatListView")
-    .classList
-    .remove("hidden");
-
-
-  loadChats();
-
-}
-
-
-/* =========================
-   LOAD MESSAGES
-========================= */
-
-async function loadMessages(){
-
-  if(!state.currentChat){
-    return;
-  }
-
-
-  const box =
-    document.getElementById(
-      "chatMessages"
-    );
-
-
-  box.innerHTML =
-    '<div class="loading">Inapakia...</div>';
-
-
-  try{
-
-    const data =
-      await api(
-        "/api/messages/" +
-        state.currentChat.id
-      );
-
-
-    if(!data.messages.length){
-
-      box.innerHTML =
-        '<div class="empty">' +
-        'Anza mazungumzo hapa 👋' +
-        '</div>';
-
-      return;
-
-    }
-
-
-    box.innerHTML =
-      data.messages.map(function(message){
-
-        return `
-
-          <div
-            class="message-row ${
-              message.from_user === state.user.id
-                ? "mine"
-                : ""
-            }">
-
-            <div class="message">
-
-              ${esc(message.message)}
-
-              <span class="message-time">
-                ${formatDate(message.created_at)}
-              </span>
-
-            </div>
-
-          </div>
-
-        `;
-
-      }).join("");
-
-
-    box.scrollTop =
-      box.scrollHeight;
-
-
-  }catch(error){
-
-    box.innerHTML =
-      `<div class="empty">
-        ${esc(error.message)}
-      </div>`;
-
-  }
-
-}
-
-
-/* =========================
-   SEND MESSAGE
-========================= */
-
-document
-  .getElementById("messageForm")
-  .addEventListener(
-    "submit",
-    async function(event){
-
-      event.preventDefault();
-
-
-      if(!state.currentChat){
-        return;
-      }
-
-
-      const input =
-        document.getElementById(
-          "messageInput"
-        );
-
-
-      const message =
-        input.value.trim();
-
-
-      if(!message){
-        return;
-      }
-
-
-      try{
-
-        await api(
-          "/api/messages/" +
-          state.currentChat.id,
-          {
-            method:"POST",
-
-            body:JSON.stringify({
-              message:message
-            })
-
-          }
-        );
-
-
-        input.value = "";
-
-        await loadMessages();
-
-
-      }catch(error){
-
-        showToast(
-          error.message
-        );
-
-      }
-
-    }
-  );
-
-
-/* =========================
-   NOTIFICATIONS
-========================= */
-
-async function loadNotifications(){
-
-  const box =
-    document.getElementById(
-      "notificationsList"
-    );
-
-
-  box.innerHTML =
-    '<div class="loading">Inapakia...</div>';
-
-
-  try{
-
-    const data =
-      await api(
-        "/api/notifications"
-      );
-
-
-    if(!data.notifications.length){
-
-      box.innerHTML =
-        '<div class="empty">' +
-        'Hakuna notifications.' +
-        '</div>';
-
-      return;
-
-    }
-
-
-    box.innerHTML =
-      data.notifications.map(function(notification){
-
-        return `
-
-          <div
-            class="notification ${
-              notification.is_read
-                ? ""
-                : "unread"
-            }">
-
-            <div class="notification-title">
-              ${esc(notification.title)}
-            </div>
-
-            <div>
-              ${esc(notification.message)}
-            </div>
-
-            <div class="notification-time">
-              ${formatDate(notification.created_at)}
-            </div>
-
-          </div>
-
-        `;
-
-      }).join("");
-
-
-  }catch(error){
-
-    box.innerHTML =
-      `<div class="empty">
-        ${esc(error.message)}
-      </div>`;
-
-  }
-
-}
-
-
-/* =========================
-   REFRESH NOTIFICATIONS
-========================= */
-
-async function refreshNotifications(){
-
-  try{
-
-    const data =
-      await api(
-        "/api/notifications"
-      );
-
-
-    const count =
-      data.notifications
-        .filter(
-          function(notification){
-            return !notification.is_read;
-          }
-        )
-        .length;
-
-
-    [
-      "notifyBadge",
-      "tabBadge"
-    ].forEach(function(id){
-
-      const element =
-        document.getElementById(id);
-
-      element.textContent =
-        count;
-
-      element.classList.toggle(
-        "hidden",
-        count === 0
-      );
-
-    });
-
-
-  }catch(error){}
-
-}
-
-
-/* =========================
-   MARK ALL READ
-========================= */
-
-async function markAllRead(){
-
-  try{
-
-    await api(
-      "/api/notifications/read",
-      {
-        method:"POST",
-        body:JSON.stringify({})
-      }
-    );
-
-
-    showToast(
-      "Notifications zimesomwa."
-    );
-
-
-    loadNotifications();
-
-    refreshNotifications();
-
-
-  }catch(error){
-
-    showToast(
-      error.message
-    );
-
-  }
-
-}
-
-
-/* =========================
-   PROFILE
-========================= */
-
-function renderProfile(){
-
-  const user =
-    state.user;
-
-
-  if(!user){
-    return;
-  }
-
-
-  document
-    .getElementById("myPhoto")
-    .src =
-      user.photo ||
-      avatarFallback();
-
-
-  document
-    .getElementById("myName")
-    .textContent =
-      user.name;
-
-
-  document
-    .getElementById("myBasic")
-    .textContent =
-      `${user.age} · ${user.gender} · 📍 ${user.city}`;
-
-
-  document
-    .getElementById("pName")
-    .value =
-      user.name;
-
-
-  document
-    .getElementById("pAge")
-    .value =
-      user.age;
-
-
-  document
-    .getElementById("pGender")
-    .value =
-      user.gender;
-
-
-  document
-    .getElementById("pCity")
-    .value =
-      user.city;
-
-
-  document
-    .getElementById("pBio")
-    .value =
-      user.bio || "";
-
-
-  document
-    .getElementById("pPhoto")
-    .value =
-      user.photo || "";
-
-}
-
-
-/* =========================
-   UPDATE PROFILE
-========================= */
-
-document
-  .getElementById("profileForm")
-  .addEventListener(
-    "submit",
-    async function(event){
-
-      event.preventDefault();
-
-
-      try{
-
-        const data =
-          await api(
-            "/api/profile",
-            {
-              method:"PUT",
-
-              body:JSON.stringify({
-
-                name:
-                  document
-                    .getElementById("pName")
-                    .value,
-
-                age:
-                  document
-                    .getElementById("pAge")
-                    .value,
-
-                gender:
-                  document
-                    .getElementById("pGender")
-                    .value,
-
-                city:
-                  document
-                    .getElementById("pCity")
-                    .value,
-
-                bio:
-                  document
-                    .getElementById("pBio")
-                    .value,
-
-                photo:
-                  document
-                    .getElementById("pPhoto")
-                    .value
-
-              })
-
-            }
-          );
-
-
-        state.user =
-          data.user;
-
-
-        renderProfile();
-
-
-        showToast(
-          "Profile imehifadhiwa ❤️"
-        );
-
-
-      }catch(error){
-
-        showToast(
-          error.message
-        );
-
-      }
-
-    }
-  );
-
-
-/* =========================
-   REPORT USER
-========================= */
-
-async function reportUser(id){
-
-  const reason =
-    prompt(
-      "Sababu ya kuripoti user huyu:"
-    );
-
-
-  if(reason === null){
-    return;
-  }
-
-
-  try{
-
-    const data =
-      await api(
-        "/api/report",
-        {
-          method:"POST",
-
-          body:JSON.stringify({
-
-            userId:id,
-            reason:reason
-
-          })
-
-        }
-      );
-
-
-    showToast(
-      data.message ||
-      "Ripoti imetumwa."
-    );
-
-
-  }catch(error){
-
-    showToast(
-      error.message
-    );
-
-  }
-
-}
-
-
-/* =========================
-   DATE
-========================= */
-
-function formatDate(value){
-
-  if(!value){
-    return "";
-  }
-
-
-  const date =
-    new Date(value);
-
-
-  if(
-    Number.isNaN(
-      date.getTime()
+/* =========================================================
+   PASSWORD
+========================================================= */
+
+function hashPassword(password) {
+  const salt = crypto.randomBytes(16).toString("hex");
+  const iterations = 100000;
+
+  const hash = crypto
+    .pbkdf2Sync(
+      String(password),
+      salt,
+      iterations,
+      64,
+      "sha512"
     )
-  ){
+    .toString("hex");
 
-    return "";
+  return `pbkdf2$${iterations}$${salt}$${hash}`;
+}
+
+function verifyPassword(password, storedPassword) {
+  try {
+    const stored = String(storedPassword || "");
+
+    /* NEW FORMAT */
+
+    if (stored.startsWith("pbkdf2$")) {
+      const parts = stored.split("$");
+
+      if (parts.length !== 4) {
+        return false;
+      }
+
+      const iterations = Number(parts[1]);
+      const salt = parts[2];
+      const storedHash = parts[3];
+
+      const hash = crypto
+        .pbkdf2Sync(
+          String(password),
+          salt,
+          iterations,
+          64,
+          "sha512"
+        )
+        .toString("hex");
+
+      const a = Buffer.from(hash, "hex");
+      const b = Buffer.from(storedHash, "hex");
+
+      if (a.length !== b.length) {
+        return false;
+      }
+
+      return crypto.timingSafeEqual(a, b);
+    }
+
+    /* OLD FORMAT:
+       salt:hash
+    */
+
+    const oldParts = stored.split(":");
+
+    if (oldParts.length === 2) {
+      const salt = oldParts[0];
+      const storedHash = oldParts[1];
+
+      const hash = crypto
+        .pbkdf2Sync(
+          String(password),
+          salt,
+          100000,
+          64,
+          "sha512"
+        )
+        .toString("hex");
+
+      const a = Buffer.from(hash, "hex");
+      const b = Buffer.from(storedHash, "hex");
+
+      if (a.length !== b.length) {
+        return false;
+      }
+
+      return crypto.timingSafeEqual(a, b);
+    }
+
+    /* Legacy plaintext password */
+
+    return stored === String(password);
+
+  } catch (error) {
+    console.error("VERIFY PASSWORD ERROR:", error);
+    return false;
+  }
+}
+
+/* =========================================================
+   AUTH MIDDLEWARE
+========================================================= */
+
+async function auth(req, res, next) {
+  try {
+    const token = getToken(req);
+
+    if (!token || !sessions.has(token)) {
+      return res.status(401).json({
+        ok: false,
+        error: "Hujaingia kwenye akaunti.",
+        message: "Hujaingia kwenye akaunti."
+      });
+    }
+
+    const session = sessions.get(token);
+
+    const result = await pool.query(
+      `
+      SELECT
+        id,
+        name,
+        email,
+        age,
+        gender,
+        city,
+        bio,
+        photo,
+        latitude,
+        longitude,
+        location_updated_at,
+        created_at
+      FROM users
+      WHERE id = $1
+      `,
+      [session.userId]
+    );
+
+    if (!result.rows.length) {
+      sessions.delete(token);
+
+      return res.status(401).json({
+        ok: false,
+        error: "Akaunti haijapatikana.",
+        message: "Akaunti haijapatikana."
+      });
+    }
+
+    req.user = result.rows[0];
+    req.token = token;
+
+    next();
+
+  } catch (error) {
+    console.error("AUTH ERROR:", error);
+
+    res.status(500).json({
+      ok: false,
+      error: "Tatizo la server.",
+      message: "Tatizo la server."
+    });
+  }
+}
+
+/* =========================================================
+   DATABASE INITIALIZATION
+========================================================= */
+
+async function initDatabase() {
+
+  await pool.query(`
+    CREATE TABLE IF NOT EXISTS users (
+      id SERIAL PRIMARY KEY,
+      name TEXT NOT NULL,
+      email TEXT UNIQUE NOT NULL,
+      password TEXT NOT NULL,
+      age INTEGER,
+      gender TEXT,
+      city TEXT,
+      bio TEXT DEFAULT '',
+      photo TEXT DEFAULT '',
+      latitude DOUBLE PRECISION,
+      longitude DOUBLE PRECISION,
+      location_updated_at TIMESTAMP,
+      created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+    )
+  `);
+
+  /* Existing databases */
+
+  await pool.query(`
+    ALTER TABLE users
+    ADD COLUMN IF NOT EXISTS latitude DOUBLE PRECISION
+  `);
+
+  await pool.query(`
+    ALTER TABLE users
+    ADD COLUMN IF NOT EXISTS longitude DOUBLE PRECISION
+  `);
+
+  await pool.query(`
+    ALTER TABLE users
+    ADD COLUMN IF NOT EXISTS location_updated_at TIMESTAMP
+  `);
+
+  await pool.query(`
+    CREATE TABLE IF NOT EXISTS likes (
+      id SERIAL PRIMARY KEY,
+      from_user INTEGER NOT NULL
+        REFERENCES users(id)
+        ON DELETE CASCADE,
+
+      to_user INTEGER NOT NULL
+        REFERENCES users(id)
+        ON DELETE CASCADE,
+
+      created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+
+      UNIQUE(from_user, to_user)
+    )
+  `);
+
+  await pool.query(`
+    CREATE TABLE IF NOT EXISTS messages (
+      id SERIAL PRIMARY KEY,
+
+      from_user INTEGER NOT NULL
+        REFERENCES users(id)
+        ON DELETE CASCADE,
+
+      to_user INTEGER NOT NULL
+        REFERENCES users(id)
+        ON DELETE CASCADE,
+
+      message TEXT NOT NULL,
+
+      created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+    )
+  `);
+
+  await pool.query(`
+    CREATE TABLE IF NOT EXISTS notifications (
+      id SERIAL PRIMARY KEY,
+
+      user_id INTEGER NOT NULL
+        REFERENCES users(id)
+        ON DELETE CASCADE,
+
+      type TEXT DEFAULT 'general',
+
+      title TEXT DEFAULT '',
+
+      message TEXT DEFAULT '',
+
+      related_user INTEGER,
+
+      is_read BOOLEAN DEFAULT FALSE,
+
+      created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+    )
+  `);
+
+  await pool.query(`
+    CREATE TABLE IF NOT EXISTS reports (
+      id SERIAL PRIMARY KEY,
+
+      reporter INTEGER NOT NULL
+        REFERENCES users(id)
+        ON DELETE CASCADE,
+
+      reported INTEGER NOT NULL
+        REFERENCES users(id)
+        ON DELETE CASCADE,
+
+      reason TEXT NOT NULL,
+
+      created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+    )
+  `);
+
+  await pool.query(`
+    CREATE INDEX IF NOT EXISTS users_location_idx
+    ON users(latitude, longitude)
+  `);
+
+  await pool.query(`
+    CREATE INDEX IF NOT EXISTS messages_users_idx
+    ON messages(from_user, to_user, created_at DESC)
+  `);
+
+  console.log("DATABASE TABLES READY");
+}
+
+/* =========================================================
+   HOME
+========================================================= */
+
+app.get("/", (req, res) => {
+  res.sendFile(
+    path.join(__dirname, "index.html")
+  );
+});
+
+/* =========================================================
+   HEALTH CHECK
+========================================================= */
+
+app.get("/health", async (req, res) => {
+
+  try {
+
+    await pool.query("SELECT 1");
+
+    res.json({
+      ok: true,
+      status: "online",
+      database: "connected"
+    });
+
+  } catch (error) {
+
+    console.error("HEALTH ERROR:", error);
+
+    res.status(500).json({
+      ok: false,
+      status: "online",
+      database: "error"
+    });
 
   }
 
+});
 
-  return date.toLocaleString(
-    "sw-TZ",
-    {
-      day:"2-digit",
-      month:"short",
-      hour:"2-digit",
-      minute:"2-digit"
-    }
-  );
+/* =========================================================
+   REGISTER
+========================================================= */
 
-}
+app.post("/api/register", async (req, res) => {
 
+  try {
 
-/* =========================
-   AUTO REFRESH
-========================= */
+    const {
+      name,
+      email,
+      password,
+      age,
+      gender,
+      city,
+      bio,
+      photo
+    } = req.body;
 
-setInterval(
-  function(){
+    if (!name || !email || !password) {
 
-    if(!state.user){
-      return;
-    }
-
-
-    refreshNotifications();
-
-
-    if(state.currentChat){
-
-      loadMessages();
+      return res.status(400).json({
+        ok: false,
+        error: "Jaza jina, email na password.",
+        message: "Jaza jina, email na password."
+      });
 
     }
 
-  },
-  15000
+    if (String(password).length < 6) {
+
+      return res.status(400).json({
+        ok: false,
+        error: "Password iwe na angalau characters 6.",
+        message: "Password iwe na angalau characters 6."
+      });
+
+    }
+
+    const cleanName =
+      String(name).trim();
+
+    const cleanEmail =
+      String(email)
+        .trim()
+        .toLowerCase();
+
+    const cleanGender =
+      String(gender || "").trim();
+
+    const cleanCity =
+      String(city || "").trim();
+
+    const cleanBio =
+      String(bio || "").trim();
+
+    const cleanPhoto =
+      String(photo || "").trim();
+
+    let parsedAge = null;
+
+    if (
+      age !== undefined &&
+      age !== null &&
+      age !== ""
+    ) {
+
+      parsedAge = Number(age);
+
+      if (
+        !Number.isInteger(parsedAge) ||
+        parsedAge < 18 ||
+        parsedAge > 100
+      ) {
+
+        return res.status(400).json({
+          ok: false,
+          error: "Umri lazima uwe kati ya 18 na 100.",
+          message: "Umri lazima uwe kati ya 18 na 100."
+        });
+
+      }
+
+    }
+
+    const existing =
+      await pool.query(
+        `
+        SELECT id
+        FROM users
+        WHERE LOWER(email) = LOWER($1)
+        `,
+        [cleanEmail]
+      );
+
+    if (existing.rows.length) {
+
+      return res.status(409).json({
+        ok: false,
+        error: "Email hii tayari imesajiliwa.",
+        message: "Email hii tayari imesajiliwa."
+      });
+
+    }
+
+    const passwordHash =
+      hashPassword(password);
+
+    const result =
+      await pool.query(
+        `
+        INSERT INTO users
+        (
+          name,
+          email,
+          password,
+          age,
+          gender,
+          city,
+          bio,
+          photo
+        )
+        VALUES
+        ($1,$2,$3,$4,$5,$6,$7,$8)
+
+        RETURNING
+          id,
+          name,
+          email,
+          age,
+          gender,
+          city,
+          bio,
+          photo,
+          latitude,
+          longitude,
+          location_updated_at,
+          created_at
+        `,
+        [
+          cleanName,
+          cleanEmail,
+          passwordHash,
+          parsedAge,
+          cleanGender,
+          cleanCity,
+          cleanBio,
+          cleanPhoto
+        ]
+      );
+
+    const user =
+      result.rows[0];
+
+    const token =
+      createSession(user.id);
+
+    res.json({
+      ok: true,
+      token,
+      user
+    });
+
+  } catch (error) {
+
+    console.error(
+      "REGISTER ERROR:",
+      error
+    );
+
+    res.status(500).json({
+      ok: false,
+      error: "Imeshindikana kusajili akaunti.",
+      message: "Imeshindikana kusajili akaunti."
+    });
+
+  }
+
+});
+
+/* =========================================================
+   LOGIN
+========================================================= */
+
+app.post("/api/login", async (req, res) => {
+
+  try {
+
+    const email =
+      String(req.body.email || "")
+        .trim()
+        .toLowerCase();
+
+    const password =
+      String(req.body.password || "");
+
+    if (!email || !password) {
+
+      return res.status(400).json({
+        ok: false,
+        error: "Weka email na password.",
+        message: "Weka email na password."
+      });
+
+    }
+
+    const result =
+      await pool.query(
+        `
+        SELECT *
+        FROM users
+        WHERE LOWER(email) = LOWER($1)
+        LIMIT 1
+        `,
+        [email]
+      );
+
+    if (!result.rows.length) {
+
+      return res.status(401).json({
+        ok: false,
+        error: "Email au password sio sahihi.",
+        message: "Email au password sio sahihi."
+      });
+
+    }
+
+    const user =
+      result.rows[0];
+
+    const passwordCorrect =
+      verifyPassword(
+        password,
+        user.password
+      );
+
+    if (!passwordCorrect) {
+
+      return res.status(401).json({
+        ok: false,
+        error: "Email au password sio sahihi.",
+        message: "Email au password sio sahihi."
+      });
+
+    }
+
+    /*
+      Upgrade old password formats
+      automatically.
+    */
+
+    if (
+      !String(user.password)
+        .startsWith("pbkdf2$")
+    ) {
+
+      try {
+
+        const newHash =
+          hashPassword(password);
+
+        await pool.query(
+          `
+          UPDATE users
+          SET password = $1
+          WHERE id = $2
+          `,
+          [
+            newHash,
+            user.id
+          ]
+        );
+
+      } catch (upgradeError) {
+
+        console.error(
+          "PASSWORD UPGRADE ERROR:",
+          upgradeError
+        );
+
+      }
+
+    }
+
+    delete user.password;
+
+    const token =
+      createSession(user.id);
+
+    res.json({
+      ok: true,
+      token,
+      user
+    });
+
+  } catch (error) {
+
+    console.error(
+      "LOGIN ERROR:",
+      error
+    );
+
+    res.status(500).json({
+      ok: false,
+      error: "Imeshindikana kuingia.",
+      message: "Imeshindikana kuingia."
+    });
+
+  }
+
+});
+
+/* =========================================================
+   LOGOUT
+========================================================= */
+
+app.post("/api/logout", auth, (req, res) => {
+
+  sessions.delete(req.token);
+
+  res.json({
+    ok: true,
+    message: "Umetoka kwenye akaunti."
+  });
+
+});
+
+/* =========================================================
+   CURRENT USER
+========================================================= */
+
+app.get("/api/me", auth, (req, res) => {
+
+  res.json({
+    ok: true,
+    user: req.user
+  });
+
+});
+
+/* =========================================================
+   USERS / DISCOVER
+========================================================= */
+
+app.get("/api/users", auth, async (req, res) => {
+
+  try {
+
+    const result =
+      await pool.query(
+        `
+        SELECT
+          u.id,
+          u.name,
+          u.age,
+          u.gender,
+          u.city,
+          u.bio,
+          u.photo,
+          u.latitude,
+          u.longitude,
+          u.created_at
+
+        FROM users u
+
+        WHERE u.id <> $1
+
+        AND NOT EXISTS (
+          SELECT 1
+          FROM likes l
+          WHERE
+            l.from_user = $1
+            AND l.to_user = u.id
+        )
+
+        ORDER BY u.created_at DESC
+        `,
+        [req.user.id]
+      );
+
+    res.json({
+      ok: true,
+      users: result.rows
+    });
+
+  } catch (error) {
+
+    console.error(
+      "USERS ERROR:",
+      error
+    );
+
+    res.status(500).json({
+      ok: false,
+      error: "Imeshindikana kupata users.",
+      message: "Imeshindikana kupata users."
+    });
+
+  }
+
+});
+
+/* =========================================================
+   SAVE USER LOCATION
+========================================================= */
+
+app.post("/api/location", auth, async (req, res) => {
+
+  try {
+
+    const latitude =
+      Number(req.body.latitude);
+
+    const longitude =
+      Number(req.body.longitude);
+
+    if (
+      !Number.isFinite(latitude) ||
+      !Number.isFinite(longitude)
+    ) {
+
+      return res.status(400).json({
+        ok: false,
+        error: "Location si sahihi.",
+        message: "Location si sahihi."
+      });
+
+    }
+
+    if (
+      latitude < -90 ||
+      latitude > 90 ||
+      longitude < -180 ||
+      longitude > 180
+    ) {
+
+      return res.status(400).json({
+        ok: false,
+        error: "Coordinates si sahihi.",
+        message: "Coordinates si sahihi."
+      });
+
+    }
+
+    const result =
+      await pool.query(
+        `
+        UPDATE users
+
+        SET
+          latitude = $1,
+          longitude = $2,
+          location_updated_at = CURRENT_TIMESTAMP
+
+        WHERE id = $3
+
+        RETURNING
+          id,
+          name,
+          city,
+          latitude,
+          longitude,
+          location_updated_at
+        `,
+        [
+          latitude,
+          longitude,
+          req.user.id
+        ]
+      );
+
+    res.json({
+      ok: true,
+      location: result.rows[0]
+    });
+
+  } catch (error) {
+
+    console.error(
+      "LOCATION ERROR:",
+      error
+    );
+
+    res.status(500).json({
+      ok: false,
+      error: "Imeshindikana kuhifadhi location.",
+      message: "Imeshindikana kuhifadhi location."
+    });
+
+  }
+
+});
+
+/* =========================================================
+   NEARBY USERS
+   radius = kilometers
+========================================================= */
+
+app.get("/api/nearby", auth, async (req, res) => {
+
+  try {
+
+    const radius =
+      Number(req.query.radius || 25);
+
+    if (
+      !Number.isFinite(radius) ||
+      radius <= 0 ||
+      radius > 500
+    ) {
+
+      return res.status(400).json({
+        ok: false,
+        error: "Radius lazima iwe kati ya 1 na 500 km.",
+        message: "Radius lazima iwe kati ya 1 na 500 km."
+      });
+
+    }
+
+    const me =
+      await pool.query(
+        `
+        SELECT
+          latitude,
+          longitude
+        FROM users
+        WHERE id = $1
+        `,
+        [req.user.id]
+      );
+
+    if (!me.rows.length) {
+
+      return res.status(404).json({
+        ok: false,
+        error: "Profile haijapatikana."
+      });
+
+    }
+
+    const myLat =
+      me.rows[0].latitude;
+
+    const myLng =
+      me.rows[0].longitude;
+
+    if (
+      myLat === null ||
+      myLat === undefined ||
+      myLng === null ||
+      myLng === undefined
+    ) {
+
+      return res.status(400).json({
+        ok: false,
+        error:
+          "Location yako haijawekwa. Ruhusu location kwenye simu kwanza.",
+        message:
+          "Location yako haijawekwa. Ruhusu location kwenye simu kwanza."
+      });
+
+    }
+
+    /*
+      Haversine formula.
+
+      Earth radius = 6371 km.
+    */
+
+    const result =
+      await pool.query(
+        `
+        SELECT
+          u.id,
+          u.name,
+          u.age,
+          u.gender,
+          u.city,
+          u.bio,
+          u.photo,
+          u.latitude,
+          u.longitude,
+          u.location_updated_at,
+
+          (
+            6371 * acos(
+              LEAST(
+                1,
+                GREATEST(
+                  -1,
+                  cos(radians($1))
+                  *
+                  cos(radians(u.latitude))
+                  *
+                  cos(
+                    radians(u.longitude)
+                    - radians($2)
+                  )
+                  +
+                  sin(radians($1))
+                  *
+                  sin(radians(u.latitude))
+                )
+              )
+            )
+          ) AS distance_km
+
+        FROM users u
+
+        WHERE
+          u.id <> $3
+          AND u.latitude IS NOT NULL
+          AND u.longitude IS NOT NULL
+
+          AND NOT EXISTS (
+            SELECT 1
+            FROM likes l
+            WHERE
+              l.from_user = $3
+              AND l.to_user = u.id
+          )
+
+        ORDER BY distance_km ASC
+
+        LIMIT 100
+        `,
+        [
+          myLat,
+          myLng,
+          req.user.id
+        ]
+      );
+
+    const nearby =
+      result.rows.filter(
+        (user) =>
+          Number(user.distance_km) <= radius
+      );
+
+    res.json({
+      ok: true,
+      radius_km: radius,
+      users: nearby
+    });
+
+  } catch (error) {
+
+    console.error(
+      "NEARBY ERROR:",
+      error
+    );
+
+    res.status(500).json({
+      ok: false,
+      error: "Imeshindikana kupata watu walio karibu.",
+      message:
+        "Imeshindikana kupata watu walio karibu."
+    });
+
+  }
+
+});
+
+/* =========================================================
+   PROFILE
+========================================================= */
+
+app.get("/api/profile", auth, async (req, res) => {
+
+  try {
+
+    const result =
+      await pool.query(
+        `
+        SELECT
+          id,
+          name,
+          email,
+          age,
+          gender,
+          city,
+          bio,
+          photo,
+          latitude,
+          longitude,
+          location_updated_at,
+          created_at
+        FROM users
+        WHERE id = $1
+        `,
+        [req.user.id]
+      );
+
+    res.json({
+      ok: true,
+      user: result.rows[0]
+    });
+
+  } catch (error) {
+
+    console.error(
+      "PROFILE ERROR:",
+      error
+    );
+
+    res.status(500).json({
+      ok: false,
+      error: "Imeshindikana kupata profile.",
+      message: "Imeshindikana kupata profile."
+    });
+
+  }
+
+});
+
+/* =========================================================
+   UPDATE PROFILE
+========================================================= */
+
+app.put("/api/profile", auth, async (req, res) => {
+
+  try {
+
+    const {
+      name,
+      age,
+      gender,
+      city,
+      bio,
+      photo
+    } = req.body;
+
+    let parsedAge = null;
+
+    if (
+      age !== undefined &&
+      age !== null &&
+      age !== ""
+    ) {
+
+      parsedAge = Number(age);
+
+      if (
+        !Number.isInteger(parsedAge) ||
+        parsedAge < 18 ||
+        parsedAge > 100
+      ) {
+
+        return res.status(400).json({
+          ok: false,
+          error: "Umri lazima uwe kati ya 18 na 100."
+        });
+
+      }
+
+    }
+
+    const result =
+      await pool.query(
+        `
+        UPDATE users
+
+        SET
+          name = COALESCE($1, name),
+          age = COALESCE($2, age),
+          gender = COALESCE($3, gender),
+          city = COALESCE($4, city),
+          bio = COALESCE($5, bio),
+          photo = COALESCE($6, photo)
+
+        WHERE id = $7
+
+        RETURNING
+          id,
+          name,
+          email,
+          age,
+          gender,
+          city,
+          bio,
+          photo,
+          latitude,
+          longitude,
+          location_updated_at,
+          created_at
+        `,
+        [
+          name !== undefined
+            ? String(name).trim()
+            : null,
+
+          parsedAge,
+
+          gender !== undefined
+            ? String(gender).trim()
+            : null,
+
+          city !== undefined
+            ? String(city).trim()
+            : null,
+
+          bio !== undefined
+            ? String(bio).trim()
+            : null,
+
+          photo !== undefined
+            ? String(photo).trim()
+            : null,
+
+          req.user.id
+        ]
+      );
+
+    res.json({
+      ok: true,
+      user: result.rows[0]
+    });
+
+  } catch (error) {
+
+    console.error(
+      "PROFILE UPDATE ERROR:",
+      error
+    );
+
+    res.status(500).json({
+      ok: false,
+      error: "Imeshindikana kusasisha profile.",
+      message: "Imeshindikana kusasisha profile."
+    });
+
+  }
+
+});
+
+/* =========================================================
+   LIKE
+========================================================= */
+
+app.post("/api/like/:id", auth, async (req, res) => {
+
+  try {
+
+    const toUser =
+      Number(req.params.id);
+
+    if (
+      !toUser ||
+      toUser === Number(req.user.id)
+    ) {
+
+      return res.status(400).json({
+        ok: false,
+        error: "User si sahihi."
+      });
+
+    }
+
+    const target =
+      await pool.query(
+        `
+        SELECT
+          id,
+          name
+        FROM users
+        WHERE id = $1
+        `,
+        [toUser]
+      );
+
+    if (!target.rows.length) {
+
+      return res.status(404).json({
+        ok: false,
+        error: "User hajapatikana."
+      });
+
+    }
+
+    await pool.query(
+      `
+      INSERT INTO likes
+      (
+        from_user,
+        to_user
+      )
+
+      VALUES
+      ($1,$2)
+
+      ON CONFLICT
+      (from_user,to_user)
+      DO NOTHING
+      `,
+      [
+        req.user.id,
+        toUser
+      ]
+    );
+
+    const mutual =
+      await pool.query(
+        `
+        SELECT id
+        FROM likes
+
+        WHERE
+          from_user = $1
+          AND to_user = $2
+        `,
+        [
+          toUser,
+          req.user.id
+        ]
+      );
+
+    const match =
+      mutual.rows.length > 0;
+
+    if (match) {
+
+      try {
+
+        await pool.query(
+          `
+          INSERT INTO notifications
+          (
+            user_id,
+            type,
+            title,
+            message,
+            related_user
+          )
+
+          VALUES
+          ($1,$2,$3,$4,$5)
+          `,
+          [
+            toUser,
+            "match",
+            "New Match ❤️",
+            `${req.user.name} amematch na wewe.`,
+            req.user.id
+          ]
+        );
+
+        await pool.query(
+          `
+          INSERT INTO notifications
+          (
+            user_id,
+            type,
+            title,
+            message,
+            related_user
+          )
+
+          VALUES
+          ($1,$2,$3,$4,$5)
+          `,
+          [
+            req.user.id,
+            "match",
+            "New Match ❤️",
+            `Umematch na ${target.rows[0].name}.`,
+            toUser
+          ]
+        );
+
+      } catch (notificationError) {
+
+        console.error(
+          "MATCH NOTIFICATION ERROR:",
+          notificationError
+        );
+
+      }
+
+    } else {
+
+      try {
+
+        await pool.query(
+          `
+          INSERT INTO notifications
+          (
+            user_id,
+            type,
+            title,
+            message,
+            related_user
+          )
+
+          VALUES
+          ($1,$2,$3,$4,$5)
+          `,
+          [
+            toUser,
+            "like",
+            "Someone likes you ❤️",
+            `${req.user.name} amekupenda.`,
+            req.user.id
+          ]
+        );
+
+      } catch (notificationError) {
+
+        console.error(
+          "LIKE NOTIFICATION ERROR:",
+          notificationError
+        );
+
+      }
+
+    }
+
+    res.json({
+      ok: true,
+      liked: true,
+      match
+    });
+
+  } catch (error) {
+
+    console.error(
+      "LIKE ERROR:",
+      error
+    );
+
+    res.status(500).json({
+      ok: false,
+      error: "Imeshindikana kuweka like.",
+      message: "Imeshindikana kuweka like."
+    });
+
+  }
+
+});
+
+/* =========================================================
+   MATCHES
+========================================================= */
+
+app.get("/api/matches", auth, async (req, res) => {
+
+  try {
+
+    const result =
+      await pool.query(
+        `
+        SELECT DISTINCT
+          u.id,
+          u.name,
+          u.age,
+          u.gender,
+          u.city,
+          u.bio,
+          u.photo,
+          u.latitude,
+          u.longitude
+
+        FROM users u
+
+        JOIN likes l1
+          ON l1.to_user = u.id
+
+        JOIN likes l2
+          ON l2.from_user = u.id
+          AND l2.to_user = $1
+
+        WHERE
+          l1.from_user = $1
+
+        ORDER BY u.name
+        `,
+        [req.user.id]
+      );
+
+    res.json({
+      ok: true,
+      matches: result.rows
+    });
+
+  } catch (error) {
+
+    console.error(
+      "MATCHES ERROR:",
+      error
+    );
+
+    res.status(500).json({
+      ok: false,
+      error: "Imeshindikana kupata matches.",
+      message: "Imeshindikana kupata matches."
+    });
+
+  }
+
+});
+
+/* =========================================================
+   CHATS
+========================================================= */
+
+app.get("/api/chats", auth, async (req, res) => {
+
+  try {
+
+    const result =
+      await pool.query(
+        `
+        SELECT
+          u.id,
+          u.name,
+          u.age,
+          u.gender,
+          u.city,
+          u.bio,
+          u.photo,
+
+          (
+            SELECT m.message
+            FROM messages m
+
+            WHERE
+              (
+                m.from_user = $1
+                AND m.to_user = u.id
+              )
+
+              OR
+
+              (
+                m.from_user = u.id
+                AND m.to_user = $1
+              )
+
+            ORDER BY m.created_at DESC
+            LIMIT 1
+
+          ) AS last_message,
+
+          (
+            SELECT m.created_at
+            FROM messages m
+
+            WHERE
+              (
+                m.from_user = $1
+                AND m.to_user = u.id
+              )
+
+              OR
+
+              (
+                m.from_user = u.id
+                AND m.to_user = $1
+              )
+
+            ORDER BY m.created_at DESC
+            LIMIT 1
+
+          ) AS last_message_time
+
+        FROM users u
+
+        WHERE u.id IN (
+
+          SELECT DISTINCT
+
+            CASE
+
+              WHEN from_user = $1
+              THEN to_user
+
+              ELSE from_user
+
+            END
+
+          FROM messages
+
+          WHERE
+            from_user = $1
+            OR to_user = $1
+
+        )
+
+        ORDER BY
+          last_message_time DESC NULLS LAST
+        `,
+        [req.user.id]
+      );
+
+    res.json({
+      ok: true,
+      chats: result.rows
+    });
+
+  } catch (error) {
+
+    console.error(
+      "CHATS ERROR:",
+      error
+    );
+
+    res.status(500).json({
+      ok: false,
+      error: "Imeshindikana kupata chats.",
+      message: "Imeshindikana kupata chats."
+    });
+
+  }
+
+});
+
+/* =========================================================
+   GET MESSAGES
+========================================================= */
+
+app.get("/api/messages/:id", auth, async (req, res) => {
+
+  try {
+
+    const otherUser =
+      Number(req.params.id);
+
+    if (!otherUser) {
+
+      return res.status(400).json({
+        ok: false,
+        error: "User wa chat hajapatikana."
+      });
+
+    }
+
+    const result =
+      await pool.query(
+        `
+        SELECT
+          m.id,
+          m.from_user,
+          m.to_user,
+          m.message,
+          m.created_at,
+
+          fu.name AS from_name,
+          fu.photo AS from_photo,
+
+          tu.name AS to_name,
+          tu.photo AS to_photo
+
+        FROM messages m
+
+        LEFT JOIN users fu
+          ON fu.id = m.from_user
+
+        LEFT JOIN users tu
+          ON tu.id = m.to_user
+
+        WHERE
+
+          (
+            m.from_user = $1
+            AND m.to_user = $2
+          )
+
+          OR
+
+          (
+            m.from_user = $2
+            AND m.to_user = $1
+          )
+
+        ORDER BY m.created_at ASC
+        `,
+        [
+          req.user.id,
+          otherUser
+        ]
+      );
+
+    res.json({
+      ok: true,
+      messages: result.rows
+    });
+
+  } catch (error) {
+
+    console.error(
+      "GET MESSAGES ERROR:",
+      error
+    );
+
+    res.status(500).json({
+      ok: false,
+      error: "Imeshindikana kupata ujumbe.",
+      message: "Imeshindikana kupata ujumbe."
+    });
+
+  }
+
+});
+
+/* =========================================================
+   SEND MESSAGE
+========================================================= */
+
+app.post("/api/messages/:id", auth, async (req, res) => {
+
+  try {
+
+    const toUser =
+      Number(req.params.id);
+
+    const message =
+      String(
+        req.body.message || ""
+      ).trim();
+
+    if (!toUser) {
+
+      return res.status(400).json({
+        ok: false,
+        error: "Mtumiaji hajapatikana."
+      });
+
+    }
+
+    if (
+      toUser ===
+      Number(req.user.id)
+    ) {
+
+      return res.status(400).json({
+        ok: false,
+        error: "Huwezi kujitumia ujumbe."
+      });
+
+    }
+
+    if (!message) {
+
+      return res.status(400).json({
+        ok: false,
+        error: "Andika ujumbe kwanza."
+      });
+
+    }
+
+    if (message.length > 5000) {
+
+      return res.status(400).json({
+        ok: false,
+        error: "Ujumbe ni mrefu sana."
+      });
+
+    }
+
+    const recipient =
+      await pool.query(
+        `
+        SELECT
+          id,
+          name
+        FROM users
+        WHERE id = $1
+        `,
+        [toUser]
+      );
+
+    if (!recipient.rows.length) {
+
+      return res.status(404).json({
+        ok: false,
+        error: "Mtumiaji huyo hajapatikana."
+      });
+
+    }
+
+    const result =
+      await pool.query(
+        `
+        INSERT INTO messages
+        (
+          from_user,
+          to_user,
+          message
+        )
+
+        VALUES
+        ($1,$2,$3)
+
+        RETURNING
+          id,
+          from_user,
+          to_user,
+          message,
+          created_at
+        `,
+        [
+          req.user.id,
+          toUser,
+          message
+        ]
+      );
+
+    const savedMessage =
+      result.rows[0];
+
+    try {
+
+      await pool.query(
+        `
+        INSERT INTO notifications
+        (
+          user_id,
+          type,
+          title,
+          message,
+          related_user
+        )
+
+        VALUES
+        ($1,$2,$3,$4,$5)
+        `,
+        [
+          toUser,
+          "message",
+          "Ujumbe mpya 💬",
+          `${req.user.name} amekutumia ujumbe mpya.`,
+          req.user.id
+        ]
+      );
+
+    } catch (notificationError) {
+
+      console.error(
+        "MESSAGE NOTIFICATION ERROR:",
+        notificationError
+      );
+
+    }
+
+    res.json({
+      ok: true,
+      success: true,
+      message: savedMessage
+    });
+
+  } catch (error) {
+
+    console.error(
+      "SEND MESSAGE ERROR:",
+      error
+    );
+
+    res.status(500).json({
+      ok: false,
+      success: false,
+      error: "Imeshindikana kutuma ujumbe.",
+      message: "Imeshindikana kutuma ujumbe."
+    });
+
+  }
+
+});
+
+/* =========================================================
+   NOTIFICATIONS
+========================================================= */
+
+app.get(
+  "/api/notifications",
+  auth,
+  async (req, res) => {
+
+    try {
+
+      const result =
+        await pool.query(
+          `
+          SELECT
+            id,
+            type,
+            title,
+            message,
+            related_user,
+            is_read,
+            created_at
+
+          FROM notifications
+
+          WHERE user_id = $1
+
+          ORDER BY created_at DESC
+
+          LIMIT 100
+          `,
+          [req.user.id]
+        );
+
+      res.json({
+        ok: true,
+        notifications: result.rows
+      });
+
+    } catch (error) {
+
+      console.error(
+        "NOTIFICATIONS ERROR:",
+        error
+      );
+
+      res.status(500).json({
+        ok: false,
+        error: "Imeshindikana kupata notifications."
+      });
+
+    }
+
+  }
 );
 
+/* =========================================================
+   MARK NOTIFICATIONS READ
+========================================================= */
 
-/* =========================
-   START
-========================= */
+app.post(
+  "/api/notifications/read",
+  auth,
+  async (req, res) => {
 
-checkSession();
+    try {
 
-</script>
+      await pool.query(
+        `
+        UPDATE notifications
 
-</body>
-</html>
+        SET is_read = TRUE
+
+        WHERE user_id = $1
+        `,
+        [req.user.id]
+      );
+
+      res.json({
+        ok: true
+      });
+
+    } catch (error) {
+
+      console.error(
+        "READ NOTIFICATIONS ERROR:",
+        error
+      );
+
+      res.status(500).json({
+        ok: false,
+        error: "Imeshindikana kusoma notifications."
+      });
+
+    }
+
+  }
+);
+
+/* =========================================================
+   REPORT
+========================================================= */
+
+app.post(
+  "/api/report/:id",
+  auth,
+  async (req, res) => {
+
+    try {
+
+      const reported =
+        Number(req.params.id);
+
+      const reason =
+        String(
+          req.body.reason || ""
+        ).trim();
+
+      if (
+        !reported ||
+        reported === Number(req.user.id)
+      ) {
+
+        return res.status(400).json({
+          ok: false,
+          error: "User si sahihi."
+        });
+
+      }
+
+      if (!reason) {
+
+        return res.status(400).json({
+          ok: false,
+          error: "Andika sababu ya report."
+        });
+
+      }
+
+      const user =
+        await pool.query(
+          `
+          SELECT id
+          FROM users
+          WHERE id = $1
+          `,
+          [reported]
+        );
+
+      if (!user.rows.length) {
+
+        return res.status(404).json({
+          ok: false,
+          error: "User hajapatikana."
+        });
+
+      }
+
+      await pool.query(
+        `
+        INSERT INTO reports
+        (
+          reporter,
+          reported,
+          reason
+        )
+
+        VALUES
+        ($1,$2,$3)
+        `,
+        [
+          req.user.id,
+          reported,
+          reason
+        ]
+      );
+
+      res.json({
+        ok: true,
+        message: "Report imetumwa."
+      });
+
+    } catch (error) {
+
+      console.error(
+        "REPORT ERROR:",
+        error
+      );
+
+      res.status(500).json({
+        ok: false,
+        error: "Imeshindikana kutuma report."
+      });
+
+    }
+
+  }
+);
+
+/* =========================================================
+   API 404
+========================================================= */
+
+app.use("/api", (req, res) => {
+
+  res.status(404).json({
+    ok: false,
+    error: "API endpoint haijapatikana.",
+    message: "API endpoint haijapatikana."
+  });
+
+});
+
+/* =========================================================
+   GLOBAL ERROR
+========================================================= */
+
+app.use(
+  (err, req, res, next) => {
+
+    console.error(
+      "GLOBAL ERROR:",
+      err
+    );
+
+    if (res.headersSent) {
+      return next(err);
+    }
+
+    res.status(500).json({
+      ok: false,
+      error: "Server error.",
+      message: "Server error."
+    });
+
+  }
+);
+
+/* =========================================================
+   START SERVER
+========================================================= */
+
+async function startServer() {
+
+  try {
+
+    await initDatabase();
+
+    app.listen(
+      PORT,
+      "0.0.0.0",
+      () => {
+
+        console.log(
+          "----------------------------------------"
+        );
+
+        console.log(
+          "Tanzania Dating server is running"
+        );
+
+        console.log(
+          `PORT: ${PORT}`
+        );
+
+        console.log(
+          "Nearby feature: ENABLED"
+        );
+
+        console.log(
+          "----------------------------------------"
+        );
+
+      }
+    );
+
+  } catch (error) {
+
+    console.error(
+      "SERVER START ERROR:",
+      error
+    );
+
+    process.exit(1);
+
+  }
+
+}
+
+startServer();
