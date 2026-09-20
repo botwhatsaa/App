@@ -1,8 +1,3 @@
-// ============================================================
-// TANZANIA DATING - SERVER.JS
-// Node.js + Express + PostgreSQL
-// ============================================================
-
 const express = require("express");
 const path = require("path");
 const bcrypt = require("bcryptjs");
@@ -12,121 +7,80 @@ const { Pool } = require("pg");
 const app = express();
 
 const PORT = process.env.PORT || 10000;
-
-// ============================================================
-// ENVIRONMENT
-// ============================================================
-
-const DATABASE_URL = process.env.DATABASE_URL;
-
 const JWT_SECRET =
-  process.env.JWT_SECRET || "tanzania-dating-secret-change-this";
+  process.env.JWT_SECRET || "tanzania-dating-secret-2026";
 
-// ============================================================
-// DATABASE
-// ============================================================
-
-if (!DATABASE_URL) {
-  console.error("ERROR: DATABASE_URL haijawekwa kwenye Environment.");
+if (!process.env.DATABASE_URL) {
+  console.error("DATABASE_URL haijawekwa kwenye Render Environment.");
   process.exit(1);
 }
 
 const pool = new Pool({
-  connectionString: DATABASE_URL,
+  connectionString: process.env.DATABASE_URL,
   ssl: {
-    rejectUnauthorized: false,
-  },
+    rejectUnauthorized: false
+  }
 });
-
-// Test database connection
-pool
-  .connect()
-  .then((client) => {
-    console.log("PostgreSQL connected successfully");
-    client.release();
-  })
-  .catch((error) => {
-    console.error("PostgreSQL connection error:", error.message);
-  });
-
-// ============================================================
-// EXPRESS SETTINGS
-// ============================================================
 
 app.use(express.json({ limit: "10mb" }));
 app.use(express.urlencoded({ extended: true, limit: "10mb" }));
 
-// Serve frontend
 app.use(express.static(path.join(__dirname, "public")));
 
-// ============================================================
-// DATABASE TABLES
-// ============================================================
+// ===============================
+// DATABASE
+// ===============================
 
-async function initializeDatabase() {
-  try {
-    await pool.query(`
-      CREATE TABLE IF NOT EXISTS users (
-        id SERIAL PRIMARY KEY,
-        name VARCHAR(100) NOT NULL,
-        email VARCHAR(255) UNIQUE NOT NULL,
-        password TEXT NOT NULL,
-        age INTEGER,
-        gender VARCHAR(30),
-        city VARCHAR(100),
-        bio TEXT,
-        photo TEXT,
-        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-      );
-    `);
+async function setupDatabase() {
+  await pool.query(`
+    CREATE TABLE IF NOT EXISTS users (
+      id SERIAL PRIMARY KEY,
+      name VARCHAR(100) NOT NULL,
+      email VARCHAR(255) UNIQUE NOT NULL,
+      password TEXT NOT NULL,
+      age INTEGER,
+      gender VARCHAR(30),
+      city VARCHAR(100),
+      bio TEXT,
+      photo TEXT,
+      created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+    )
+  `);
 
-    console.log("Users table ready");
+  await pool.query(`
+    CREATE TABLE IF NOT EXISTS likes (
+      id SERIAL PRIMARY KEY,
+      user_id INTEGER NOT NULL,
+      liked_user_id INTEGER NOT NULL,
+      created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+      UNIQUE(user_id, liked_user_id)
+    )
+  `);
 
-    await pool.query(`
-      CREATE TABLE IF NOT EXISTS messages (
-        id SERIAL PRIMARY KEY,
-        sender_id INTEGER NOT NULL,
-        receiver_id INTEGER NOT NULL,
-        message TEXT NOT NULL,
-        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-      );
-    `);
+  await pool.query(`
+    CREATE TABLE IF NOT EXISTS messages (
+      id SERIAL PRIMARY KEY,
+      sender_id INTEGER NOT NULL,
+      receiver_id INTEGER NOT NULL,
+      message TEXT NOT NULL,
+      created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+    )
+  `);
 
-    console.log("Messages table ready");
-
-    await pool.query(`
-      CREATE TABLE IF NOT EXISTS likes (
-        id SERIAL PRIMARY KEY,
-        user_id INTEGER NOT NULL,
-        liked_user_id INTEGER NOT NULL,
-        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-        UNIQUE(user_id, liked_user_id)
-      );
-    `);
-
-    console.log("Likes table ready");
-
-  } catch (error) {
-    console.error("Database initialization error:");
-    console.error(error);
-  }
+  console.log("Database tables ready");
 }
 
-// ============================================================
-// HEALTH CHECK
-// ============================================================
+// ===============================
+// HOME
+// ===============================
 
 app.get("/", (req, res) => {
   res.sendFile(path.join(__dirname, "public", "index.html"));
 });
 
-app.get("/api", (req, res) => {
-  res.json({
-    success: true,
-    message: "Tanzania Dating API is running",
-    status: "online",
-  });
-});
+// ===============================
+// HEALTH
+// ===============================
 
 app.get("/health", async (req, res) => {
   try {
@@ -134,21 +88,22 @@ app.get("/health", async (req, res) => {
 
     res.json({
       success: true,
-      database: "connected",
       server: "online",
+      database: "connected"
     });
   } catch (error) {
     res.status(500).json({
       success: false,
-      database: "disconnected",
-      error: error.message,
+      server: "online",
+      database: "error",
+      message: error.message
     });
   }
 });
 
-// ============================================================
+// ===============================
 // REGISTER
-// ============================================================
+// ===============================
 
 app.post("/api/register", async (req, res) => {
   try {
@@ -160,49 +115,45 @@ app.post("/api/register", async (req, res) => {
       gender,
       city,
       bio,
-      photo,
+      photo
     } = req.body;
 
-    // Validation
     if (!name || !email || !password) {
       return res.status(400).json({
         success: false,
-        message: "Jina, email na password vinahitajika.",
+        message: "Jina, email na password vinahitajika."
       });
     }
 
     if (password.length < 6) {
       return res.status(400).json({
         success: false,
-        message: "Password lazima iwe na angalau characters 6.",
+        message: "Password iwe na angalau characters 6."
       });
     }
 
     const cleanEmail = email.trim().toLowerCase();
 
-    // Check existing email
-    const existingUser = await pool.query(
+    const exists = await pool.query(
       "SELECT id FROM users WHERE email = $1",
       [cleanEmail]
     );
 
-    if (existingUser.rows.length > 0) {
+    if (exists.rows.length > 0) {
       return res.status(409).json({
         success: false,
-        message: "Email hii tayari imesajiliwa.",
+        message: "Email hii tayari imesajiliwa."
       });
     }
 
-    // Hash password
-    const hashedPassword = await bcrypt.hash(password, 12);
+    const hashedPassword = await bcrypt.hash(password, 10);
 
-    // Insert user
     const result = await pool.query(
       `
       INSERT INTO users
-      (name, email, password, age, gender, city, bio, photo)
+      (name,email,password,age,gender,city,bio,photo)
       VALUES ($1,$2,$3,$4,$5,$6,$7,$8)
-      RETURNING id, name, email, age, gender, city, bio, photo, created_at
+      RETURNING id,name,email,age,gender,city,bio,photo
       `,
       [
         name.trim(),
@@ -212,21 +163,20 @@ app.post("/api/register", async (req, res) => {
         gender || null,
         city || null,
         bio || null,
-        photo || null,
+        photo || null
       ]
     );
 
     const user = result.rows[0];
 
-    // Create token
     const token = jwt.sign(
       {
         id: user.id,
-        email: user.email,
+        email: user.email
       },
       JWT_SECRET,
       {
-        expiresIn: "30d",
+        expiresIn: "30d"
       }
     );
 
@@ -234,7 +184,7 @@ app.post("/api/register", async (req, res) => {
       success: true,
       message: "Usajili umefanikiwa.",
       token,
-      user,
+      user
     });
 
   } catch (error) {
@@ -242,15 +192,15 @@ app.post("/api/register", async (req, res) => {
 
     res.status(500).json({
       success: false,
-      message: "Imeshindikana kusajili account.",
-      error: error.message,
+      message: "Registration failed.",
+      error: error.message
     });
   }
 });
 
-// ============================================================
+// ===============================
 // LOGIN
-// ============================================================
+// ===============================
 
 app.post("/api/login", async (req, res) => {
   try {
@@ -259,7 +209,7 @@ app.post("/api/login", async (req, res) => {
     if (!email || !password) {
       return res.status(400).json({
         success: false,
-        message: "Email na password vinahitajika.",
+        message: "Email na password vinahitajika."
       });
     }
 
@@ -273,45 +223,42 @@ app.post("/api/login", async (req, res) => {
     if (result.rows.length === 0) {
       return res.status(401).json({
         success: false,
-        message: "Email au password sio sahihi.",
+        message: "Email au password sio sahihi."
       });
     }
 
     const user = result.rows[0];
 
-    // Compare password
-    const passwordCorrect = await bcrypt.compare(
+    const correct = await bcrypt.compare(
       password,
       user.password
     );
 
-    if (!passwordCorrect) {
+    if (!correct) {
       return res.status(401).json({
         success: false,
-        message: "Email au password sio sahihi.",
+        message: "Email au password sio sahihi."
       });
     }
 
-    // Token
     const token = jwt.sign(
       {
         id: user.id,
-        email: user.email,
+        email: user.email
       },
       JWT_SECRET,
       {
-        expiresIn: "30d",
+        expiresIn: "30d"
       }
     );
 
-    // Never send password to frontend
     delete user.password;
 
     res.json({
       success: true,
       message: "Login imefanikiwa.",
       token,
-      user,
+      user
     });
 
   } catch (error) {
@@ -319,39 +266,40 @@ app.post("/api/login", async (req, res) => {
 
     res.status(500).json({
       success: false,
-      message: "Tatizo limetokea wakati wa login.",
-      error: error.message,
+      message: "Login failed.",
+      error: error.message
     });
   }
 });
 
-// ============================================================
-// AUTH MIDDLEWARE
-// ============================================================
+// ===============================
+// AUTH
+// ===============================
 
-function authenticateToken(req, res, next) {
-  const authHeader = req.headers.authorization;
+function auth(req, res, next) {
+  const header = req.headers.authorization;
 
-  if (!authHeader) {
+  if (!header) {
     return res.status(401).json({
       success: false,
-      message: "Token haipo.",
+      message: "Token haipo."
     });
   }
 
-  const parts = authHeader.split(" ");
+  const parts = header.split(" ");
 
   if (parts.length !== 2 || parts[0] !== "Bearer") {
     return res.status(401).json({
       success: false,
-      message: "Authorization format sio sahihi.",
+      message: "Invalid authorization."
     });
   }
 
-  const token = parts[1];
-
   try {
-    const decoded = jwt.verify(token, JWT_SECRET);
+    const decoded = jwt.verify(
+      parts[1],
+      JWT_SECRET
+    );
 
     req.user = decoded;
 
@@ -360,20 +308,20 @@ function authenticateToken(req, res, next) {
   } catch (error) {
     return res.status(401).json({
       success: false,
-      message: "Token ime-expire au sio sahihi.",
+      message: "Token sio sahihi au ime-expire."
     });
   }
 }
 
-// ============================================================
+// ===============================
 // CURRENT USER
-// ============================================================
+// ===============================
 
-app.get("/api/me", authenticateToken, async (req, res) => {
+app.get("/api/me", auth, async (req, res) => {
   try {
     const result = await pool.query(
       `
-      SELECT id, name, email, age, gender, city, bio, photo, created_at
+      SELECT id,name,email,age,gender,city,bio,photo
       FROM users
       WHERE id = $1
       `,
@@ -383,125 +331,57 @@ app.get("/api/me", authenticateToken, async (req, res) => {
     if (result.rows.length === 0) {
       return res.status(404).json({
         success: false,
-        message: "User hakupatikana.",
+        message: "User hakupatikana."
       });
     }
 
     res.json({
       success: true,
-      user: result.rows[0],
+      user: result.rows[0]
     });
 
   } catch (error) {
-    console.error("ME ERROR:", error);
-
     res.status(500).json({
       success: false,
-      message: "Server error.",
+      message: error.message
     });
   }
 });
 
-// ============================================================
-// GET USERS / DISCOVER
-// ============================================================
+// ===============================
+// ALL USERS
+// ===============================
 
-app.get("/api/users", authenticateToken, async (req, res) => {
+app.get("/api/users", auth, async (req, res) => {
   try {
     const result = await pool.query(
       `
-      SELECT
-        id,
-        name,
-        age,
-        gender,
-        city,
-        bio,
-        photo,
-        created_at
+      SELECT id,name,age,gender,city,bio,photo
       FROM users
       WHERE id != $1
       ORDER BY created_at DESC
-      LIMIT 100
       `,
       [req.user.id]
     );
 
     res.json({
       success: true,
-      users: result.rows,
+      users: result.rows
     });
 
   } catch (error) {
-    console.error("USERS ERROR:", error);
-
     res.status(500).json({
       success: false,
-      message: "Imeshindikana kupata users.",
+      message: error.message
     });
   }
 });
 
-// ============================================================
-// GET USER PROFILE
-// ============================================================
+// ===============================
+// PROFILE
+// ===============================
 
-app.get("/api/users/:id", authenticateToken, async (req, res) => {
-  try {
-    const userId = parseInt(req.params.id);
-
-    if (isNaN(userId)) {
-      return res.status(400).json({
-        success: false,
-        message: "User ID sio sahihi.",
-      });
-    }
-
-    const result = await pool.query(
-      `
-      SELECT
-        id,
-        name,
-        email,
-        age,
-        gender,
-        city,
-        bio,
-        photo,
-        created_at
-      FROM users
-      WHERE id = $1
-      `,
-      [userId]
-    );
-
-    if (result.rows.length === 0) {
-      return res.status(404).json({
-        success: false,
-        message: "User hakupatikana.",
-      });
-    }
-
-    res.json({
-      success: true,
-      user: result.rows[0],
-    });
-
-  } catch (error) {
-    console.error("PROFILE ERROR:", error);
-
-    res.status(500).json({
-      success: false,
-      message: "Server error.",
-    });
-  }
-});
-
-// ============================================================
-// UPDATE PROFILE
-// ============================================================
-
-app.put("/api/profile", authenticateToken, async (req, res) => {
+app.put("/api/profile", auth, async (req, res) => {
   try {
     const {
       name,
@@ -509,21 +389,21 @@ app.put("/api/profile", authenticateToken, async (req, res) => {
       gender,
       city,
       bio,
-      photo,
+      photo
     } = req.body;
 
     const result = await pool.query(
       `
       UPDATE users
       SET
-        name = COALESCE($1, name),
-        age = COALESCE($2, age),
-        gender = COALESCE($3, gender),
-        city = COALESCE($4, city),
-        bio = COALESCE($5, bio),
-        photo = COALESCE($6, photo)
+        name = COALESCE($1,name),
+        age = COALESCE($2,age),
+        gender = COALESCE($3,gender),
+        city = COALESCE($4,city),
+        bio = COALESCE($5,bio),
+        photo = COALESCE($6,photo)
       WHERE id = $7
-      RETURNING id, name, email, age, gender, city, bio, photo
+      RETURNING id,name,email,age,gender,city,bio,photo
       `,
       [
         name || null,
@@ -532,143 +412,161 @@ app.put("/api/profile", authenticateToken, async (req, res) => {
         city || null,
         bio || null,
         photo || null,
-        req.user.id,
+        req.user.id
       ]
     );
 
-    if (result.rows.length === 0) {
-      return res.status(404).json({
-        success: false,
-        message: "User hakupatikana.",
-      });
-    }
-
     res.json({
       success: true,
-      message: "Profile imebadilishwa.",
-      user: result.rows[0],
+      user: result.rows[0]
     });
 
   } catch (error) {
-    console.error("UPDATE PROFILE ERROR:", error);
-
     res.status(500).json({
       success: false,
-      message: "Imeshindikana kubadilisha profile.",
+      message: error.message
     });
   }
 });
 
-// ============================================================
-// LIKE USER
-// ============================================================
+// ===============================
+// LIKE
+// ===============================
 
-app.post("/api/like", authenticateToken, async (req, res) => {
+app.post("/api/like", auth, async (req, res) => {
   try {
-    const likedUserId = parseInt(req.body.userId);
+    const userId = Number(req.body.userId);
 
-    if (isNaN(likedUserId)) {
+    if (!userId) {
       return res.status(400).json({
         success: false,
-        message: "User ID sio sahihi.",
-      });
-    }
-
-    if (likedUserId === req.user.id) {
-      return res.status(400).json({
-        success: false,
-        message: "Huwezi kujilike mwenyewe.",
+        message: "userId inahitajika."
       });
     }
 
     await pool.query(
       `
-      INSERT INTO likes (user_id, liked_user_id)
-      VALUES ($1, $2)
-      ON CONFLICT (user_id, liked_user_id)
+      INSERT INTO likes(user_id,liked_user_id)
+      VALUES($1,$2)
+      ON CONFLICT(user_id,liked_user_id)
       DO NOTHING
       `,
-      [req.user.id, likedUserId]
+      [req.user.id, userId]
     );
 
     res.json({
       success: true,
-      message: "Like imehifadhiwa.",
+      message: "Like imehifadhiwa."
     });
 
   } catch (error) {
-    console.error("LIKE ERROR:", error);
-
     res.status(500).json({
       success: false,
-      message: "Imeshindikana kuhifadhi like.",
+      message: error.message
     });
   }
 });
 
-// ============================================================
+// ===============================
 // SEND MESSAGE
-// ============================================================
+// ===============================
 
-app.post("/api/messages", authenticateToken, async (req, res) => {
+app.post("/api/messages", auth, async (req, res) => {
   try {
-    const {
-      receiverId,
-      message,
-    } = req.body;
+    const receiverId = Number(req.body.receiverId);
+    const message = String(req.body.message || "").trim();
 
     if (!receiverId || !message) {
       return res.status(400).json({
         success: false,
-        message: "Receiver na message vinahitajika.",
-      });
-    }
-
-    const receiver = await pool.query(
-      "SELECT id FROM users WHERE id = $1",
-      [receiverId]
-    );
-
-    if (receiver.rows.length === 0) {
-      return res.status(404).json({
-        success: false,
-        message: "Receiver hakupatikana.",
+        message: "Receiver na message vinahitajika."
       });
     }
 
     const result = await pool.query(
       `
       INSERT INTO messages
-      (sender_id, receiver_id, message)
-      VALUES ($1,$2,$3)
-      RETURNING id, sender_id, receiver_id, message, created_at
+      (sender_id,receiver_id,message)
+      VALUES($1,$2,$3)
+      RETURNING *
       `,
       [
         req.user.id,
         receiverId,
-        message.trim(),
+        message
       ]
     );
 
     res.status(201).json({
       success: true,
-      message: "Ujumbe umetumwa.",
-      data: result.rows[0],
+      message: result.rows[0]
     });
 
   } catch (error) {
-    console.error("MESSAGE ERROR:", error);
-
     res.status(500).json({
       success: false,
-      message: "Imeshindikana kutuma ujumbe.",
+      message: error.message
     });
   }
 });
 
-// ============================================================
-// GET CHAT
-// ============================================================
+// ===============================
+// GET MESSAGES
+// ===============================
 
-app.get(
- 
+app.get("/api/messages/:id", auth, async (req, res) => {
+  try {
+    const otherUser = Number(req.params.id);
+
+    const result = await pool.query(
+      `
+      SELECT *
+      FROM messages
+      WHERE
+        (sender_id=$1 AND receiver_id=$2)
+        OR
+        (sender_id=$2 AND receiver_id=$1)
+      ORDER BY created_at ASC
+      `,
+      [
+        req.user.id,
+        otherUser
+      ]
+    );
+
+    res.json({
+      success: true,
+      messages: result.rows
+    });
+
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      message: error.message
+    });
+  }
+});
+
+// ===============================
+// START SERVER
+// ===============================
+
+async function start() {
+  try {
+    await setupDatabase();
+
+    app.listen(PORT, "0.0.0.0", () => {
+      console.log("================================");
+      console.log("TANZANIA DATING SERVER ONLINE");
+      console.log("PORT:", PORT);
+      console.log("================================");
+    });
+
+  } catch (error) {
+    console.error("SERVER START ERROR:");
+    console.error(error);
+    process.exit(1);
+  }
+}
+
+start();
